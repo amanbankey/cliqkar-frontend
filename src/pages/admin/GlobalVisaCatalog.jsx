@@ -145,7 +145,7 @@ const GlobalVisaCatalog = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 bg-gray-50 overflow-y-auto w-full">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
         <div>
           <p className="text-xs text-gray-500 mb-1">

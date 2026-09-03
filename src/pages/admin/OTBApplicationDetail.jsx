@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { X, FileText, User, Phone, Plane, Wallet, Ticket, CreditCard, Clock, Download } from "lucide-react";
-import { InfoRow, Card } from "./ui";
+ 
 
 const otbApplication = {
   status: "APPROVED",
@@ -33,6 +33,22 @@ const otbApplication = {
     { label: "Application approved", by: "Ops Team", time: "24 Oct 2023, 01:12 PM" },
   ],
 };
+
+const InfoRow = ({ label, value, valueClass = "text-gray-800" }) => (
+  <div>
+    <p className="text-[10px] font-semibold tracking-wide text-gray-400 mb-1">{label}</p>
+    <p className={`text-sm font-medium ${valueClass}`}>{value}</p>
+  </div>
+);
+ 
+const Card = ({ icon: Icon, title, children }) => (
+  <div className="bg-white border border-gray-200 rounded-xl p-4">
+    <p className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-3">
+      <Icon className="text-gray-500" size={15} /> {title}
+    </p>
+    {children}
+  </div>
+);
 
 const statusStyles = {
   APPROVED: "bg-emerald-50 text-emerald-600",
@@ -69,7 +85,7 @@ const OTBApplicationDetailsModal = ({ application = otbApplication, onClose }) =
           </button>
         </div>
 
-        <div className="flex items-center gap-1 bg-white px-5 border-b border-gray-200 overflow-x-auto">
+        <div className="flex items-center gap-1 bg-white px-5 border-b border-gray-200 overflow-x-auto hide-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab}

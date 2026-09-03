@@ -17,6 +17,7 @@ import OTBPricingTariffs from './pages/admin/OTBpricing'
 import AirlineDirectory from './pages/admin/Airline'
 import CountriesDirectory from './pages/admin/GlobalCountries'
 import AirportDirectory from './pages/admin/AirportDirectory'
+
 function App() {
   const [count, setCount] = useState(0)
   const [activeItem, setActiveItem] = useState("Dashboard");
@@ -29,8 +30,7 @@ function App() {
             <Route index element={<Home />} />
           </Route>
           <Route path="/dashboard" element={<Dashboard  setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>} />
-
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin/global-visa-catalog" element={ <GlobalVisaCatalog /> } />
           <Route path="/admin/AgentDirectory" element={<AgentDirectory/>} />
          < Route path="/admin/list" element={<CustomerList/>} />
          < Route path="/admin/visa" element={<GlobalVisaCatalog/>} />

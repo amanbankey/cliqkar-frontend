@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import React,{ useState } from "react";
 import {
   X,
   ChevronDown,
@@ -29,6 +29,7 @@ import {
 
 
 
+import { StatusBadge } from "../../components/adminComponent/StatusBadge";
 const ticketTabs = ["Applied Tickets", "Series Tickets", "Cancel / Withdraw", "Offline Inventory"];
  
 const tickets = [
@@ -74,7 +75,7 @@ export const TicketOperationsPage = () => {
   };
  
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="overflow-y-auto w-full bg-gray-50">
       <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
         <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 w-64">
           <Search size={14} className="text-gray-400" />
@@ -128,7 +129,7 @@ export const TicketOperationsPage = () => {
  
         {activeTab === "Applied Tickets" ? (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="sm:w-full w-[1000px] text-sm">
               <thead>
                 <tr className="text-left text-[11px] font-semibold tracking-wide text-gray-400 border-b border-gray-100">
                   <th className="px-4 py-3 w-10">
@@ -141,7 +142,7 @@ export const TicketOperationsPage = () => {
                   <th className="px-4 py-3">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody >
                 {tickets.map((t) => (
                   <tr key={t.ref} className="border-b border-gray-50 last:border-0">
                     <td className="px-4 py-3">
@@ -154,7 +155,7 @@ export const TicketOperationsPage = () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <div className="w-8 h-8 hidden  rounded-full bg-gray-100 text-gray-600 sm:flex items-center justify-center text-xs font-bold flex-shrink-0">
                           {t.initials}
                         </div>
                         <div>

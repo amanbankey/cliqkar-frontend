@@ -1,3 +1,36 @@
+import React, { useState } from "react";
+import {
+  X,
+  ChevronDown,
+  ChevronRight,
+  Search,
+  Bell,
+  Grid3x3,
+  Plus,
+  Download,
+  Filter,
+  Eye,
+  Pencil,
+  FileText,
+  Image as ImageIcon,
+  CreditCard,
+  Ticket,
+  BedDouble,
+  Save,
+  Edit2,
+  Plane,
+  Wallet,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
+ 
+import { TopBarActions } from "../../components/adminComponent/TopBarActions";
+import { Breadcrumb } from "../../components/adminComponent/BreadCrumb";
+import { StatCard } from "../../components/adminComponent/StatCard";
+
+import { StatusBadge } from "../../components/adminComponent/StatusBadge";
 
 const transactions = [
   { id: "#161", date: "Sep 01, 2026 • 14:32", agent: "Vivan Travels", ref: "a1be9f2c", purpose: "Ticket Booking", amount: "-₹23,000.00", balance: "₹29,500.00", credit: false },
@@ -6,9 +39,13 @@ const transactions = [
   { id: "#154", date: "Jul 22, 2026 • 08:05", agent: "Vivan Travels", ref: "1784c9", purpose: "Wallet Recharge", amount: "+₹5.00", balance: "₹14,200.72", credit: true },
 ];
  
+
+const FilterBar = ({ children }) => (
+  <div className="flex flex-wrap items-center gap-3 bg-white border border-gray-200 rounded-xl p-3 mb-4">{children}</div>
+);
 export const TransactionHistoryPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="overflow-y-auto w-full bg-gray-50">
       <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
         <Breadcrumb items={["Finance", "Wallets & Ledgers", "Transaction History"]} badge="161 Records" />
         <TopBarActions>

@@ -5,6 +5,14 @@ import { BsWallet2 } from "react-icons/bs";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Sidebar from "../../components/adminComponent/Sidebar";
 import AgentDirectory from "./AgentDirectory";
+import GlobalVisaCatalog from "./GlobalVisaCatalog";
+import VisaProductSpecification from "./VisaProductSpecification";
+import UpdateVisaProductRules from "./UpdateVisaProductRules";
+import UpdateVisaCharges from "./UpdateVisaCharge";
+import AppliedOTBOperations from "./AppliedOTBOperation";
+import OTBApplicationDetailsModal from "./OTBApplicationDetail";
+import { TransactionHistoryPage } from "./TransactionHistory";
+import { TicketOperationsPage } from "./TicketOperation";
 
 const statCards = [
   { icon: FiUsers, iconBg: "bg-blue-50", iconColor: "text-blue-500", growth: "+12%", label: "TOTAL USERS", value: "23" },
@@ -369,6 +377,17 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
     {activeItem === "Agents" && (
         <AgentDirectory />
     )}
+{activeItem === "Visas List" && (
+    <GlobalVisaCatalog />
+)}
+
+    {/* <VisaProductSpecification/> */}
+    {/* <UpdateVisaProductRules/> */}
+    {/* <UpdateVisaCharges /> */}
+    {/* <AppliedOTBOperations /> */}
+     {/* <OTBApplicationDetailsModal /> */}
+    {/* <TransactionHistoryPage /> */}
+      {/* <TicketOperationsPage /> */}
     </div>
   );
 };

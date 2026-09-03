@@ -1,3 +1,37 @@
+import React, { useState } from "react";
+import {
+  X,
+  ChevronDown,
+  ChevronRight,
+  Search,
+  Bell,
+  Grid3x3,
+  Plus,
+  Download,
+  Filter,
+  Eye,
+  Pencil,
+  FileText,
+  Image as ImageIcon,
+  CreditCard,
+  Ticket,
+  BedDouble,
+  Save,
+  Edit2,
+  Plane,
+  Wallet,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
+ 
+import { TopBarActions } from "../../components/adminComponent/TopBarActions";
+import { Breadcrumb } from "../../components/adminComponent/BreadCrumb";
+import { StatCard } from "../../components/adminComponent/StatCard";
+
+import { StatusBadge } from "../../components/adminComponent/StatusBadge";
+
 const otbApplications = [
   { initials: "SM", name: "SAMEERBHAI MANSUKHBHAI MOMTORA", agent: "AAMIR DINGI", route: "India → UAE", sub: "OTB Application", pnr: "O9J5NH", airline: "6E · IndiGo", amount: "₹400", status: "Approved" },
   { initials: "AA", name: "AFTAB ALAM", agent: "MOHAMMAD HAIDAR KHAN", route: "India → UAE", sub: "OTB Application", pnr: "CUBRUL", airline: "6E · IndiGo", amount: "₹450", status: "Approved" },
@@ -5,10 +39,14 @@ const otbApplications = [
   { initials: "IA", name: "IRSHAD ALAM", agent: "MOHAMMAD HAIDAR KHAN", route: "India → UAE", sub: "OTB Application", pnr: "V12MKY", airline: "6E · IndiGo", amount: "₹450", status: "Approved" },
   { initials: "MA", name: "MOJAHIR ANSARI", agent: "MOHAMMAD HAIDAR KHAN", route: "India → UAE", sub: "OTB Application", pnr: "BCXERR", airline: "6E · IndiGo", amount: "₹600", status: "Approved" },
 ];
- 
+
+
+ const FilterBar = ({ children }) => (
+  <div className="flex flex-wrap items-center gap-3 bg-white border border-gray-200 rounded-xl p-3 mb-4">{children}</div>
+);
 export const AppliedOTBOperationsPage = ({ onViewApplication }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="overflow-y-auto w-full bg-gray-50">
       <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
         <Breadcrumb items={["Operations", "Visa Management", "Applied OTB"]} />
         <TopBarActions>
@@ -124,4 +162,5 @@ export const AppliedOTBOperationsPage = ({ onViewApplication }) => {
     </div>
   );
 };
- 
+
+export default AppliedOTBOperationsPage;
