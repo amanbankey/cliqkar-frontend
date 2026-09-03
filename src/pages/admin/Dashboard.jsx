@@ -99,8 +99,16 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   return (
-    <div> 
-              <Sidebar
+    <div className="flex h-screen bg-gray-100  font-sans"> 
+         {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+       
+       <Sidebar
         activeItem={activeItem}
         onNavigate={setActiveItem}
         sidebarOpen={sidebarOpen}

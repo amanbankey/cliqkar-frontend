@@ -8,8 +8,8 @@ const visaSubItems = ["Visas List", "Applied Visas", "Applied OTB", "Over Stay"]
 const ticketSubItems = ["Applied Tickets", "Series Tickets", "Cancel Tickets", "Offline Tickets"];
 
 const Sidebar = ({ activeItem, onNavigate, sidebarOpen, setSidebarOpen }) => {
-  const [visaOpen, setVisaOpen] = useState(true);
-  const [ticketOpen, setTicketOpen] = useState(true);
+  const [visaOpen, setVisaOpen] = useState(false);
+  const [ticketOpen, setTicketOpen] = useState(false);
 
   const isActive = (label) => activeItem === label;
 
