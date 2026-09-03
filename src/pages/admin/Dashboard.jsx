@@ -4,6 +4,7 @@ import { MdSpeed, MdOutlineConfirmationNumber, MdSupportAgent, MdOutlineLocalOff
 import { BsWallet2 } from "react-icons/bs";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Sidebar from "../../components/adminComponent/Sidebar";
+import AgentDirectory from "./AgentDirectory";
 
 const statCards = [
   { icon: FiUsers, iconBg: "bg-blue-50", iconColor: "text-blue-500", growth: "+12%", label: "TOTAL USERS", value: "23" },
@@ -115,7 +116,7 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
         setSidebarOpen={setSidebarOpen}
       />
 
-    <main className="flex-1 min-w-0 overflow-y-auto bg-gray-50 p-4 sm:p-6">
+   {activeItem === "Dashboard" && ( <main className="flex-1 min-w-0 overflow-y-auto bg-gray-50 p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-600">
@@ -363,7 +364,11 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
           </div>
         </div>
       </div>
-    </main>
+    </main > )}
+
+    {activeItem === "Agents" && (
+        <AgentDirectory />
+    )}
     </div>
   );
 };

@@ -11,6 +11,8 @@ import {
   FiCheckCircle,
   FiChevronDown,
 } from "react-icons/fi";
+import AgentProfileDrawer from "./AgentProfileDrawer";
+import AgentQuickView from "./AgentView";
 
 const initialAgents = [
   {
@@ -103,7 +105,8 @@ const initialAgents = [
 const AgentDirectory = () => {
   const [filters, setFilters] = useState({ companyName: "", mobileNumber: "", ownershipType: "", status: "" });
   const [agents, setAgents] = useState(initialAgents);
-
+    const [selectedAgent, setSelectedAgent] = useState(null);   
+    const [viewAgent, setViewAgent] = useState(null); 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
@@ -132,8 +135,8 @@ const AgentDirectory = () => {
     setAgents(agents.map((a) => (a.id === id ? { ...a, active: !a.active } : a)));
   };
 
-  return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+  return ( 
+    <div className="p-4 sm:p-6 bg-gray-50 overflow-y-auto hide-scrollbar w-full ">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
         <div>
           <p className="text-xs text-gray-500 mb-1">
@@ -315,7 +318,7 @@ const AgentDirectory = () => {
                           {c.label}
                         </span>
                       ))}
-                      <button className="text-blue-500 mt-1">
+                      <button  className="text-blue-500 mt-1">
                         <FiEye size={14} />
                       </button>
                     </div>
@@ -338,10 +341,10 @@ const AgentDirectory = () => {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3 text-gray-500">
-                      <button className="hover:text-blue-600">
+                      <button  onClick={() => setViewAgent(agent)} className="hover:text-blue-600">
                         <FiEye size={16} />
                       </button>
-                      <button className="hover:text-blue-600">
+                      <button onClick={() => setSelectedAgent(agent)} className="hover:text-blue-600">
                         <FiEdit2 size={16} />
                       </button>
                       <button className="hover:text-blue-600">
@@ -375,6 +378,11 @@ const AgentDirectory = () => {
           </div>
         </div>
       </div>
+
+       {selectedAgent && <AgentProfileDrawer agent={selectedAgent} onClose={() => setSelectedAgent(null)} />}
+        {viewAgent && <AgentQuickView agent={viewAgent} onClose={() => setViewAgent(null)} />}
+
+
     </div>
   );
 };

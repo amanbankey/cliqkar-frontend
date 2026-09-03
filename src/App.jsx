@@ -13,6 +13,8 @@ import Dashboard from './pages/admin/Dashboard'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [activeItem, setActiveItem] = useState("Dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
       <div>
@@ -20,7 +22,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
           </Route>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard  setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>} />
         </Routes>
     </div>
   )

@@ -21,7 +21,8 @@ const Sidebar = ({ activeItem, onNavigate, sidebarOpen, setSidebarOpen }) => {
           className="fixed inset-0 bg-black/40 z-20 lg:hidden"
         />
       )}
-      <aside
+      
+      <aside 
         className={`fixed lg:sticky top-0 left-0 z-30 h-screen w-64 bg-[#0B1120] flex flex-col transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 flex-shrink-0 overflow-y-auto`}
       >
