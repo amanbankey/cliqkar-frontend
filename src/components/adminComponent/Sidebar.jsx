@@ -60,7 +60,7 @@ const Sidebar = ({ activeItem, onNavigate, sidebarOpen, setSidebarOpen }) => {
           <button
             onClick={() => onNavigate("Agents")}
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm mb-1 transition-colors
-            ${isActive("AgentDirectory") ? "bg-[#1E293B] text-white" : "text-gray-400 hover:bg-[#151F32]"}`}
+            ${isActive("Agents") ? "bg-[#1E293B] text-white" : "text-gray-400 hover:bg-[#151F32]"}`}
           >
             <MdSupportAgent className="text-base flex-shrink-0" />
             Agents

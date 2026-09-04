@@ -6,6 +6,13 @@ import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import Sidebar from "../../components/adminComponent/Sidebar";
 import AgentDirectory from "./AgentDirectory";
 import GlobalVisaCatalog from "./GlobalVisaCatalog";
+import CustomerList from "./CustomerList";
+import AirportDirectory from "./AirportDirectory";
+import CountriesDirectory from "./GlobalCountries";
+import AirlineDirectory from "./Airline";
+import OTBPricingTariffs from "./OTBpricing";
+import SupportHelpdeskQueue from "./Support";
+import PlatformIntegrationSettings from "./PlatformIntegrationSettings";
 import VisaProductSpecification from "./VisaProductSpecification";
 import UpdateVisaProductRules from "./UpdateVisaProductRules";
 import UpdateVisaCharges from "./UpdateVisaCharge";
@@ -381,6 +388,30 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
     {activeItem === "Visas List" && (
         <GlobalVisaCatalog />
     )}
+    {activeItem === "Users" && (
+  <CustomerList />
+)}
+{activeItem === "Airports" && (
+  <AirportDirectory />
+)}
+{activeItem === "Countries" && (
+  <CountriesDirectory />
+)}
+{activeItem === "Airlines" && (
+  <AirlineDirectory />
+)}
+{activeItem === "OTB Pricing" && (
+  <OTBPricingTariffs />
+)}
+{activeItem === "Support" && (
+  <SupportHelpdeskQueue />
+)}
+{activeItem === "Settings" && (
+  <PlatformIntegrationSettings />
+)}
+{activeItem === "Wallet History" && (
+  <TransactionHistoryPage />
+)}
 
     {/* <VisaProductSpecification/> */}
     {/* <UpdateVisaProductRules/> */}

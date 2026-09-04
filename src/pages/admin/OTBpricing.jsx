@@ -173,7 +173,7 @@ const OTBPricingTariffs = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
+    <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
           <p className="text-xs text-gray-500 mb-1">

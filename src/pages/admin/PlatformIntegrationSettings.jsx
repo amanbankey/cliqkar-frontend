@@ -10,7 +10,7 @@ import {
   FiSave,
 } from "react-icons/fi";
 import { MdOutlineAccountBalance } from "react-icons/md";
-import Sidebar from "../../components/adminComponent/Sidebar";
+
 
 const tabs = [
   "Core Agency & Fee Rules",
@@ -76,45 +76,13 @@ const PlatformIntegrationSettings = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   return (
-    <div className="flex">
-      <Sidebar
-        activeItem={activeItem}
-        onNavigate={setActiveItem}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
+   
+     
 
-      <main className="flex-1 min-w-0 min-h-screen bg-gray-50">
-        <div className="flex items-center justify-between gap-4 bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-600 flex-shrink-0">
-              <FiMenu size={20} />
-            </button>
-            <div className="flex items-center gap-2 text-xs sm:text-sm truncate">
-              <span className="font-bold text-blue-600 whitespace-nowrap">Cliqkar Operations</span>
-              <span className="hidden sm:inline text-gray-300">|</span>
-              <span className="hidden sm:flex items-center gap-2 text-gray-400 truncate">
-                System <span>›</span> Platform Settings <span>›</span>
-                <span className="text-blue-600 font-medium">Master Configuration</span>
-              </span>
-            </div>
-          </div>
+      <main className="flex-1 min-w-0 min-h-screen bg-gray-50 overflow-y-auto">
+        
 
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <button className="text-gray-400 hover:text-gray-600">
-              <FiBell size={18} />
-            </button>
-            <button className="text-gray-400 hover:text-gray-600">
-              <FiHelpCircle size={18} />
-            </button>
-            <button className="text-gray-400 hover:text-gray-600">
-              <FiSettings size={18} />
-            </button>
-            <div className="w-8 h-8 rounded-lg bg-[#0B1120]" />
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900">Platform & Integration Settings</h1>
@@ -314,7 +282,7 @@ const PlatformIntegrationSettings = ({ setSidebarOpen, sidebarOpen }) => {
           </div>
         </form>
       </main>
-    </div>
+    
   );
 };
 
