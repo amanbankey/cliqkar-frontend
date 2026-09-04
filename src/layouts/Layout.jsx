@@ -8,9 +8,9 @@ const Layout = () => {
   const [show, setShow] = useState(false);
 
 
-  const hideNavbar =   location.pathname === "/admin-dashboard"
+  const hideNavbar =   location.pathname === "/signin" || location.pathname === "/signup" 
 
-  const hideFooter = location.pathname === '/admin-dashboard'
+  const hideFooter = location.pathname === '/signin' || location.pathname === "/signup" 
 
   return (
     <>
