@@ -13,6 +13,7 @@ import AppliedOTBOperations from "./AppliedOTBOperation";
 import OTBApplicationDetailsModal from "./OTBApplicationDetail";
 import { TransactionHistoryPage } from "./TransactionHistory";
 import { TicketOperationsPage } from "./TicketOperation";
+import AppliedOTB from "./AppliedOTB";
 
 const statCards = [
   { icon: FiUsers, iconBg: "bg-blue-50", iconColor: "text-blue-500", growth: "+12%", label: "TOTAL USERS", value: "23" },
@@ -384,7 +385,7 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
     {/* <VisaProductSpecification/> */}
     {/* <UpdateVisaProductRules/> */}
     {/* <UpdateVisaCharges /> */}
-   {activeItem === "Applied OTB" && ( <AppliedOTBOperations />)}  {/* */}
+   {activeItem === "Applied OTB" && ( <AppliedOTB />)}  {/* */}
      {/* <OTBApplicationDetailsModal /> */}
     {/* <TransactionHistoryPage /> */}
       {/* <TicketOperationsPage /> */}

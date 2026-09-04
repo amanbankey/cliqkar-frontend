@@ -47,7 +47,7 @@ const Navbar = ({show, setShow}) => {
                 src={logo}
                 className="object-contain w-36 36"
               /> */}
-              logo
+             Cliqkar
             </NavLink>
 
             <div className="hidden lg:flex items-center gap-8 text-[16px] font-medium tracking-wide">
