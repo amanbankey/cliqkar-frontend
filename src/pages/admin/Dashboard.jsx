@@ -374,17 +374,17 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
       </div>
     </main > )}
 
-    {activeItem === "Agents" && (
+    {activeItem === "AgentDirectory" && (
         <AgentDirectory />
     )}
-{activeItem === "Visas List" && (
-    <GlobalVisaCatalog />
-)}
+    {activeItem === "Visas List" && (
+        <GlobalVisaCatalog />
+    )}
 
     {/* <VisaProductSpecification/> */}
     {/* <UpdateVisaProductRules/> */}
     {/* <UpdateVisaCharges /> */}
-    {/* <AppliedOTBOperations /> */}
+   {activeItem === "Applied OTB" && ( <AppliedOTBOperations />)}  {/* */}
      {/* <OTBApplicationDetailsModal /> */}
     {/* <TransactionHistoryPage /> */}
       {/* <TicketOperationsPage /> */}
