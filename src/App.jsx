@@ -6,6 +6,8 @@ import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Layout from './layouts/Layout'
 import Home from './pages/Home'
+import About from './pages/About'
+import OkayToBoard from './pages/OkayToBoard'
 import Dashboard from './pages/admin/Dashboard'
 import AgentDirectory from './pages/admin/AgentDirectory'
 import CustomerList from './pages/admin/CustomerList'
@@ -28,6 +30,8 @@ function App() {
         <Routes>
            <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="okay-to-board" element={<OkayToBoard />} />
           </Route>
           <Route path="/dashboard" element={<Dashboard  setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>} />
           <Route path="/admin/global-visa-catalog" element={ <GlobalVisaCatalog /> } />

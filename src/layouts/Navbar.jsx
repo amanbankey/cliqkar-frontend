@@ -1,7 +1,8 @@
- import React from "react";
+import React from "react";
 import { useState, useRef, useCallback } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import logo from "../assets/logo.png"
 import { LuLogOut } from "react-icons/lu";
  
 import { CgProfile } from "react-icons/cg";
@@ -32,8 +33,8 @@ const Navbar = ({show, setShow}) => {
     { name: "Home", path: "/" },
     { name: "Flight ", path: "/#" },
     { name: "Visa", path: "/#" },
-    { name: "Okey to board", path: "/#" },
-    { name: "About", path: "/#" },
+    { name: "Okay to board", path: "/okay-to-board" },
+    { name: "About", path: "/about" },
     { name: "Contact", path: "/#" },
   ];
 
@@ -43,11 +44,11 @@ const Navbar = ({show, setShow}) => {
         <nav className="  mx-auto   bg-white/40  transparent  rounded-2xl   backdrop-blur-xl">
           <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-10 h-[65px] sm:h-[70px] lg:h-[75px] max-w-screen-2xl mx-auto">
             <NavLink to="/" className="flex-shrink-0 text-black duration-200">
-              {/* <img
+               <img
                 src={logo}
                 className="object-contain w-36 36"
-              /> */}
-             Cliqkar
+              /> 
+             
             </NavLink>
 
             <div className="hidden lg:flex items-center gap-8 text-[16px] font-medium tracking-wide">
@@ -61,7 +62,7 @@ const Navbar = ({show, setShow}) => {
                         after:h-[2px] after:bg-green-700  after:transition-all after:duration-300 
                         ${
                           isActive
-                            ? " text-gray-700"
+                            ? " text-blue-800"
                             : " hover:text-[0F766E] "
                         }`
                   }
