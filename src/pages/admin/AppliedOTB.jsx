@@ -21,14 +21,14 @@ import {
 } from "react-icons/fi";
 import { BsHourglassSplit } from "react-icons/bs";
 
-const navItems = [
+/*const navItems = [
   { label: "Dashboard", icon: FiGrid },
   { label: "Inventory", icon: FiPackage },
   { label: "OTB Status", icon: FiCheckSquare },
   { label: "Reservations", icon: FiUsers },
   { label: "Analytics", icon: FiBarChart2 },
   { label: "Settings", icon: FiSettings },
-];
+];*/
 
 const statCards = [
   { label: "TOTAL", value: 15, icon: FiGrid, iconColor: "text-gray-500", iconBg: "bg-gray-100", valueColor: "text-gray-900", border: "border-l-gray-300" },
@@ -145,8 +145,8 @@ const AppliedOTB = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200 flex-shrink-0">
+    <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      {/*<aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200 flex-shrink-0">
         <div className="px-5 py-5">
           <p className="text-xl font-extrabold text-[#0B1120]">Cliqkar</p>
           <p className="text-[10px] font-semibold tracking-widest text-gray-400">OPS CONTROL</p>
@@ -171,9 +171,9 @@ const AppliedOTB = () => {
             </button>
           ))}
         </nav>
-      </aside>
+      </aside>*/}
 
-      <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
+      <main className="flex-1 min-w-0 min-h-screen bg-gray-50 overflow-y-auto">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <div>
             <p className="text-xs font-semibold tracking-wide text-gray-400 mb-1">

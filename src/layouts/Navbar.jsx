@@ -25,7 +25,7 @@ const Navbar = ({show, setShow}) => {
   };
 
   const onDashboard = () => {
-    navigate("/admin-dashboard");
+    navigate("/dashboard");
     setMobileMenuOpen(false);
   };
 
