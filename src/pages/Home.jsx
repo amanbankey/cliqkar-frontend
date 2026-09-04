@@ -14,8 +14,6 @@ import CTASection from "./home/CTASection";
 const Home = () => {
    const navigate = useNavigate()
    
-
-   
   return (
    <div className="">
      <HeroSection />
@@ -27,9 +25,7 @@ const Home = () => {
      <Testimonials />
      <PlatformArchitecture />
      <CTASection />
-    {/* <button onClick={() => navigate("/dashboard")} >
-      Dashboard
-    </button> */}
+   
    
    </div>
   );

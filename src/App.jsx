@@ -6,6 +6,8 @@ import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Layout from './layouts/Layout'
 import Home from './pages/Home'
+import About from './pages/About'
+import OkayToBoard from './pages/OkayToBoard'
 import Dashboard from './pages/admin/Dashboard'
 import AgentDirectory from './pages/admin/AgentDirectory'
 import CustomerList from './pages/admin/CustomerList'
@@ -19,6 +21,8 @@ import CountriesDirectory from './pages/admin/GlobalCountries'
 import AirportDirectory from './pages/admin/AirportDirectory'
 import SignIn from "./pages/Signin"
 import SignUp from "./pages/Signup"
+import Visa from './pages/Visa'
+import Flight from './pages/Flights'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,28 +30,94 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-      <div>
-        <Routes>
-           <Route path="/" element={<Layout />} />
-            <Route index element={<Home />} />
-            <Route element={<SignIn />} />
-            <Route element={<SignUp />} />
-            
-          <Route path="/dashboard" element={<Dashboard  setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>} />
-          <Route path="/admin/global-visa-catalog" element={ <GlobalVisaCatalog /> } />
-          <Route path="/admin/AgentDirectory" element={<AgentDirectory/>} />
-         < Route path="/admin/list" element={<CustomerList/>} />
-         < Route path="/admin/visa" element={<GlobalVisaCatalog/>} />
-        <Route path="/admin/platform-settings" element={<PlatformIntegrationSettings  />} />
-        <Route path="/admin/feedback" element={<ClientPartnerFeedback  />} />
-        <Route path="/admin/support" element={<SupportHelpdeskQueue  />} />
-        <Route path="/admin/pricing" element={<OTBPricingTariffs  />} />
-        <Route path="/admin/airline" element={<AirlineDirectory  />} />
-        <Route path="/admin/countries" element={<CountriesDirectory  />} />
-        <Route path="/admin/airport" element={<AirportDirectory  />} />
+   <div>
+  <Routes>
 
-        </Routes>
-    </div>
+    {/* Layout Parent */}
+    <Route path="/" element={<Layout />}>
+
+      {/* / */}
+      <Route index element={<Home />} />
+
+      {/* Auth */}
+      <Route path="signin" element={<SignIn />} />
+      <Route path="signup" element={<SignUp />} />
+
+      {/* Public Pages */}
+      <Route path="about" element={<About />} />
+      <Route path="okay-to-board" element={<OkayToBoard />} />
+      <Route path="flight" element={<Flight />} />
+
+    </Route>
+
+    {/* Admin / Dashboard Routes */}
+    <Route
+      path="/dashboard"
+      element={
+        <Dashboard
+          setSidebarOpen={setSidebarOpen}
+          sidebarOpen={sidebarOpen}
+        />
+      }
+    />
+
+    <Route
+      path="/admin/global-visa-catalog"
+      element={<GlobalVisaCatalog />}
+    />
+
+    <Route
+      path="/admin/AgentDirectory"
+      element={<AgentDirectory />}
+    />
+
+    <Route
+      path="/admin/list"
+      element={<CustomerList />}
+    />
+
+    <Route
+      path="/admin/visa"
+      element={<GlobalVisaCatalog />}
+    />
+
+    <Route
+      path="/admin/platform-settings"
+      element={<PlatformIntegrationSettings />}
+    />
+
+    <Route
+      path="/admin/feedback"
+      element={<ClientPartnerFeedback />}
+    />
+
+    <Route
+      path="/admin/support"
+      element={<SupportHelpdeskQueue />}
+    />
+
+    <Route
+      path="/admin/pricing"
+      element={<OTBPricingTariffs />}
+    />
+
+    <Route
+      path="/admin/airline"
+      element={<AirlineDirectory />}
+    />
+
+    <Route
+      path="/admin/countries"
+      element={<CountriesDirectory />}
+    />
+
+    <Route
+      path="/admin/airport"
+      element={<AirportDirectory />}
+    />
+
+  </Routes>
+</div>
   )
 }
 

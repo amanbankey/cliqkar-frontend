@@ -47,7 +47,7 @@ const bottomLinks = ["Privacy", "Terms", "Security", "Sitemap"];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0a1628] px-4 sm:px-6 lg:px-10 pt-14 pb-6 mt-14">
+    <footer className="bg-[#0a1628] px-4 sm:px-6 lg:px-10 pt-14 pb-6  ">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-10 border-b border-white/10">
           <div className="lg:col-span-1">

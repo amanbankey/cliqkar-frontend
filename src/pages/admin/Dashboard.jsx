@@ -375,7 +375,7 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
       </div>
     </main > )}
 
-    {activeItem === "AgentDirectory" && (
+    {activeItem === "Agents" && (
         <AgentDirectory />
     )}
     {activeItem === "Visas List" && (
