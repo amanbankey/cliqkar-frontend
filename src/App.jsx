@@ -17,6 +17,8 @@ import OTBPricingTariffs from './pages/admin/OTBpricing'
 import AirlineDirectory from './pages/admin/Airline'
 import CountriesDirectory from './pages/admin/GlobalCountries'
 import AirportDirectory from './pages/admin/AirportDirectory'
+import SignIn from "./pages/Signin"
+import SignUp from "./pages/Signup"
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,9 +28,11 @@ function App() {
   return (
       <div>
         <Routes>
-           <Route path="/" element={<Layout />}>
+           <Route path="/" element={<Layout />} />
             <Route index element={<Home />} />
-          </Route>
+            <Route element={<SignIn />} />
+            <Route element={<SignUp />} />
+            
           <Route path="/dashboard" element={<Dashboard  setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>} />
           <Route path="/admin/global-visa-catalog" element={ <GlobalVisaCatalog /> } />
           <Route path="/admin/AgentDirectory" element={<AgentDirectory/>} />
