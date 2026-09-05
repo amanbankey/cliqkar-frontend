@@ -614,13 +614,15 @@ export const MyBookingsContent = () => {
   );
 };
 
-const MyBookings = () => {
+const MyBookings = () => { 
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-[#F7F8FA]">
-      <Sidebar />
-
+      
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+   
       <div className="flex-1 min-w-0">
-        <TopBar />
+        <TopBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <Outlet />
       </div>

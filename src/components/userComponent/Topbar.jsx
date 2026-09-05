@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  FiSearch,
-  FiHeadphones,
-  FiBell,
-  FiChevronDown,
-} from "react-icons/fi";
+import { FiSearch,   FiHeadphones,FiCalendar, FiChevronDown, FiBell, FiMenu, FiUsers, FiTrendingUp, FiCreditCard, FiCheckSquare, FiCheck, FiFileText, FiUserPlus, FiSettings, FiHelpCircle } from "react-icons/fi";
 
 const profile = {
   name: "Aarav V. Singhania",
@@ -12,7 +7,7 @@ const profile = {
   initials: "AS",
 };
 
-const TopBar = () => {
+const TopBar = ({setSidebarOpen, sidebarOpen}) => {
   const [query, setQuery] = useState("");
 
   const handleSubmit = async (e) => {
@@ -32,6 +27,9 @@ const TopBar = () => {
   return (
     <header className="w-full h-[58px] flex items-center px-4 sm:px-6 border-b border-gray-200 bg-white flex-shrink-0">
       
+                 <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-600 pr-3">
+                   <FiMenu size={22} />
+                 </button>
       {/* Search */}
       <form
         onSubmit={handleSubmit}

@@ -126,7 +126,7 @@ function App() {
           <Route path="visa-history" element={<VisaHistory />} />
           <Route path="otb-history" element={<OTBHistory />} />
           <Route path="profile" element={<Profile />} />
-        </Route>
+ </Route>
   </Routes>
 </div>
   )

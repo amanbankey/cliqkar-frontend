@@ -25,9 +25,19 @@ const navItems = [
   { name: "Applied OTB History", icon: FiCheckSquare, path: "/user-dashboard/otb-history" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({setSidebarOpen, sidebarOpen}) => {
   return (
-    <aside className="w-full lg:w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col">
+  <> 
+
+    {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/40 z-20 lg:hidden"
+        />
+      )} 
+
+    <aside   className={`fixed lg:sticky top-0 left-0 z-30 h-screen w-64  bg-[#F7F8FA] flex flex-col transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 flex-shrink-0 overflow-y-auto`}>
       <div className="px-5 pt-6 pb-5">
         <img
                         src={logo}
@@ -60,6 +70,7 @@ const Sidebar = () => {
       <nav className="flex-1 px-3 space-y-1">
         {navItems.map(({ name, icon: Icon, path }) => (
           <NavLink
+          onClick={() => setSidebarOpen(false)}
             key={name}
             to={path}
             end={path === "/user-dashboard"}
@@ -87,7 +98,7 @@ const Sidebar = () => {
           Amadeus &amp; Sabre 99.9%
         </p>
       </div>
-    </aside>
+    </aside></>
   );
 };
 

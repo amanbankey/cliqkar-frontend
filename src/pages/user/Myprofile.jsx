@@ -127,7 +127,7 @@ const MyProfile = () => {
   return (
    
 
-        <div className="p-4 sm:p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6 overflow-y-auto  ">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Agency Profile &amp; KYC Verification</h1>
