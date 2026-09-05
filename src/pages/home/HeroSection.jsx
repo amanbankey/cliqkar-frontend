@@ -194,10 +194,10 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 bg-slate-100 rounded-lg p-1 mb-4">
+              <div className="grid grid-cols-2 bg-slate-100 rounded-lg p-1 mb-4">
                 {[
                   { name: "Flights", icon: <MdFlight /> },
-                  { name: "Hotels", icon: <MdOutlineHotel /> },
+                
                   { name: "Visas", icon: <MdOutlineVerifiedUser /> },
                 ].map((tab) => (
                   <button

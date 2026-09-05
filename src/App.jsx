@@ -19,6 +19,11 @@ import OTBPricingTariffs from './pages/admin/OTBpricing'
 import AirlineDirectory from './pages/admin/Airline'
 import CountriesDirectory from './pages/admin/GlobalCountries'
 import AirportDirectory from './pages/admin/AirportDirectory'
+import MyBookings, { MyBookingsContent } from "./pages/user/Mybookings";
+import WalletHistory from "./pages/user/Wallethistory";
+import VisaHistory from "./pages/user/AppliedVisaHistory";
+import OTBHistory from "./pages/user/Appliedotbhistory";
+import Profile from "./pages/user/Myprofile";
 import SignIn from "./pages/Signin"
 import SignUp from "./pages/Signup"
 import Visa from './pages/Visa'
@@ -115,7 +120,13 @@ function App() {
       path="/admin/airport"
       element={<AirportDirectory />}
     />
-
+ <Route path="/user-dashboard" element={<MyBookings />}>
+  <Route index element={<MyBookingsContent />} />
+  <Route path="wallet-history" element={<WalletHistory />} />
+          <Route path="visa-history" element={<VisaHistory />} />
+          <Route path="otb-history" element={<OTBHistory />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
   </Routes>
 </div>
   )
