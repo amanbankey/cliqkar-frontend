@@ -42,12 +42,12 @@ function App() {
       {/* Auth */}
       <Route path="signin" element={<SignIn />} />
       <Route path="signup" element={<SignUp />} />
-
+   
       {/* Public Pages */}
       <Route path="about" element={<About />} />
       <Route path="okay-to-board" element={<OkayToBoard />} />
       <Route path="flight" element={<Flight />} />
-
+      <Route path="visa" element={<Visa />} />
     </Route>
 
     {/* Admin / Dashboard Routes */}

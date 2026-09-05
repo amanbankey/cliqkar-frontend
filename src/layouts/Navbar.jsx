@@ -32,7 +32,7 @@ const Navbar = ({show, setShow}) => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Flight ", path: "/flight" },
-    { name: "Visa", path: "/" },
+    { name: "Visa", path: "/visa" },
     { name: "Okay to board", path: "/okay-to-board" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/" },
