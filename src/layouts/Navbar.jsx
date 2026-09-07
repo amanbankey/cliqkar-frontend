@@ -119,7 +119,7 @@ const Navbar = ({show, setShow}) => {
             className={[
               "lg:hidden overflow-hidden   transition-all duration-300 ease-in-out bg-white rounded-b-2xl",
               mobileMenuOpen
-                ? "max-h-[400px] opacity-100"
+                ? "max-h-[500px] opacity-100"
                 : "max-h-0 opacity-0",
             ].join(" ")}
           >
@@ -144,7 +144,7 @@ const Navbar = ({show, setShow}) => {
               </NavLink></button> ))}              
 
 
-              <div className="flex flex-col items-start gap-3 mb-1 ">
+              <div className="flex flex-col items-center gap-3 mb-1 ">
                 <button
                   className="hover:text-white text-[#30A2540] bg-white  hover:bg-[#0A2540] border border-[#0A2540] px-3 py-2  rounded-lg "
                   onClick={onDashboard}
@@ -160,7 +160,22 @@ const Navbar = ({show, setShow}) => {
 >
   User Dashboard
 </button>
+             
+              <button onClick={() => navigate("/signin")}
+                  className=" px-4 py-2  hover:bg-[#0A2540] hover:text-white border border-[#0A2540]   text-[#0A2540]  rounded-lg cursor-pointer "
+                >
+                  Sign in
+                </button>
+                  <button
+                  onClick={() => {
+                    setMobileMenuOpen((prev) => !prev);
+                    navigate("/signup")
+                  }}
 
+                  className=" w-40 text-center block  px-4 py-2 bg-[#0A2540] hover:bg-[#0A2540] text-white rounded-lg  cursor-pointer"
+                >
+                  Get Started
+                </button>
                 {isLoggedIn && (
                   <button
                     className="text-white bg-[#0A2540] px-3 py-2  rounded-lg "
@@ -172,22 +187,14 @@ const Navbar = ({show, setShow}) => {
               </div>
             </div>
 
-            <div className="flex    flex-col items-start ml-6  mb-1 gap-3 pb-5">
-              {!isLoggedIn && (
-                <NavLink
-                  onClick={() => {
-                    setMobileMenuOpen((prev) => !prev);
-                  }}
-                  to="/signup"
-                  className="sm:hidden w-40 text-center block  px-4 py-2 bg-[#0A2540] hover:bg-[#0A2540] text-white rounded-lg  cursor-pointer"
-                >
-                  Get Started
-                </NavLink>
-              )}
+            {/* <div className="flex   flex-col items-start ml-6  mb-1 gap-3 pb-5"> */}
+              {/* {!isLoggedIn && ( */}
+               
+              {/* )} */}
                
 
              
-            </div>
+            {/* </div> */}
           </div>
         </nav>
       </div>
