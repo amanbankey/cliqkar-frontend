@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiArrowRight, FiRepeat, FiZap } from "react-icons/fi";
 
 const tabs = ["Flights", "Business Class", "First Class", "Award Flights"];
@@ -13,6 +14,7 @@ const stats = [
 ];
 
 const FlightHero = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Flights");
   const [tripType, setTripType] = useState("One Way");
   const [flexibleDates, setFlexibleDates] = useState(true);
@@ -54,6 +56,15 @@ const FlightHero = () => {
     } catch (error) {
       console.error("Search failed", error);
     }
+    navigate("/flight-results", {
+      state: {
+        from: form.from.split(",")[0],
+        fromCode: form.fromCode,
+        to: form.to.split(",")[0],
+        toCode: form.toCode,
+        departure: form.departure,
+      },
+    });
   };
 
   return (

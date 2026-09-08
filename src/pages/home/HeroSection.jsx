@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiArrowRight,
   FiRepeat,
@@ -29,6 +30,7 @@ const stats = [
 ];
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   const [tripType, setTripType] = useState("Round Trip");
   const [activeTab, setActiveTab] = useState("Flights");
   const [fareClass, setFareClass] = useState("Exclusive Offer");
@@ -73,6 +75,15 @@ export default function HeroSection() {
     } catch (error) {
       console.log("search error", error);
     }
+    navigate("/flight-results", {
+      state: {
+        from: searchForm.fromCity.split(",")[0],
+        fromCode: searchForm.fromCode,
+        to: searchForm.toCity.split(",")[0],
+        toCode: searchForm.toCode,
+        departure: searchForm.departureDate,
+      },
+    });
   };
 
   return (
