@@ -13,12 +13,12 @@ const Flight = () => {
     <div>
       <FlightHero />
       <CuratedDeals />
-      <FeaturedRoute />
+      {/*<FeaturedRoute />
       <CabinTiers />
       <PreferredCarriers />
       <SovereignStandards />
       <DestinationCurations />
-      <DiscretionDifference />
+      <DiscretionDifference />*/}
     </div>
   );
 };

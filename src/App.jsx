@@ -28,7 +28,7 @@ import SignIn from "./pages/Signin"
 import SignUp from "./pages/Signup"
 import Visa from './pages/Visa'
 import Flight from './pages/Flights'
-import FlightResults from './pages/Flightresults'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -53,7 +53,7 @@ function App() {
       <Route path="about" element={<About />} />
       <Route path="okay-to-board" element={<OkayToBoard />} />
       <Route path="flight" element={<Flight />} />
-      <Route path="flight-results" element={<FlightResults />} />
+      
       <Route path="visa" element={<Visa />} />
     </Route>
 

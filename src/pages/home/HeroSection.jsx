@@ -5,16 +5,17 @@ import {
   FiRepeat,
   FiCalendar,
   FiUsers,
+  FiGlobe,
 } from "react-icons/fi";
 import {
   MdFlight,
-  MdOutlineHotel,
   MdOutlineVerifiedUser,
   MdOutlineDashboard,
 } from "react-icons/md";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import { BsCheckCircleFill } from "react-icons/bs";
+import { FaPlane } from "react-icons/fa";
 
 const trendingRoutes = [
   { city: "Dubai (DXB)", tag: "98% Visa Clear" },
@@ -28,6 +29,66 @@ const stats = [
   { value: "500+", label: "Verified Agents" },
   { value: "24/7", label: "Travel Support Concierge" },
 ];
+
+const orbitChips = [
+  { label: "Dubai (DXB)", position: "-left-6 top-4", delay: "0s", duration: "3s" },
+  { label: "Zurich (ZRH)", position: "-right-8 bottom-8", delay: "1s", duration: "3.6s" },
+  { label: "Maldives (MLE)", position: "left-1/2 -translate-x-1/2 -bottom-4", delay: "0.5s", duration: "4s" },
+];
+
+function FlightGlobeAnimation() {
+  return (
+    <div className="hidden lg:flex flex-1 items-center justify-center relative min-h-[380px]">
+      <div className="relative w-80 h-80">
+        <div
+          className="absolute inset-0 rounded-full border border-dashed border-blue-500/30"
+          style={{ animation: "cliqkar-spin 26s linear infinite" }}
+        />
+        <div
+          className="absolute inset-8 rounded-full border border-blue-400/20"
+          style={{ animation: "cliqkar-spin-reverse 18s linear infinite" }}
+        />
+
+        <div className="absolute inset-16 rounded-full bg-gradient-to-br from-blue-600/30 to-transparent blur-2xl animate-pulse" />
+
+        <div className="absolute inset-20 rounded-full bg-[#0d1f33] border border-blue-500/20 flex items-center justify-center shadow-2xl">
+          <FiGlobe className="text-blue-400" size={44} />
+        </div>
+
+        <div className="absolute inset-0" style={{ animation: "cliqkar-spin 12s linear infinite" }}>
+          <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/40">
+            <FaPlane className="text-slate-900 text-sm -rotate-45" />
+          </span>
+        </div>
+
+        {orbitChips.map((chip) => (
+          <div
+            key={chip.label}
+            className={`absolute ${chip.position} bg-white/5 border border-white/10 backdrop-blur rounded-xl px-3 py-2 shadow-lg`}
+            style={{ animation: `cliqkar-float ${chip.duration} ease-in-out infinite`, animationDelay: chip.delay }}
+          >
+            <p className="text-white text-xs font-semibold whitespace-nowrap">{chip.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes cliqkar-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes cliqkar-spin-reverse {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        @keyframes cliqkar-float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -75,15 +136,6 @@ export default function HeroSection() {
     } catch (error) {
       console.log("search error", error);
     }
-    navigate("/flight-results", {
-      state: {
-        from: searchForm.fromCity.split(",")[0],
-        fromCode: searchForm.fromCode,
-        to: searchForm.toCity.split(",")[0],
-        toCode: searchForm.toCode,
-        departure: searchForm.departureDate,
-      },
-    });
   };
 
   return (
@@ -91,17 +143,10 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-[#0d1f33] via-[#0a1628] to-[#0a1628]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-10 sm:pb-14">
-        <div className="flex justify-end">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <span className="text-white/70 text-[10px] sm:text-xs font-medium tracking-wide">
-              AVIATION VISTA SYNC: DXB · MLE · ZRH
-            </span>
-          </div>
-        </div>
+        
 
-        <div className="mt-6 sm:mt-10 flex flex-col lg:flex-row items-start gap-10 lg:gap-8">
-          <div className="w-full lg:w-1/2">
+        <div className="mt-6 sm:mt-10 flex flex-col lg:flex-row lg:items-center gap-10">
+          <div className="w-full lg:max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
               <span className="text-amber-300 text-[11px] sm:text-xs font-semibold tracking-wide">
@@ -130,7 +175,10 @@ export default function HeroSection() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 mb-10">
-              <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors">
+              <button
+                onClick={() => navigate("/flight")}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors"
+              >
                 Search Flights <FiArrowRight />
               </button>
               <button className="flex items-center gap-2 bg-white/5 border border-white/15 hover:bg-white/10 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors">
@@ -178,203 +226,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2">
-            <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                    <MdFlight className="text-slate-700 text-lg" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-slate-900 text-xs sm:text-sm font-bold">
-                        FIRST CLASS CABIN
-                      </p>
-                      <span className="bg-blue-100 text-blue-700 text-[9px] font-bold px-1.5 py-0.5 rounded">
-                        GDS LIVE
-                      </span>
-                    </div>
-                    <p className="text-slate-500 text-[10px] sm:text-xs flex items-center gap-1">
-                      <BsCheckCircleFill className="text-emerald-500" />
-                      Electrochromic Smart Dimmer Active
-                    </p>
-                  </div>
-                </div>
-                <span className="hidden sm:inline-block bg-slate-100 text-slate-600 text-[10px] font-semibold px-2 py-1 rounded">
-                  Tint Level 1
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 bg-slate-100 rounded-lg p-1 mb-4">
-                {[
-                  { name: "Flights", icon: <MdFlight /> },
-                
-                  { name: "Visas", icon: <MdOutlineVerifiedUser /> },
-                ].map((tab) => (
-                  <button
-                    key={tab.name}
-                    onClick={() => setActiveTab(tab.name)}
-                    className={`flex items-center justify-center gap-1.5 py-2 rounded-md text-xs sm:text-sm font-semibold transition-colors ${
-                      activeTab === tab.name
-                        ? "bg-blue-600 text-white"
-                        : "text-slate-500"
-                    }`}
-                  >
-                    {tab.icon} {tab.name}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-5 mb-5">
-                {["One Way", "Round Trip", "Multi City"].map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="tripType"
-                      checked={tripType === type}
-                      onChange={() => setTripType(type)}
-                      className="accent-blue-600 w-3.5 h-3.5"
-                    />
-                    <span className="text-slate-700 text-xs sm:text-sm">
-                      {type}
-                    </span>
-                  </label>
-                ))}
-              </div>
-
-              <form onSubmit={handleSearch}>
-                <div className="grid grid-cols-2 gap-3 mb-3 relative">
-                  <div className="border border-slate-200 rounded-lg p-3">
-                    <p className="text-slate-400 text-[10px] font-semibold tracking-wide mb-1">
-                      FROM ORIGIN
-                    </p>
-                    <input
-                      value={searchForm.fromCode}
-                      onChange={(e) =>
-                        handleFieldChange("fromCode", e.target.value)
-                      }
-                      className="text-slate-900 font-bold text-lg outline-none w-full"
-                    />
-                    <input
-                      value={searchForm.fromCity}
-                      onChange={(e) =>
-                        handleFieldChange("fromCity", e.target.value)
-                      }
-                      className="text-slate-500 text-xs outline-none w-full"
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={swapLocations}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-blue-600 shadow z-10"
-                  >
-                    <FiRepeat className="text-xs" />
-                  </button>
-
-                  <div className="border border-slate-200 rounded-lg p-3">
-                    <p className="text-slate-400 text-[10px] font-semibold tracking-wide mb-1">
-                      TO DESTINATION
-                    </p>
-                    <input
-                      value={searchForm.toCode}
-                      onChange={(e) =>
-                        handleFieldChange("toCode", e.target.value)
-                      }
-                      className="text-slate-900 font-bold text-lg outline-none w-full"
-                    />
-                    <input
-                      value={searchForm.toCity}
-                      onChange={(e) =>
-                        handleFieldChange("toCity", e.target.value)
-                      }
-                      className="text-slate-500 text-xs outline-none w-full"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                  <div className="border border-slate-200 rounded-lg p-3">
-                    <p className="text-slate-400 text-[10px] font-semibold tracking-wide mb-1 flex items-center gap-1">
-                      <FiCalendar /> DEPARTURE
-                    </p>
-                    <input
-                      type="date"
-                      value={searchForm.departureDate}
-                      onChange={(e) =>
-                        handleFieldChange("departureDate", e.target.value)
-                      }
-                      className="text-slate-900 font-bold text-sm outline-none w-full"
-                    />
-                  </div>
-                  <div className="border border-slate-200 rounded-lg p-3">
-                    <p className="text-slate-400 text-[10px] font-semibold tracking-wide mb-1 flex items-center gap-1">
-                      <FiCalendar /> RETURN
-                    </p>
-                    <input
-                      type="date"
-                      value={searchForm.returnDate}
-                      onChange={(e) =>
-                        handleFieldChange("returnDate", e.target.value)
-                      }
-                      className="text-slate-900 font-bold text-sm outline-none w-full"
-                    />
-                  </div>
-                  <div className="border border-slate-200 rounded-lg p-3">
-                    <p className="text-slate-400 text-[10px] font-semibold tracking-wide mb-1 flex items-center gap-1">
-                      <FiUsers /> CABIN &amp; SEATS
-                    </p>
-                    <select
-                      value={searchForm.cabinClass}
-                      onChange={(e) =>
-                        handleFieldChange("cabinClass", e.target.value)
-                      }
-                      className="text-blue-600 font-bold text-sm outline-none w-full bg-transparent"
-                    >
-                      <option>First / Business</option>
-                      <option>Economy</option>
-                      <option>Premium Economy</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400 text-[10px] font-semibold tracking-wide">
-                      FARE CLASS:
-                    </span>
-                    {["Exclusive Offer", "Student", "Flexi"].map((fare) => (
-                      <button
-                        type="button"
-                        key={fare}
-                        onClick={() => setFareClass(fare)}
-                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
-                          fareClass === fare
-                            ? "bg-blue-100 text-blue-700"
-                            : "text-slate-500"
-                        }`}
-                      >
-                        {fare}
-                      </button>
-                    ))}
-                  </div>
-                  <span className="text-emerald-600 text-[11px] font-semibold flex items-center gap-1">
-                    <BsCheckCircleFill /> Best Fare Guarantee
-                  </span>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                >
-                  Search Live Availability <FiArrowRight />
-                </button>
-              </form>
-            </div>
-          </div>
+          <FlightGlobeAnimation />
         </div>
 
         <div className="mt-10 sm:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
