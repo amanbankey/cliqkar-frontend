@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { FiRepeat, FiCalendar, FiUsers, FiChevronDown, FiChevronUp, FiX , FiCreditCard  } from "react-icons/fi";
 import { TbPlaneDeparture , TbWallet } from "react-icons/tb";
 import { MdEventSeat } from "react-icons/md";
+import aero from "../../assets/image/aero.png"
 import {
   Plus,
   Trash2,   ArrowLeftRight,
@@ -102,13 +103,12 @@ const airlineColors = {
 };
 
 
-const FlightBookingModal = ({ flight, onClose }) => {
-   const [showPassengerModal, setShowPassengerModal] = useState(false);
+const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassengerModal }) => {
 
   return (
     <> 
-     {!showPassengerModal && (
-    <div className="fixed inset-0 z-10 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
+     
+    <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">Your Selected Booking Details</h3>
@@ -195,18 +195,15 @@ const FlightBookingModal = ({ flight, onClose }) => {
         </div>
       </div>
     </div>
-      )}
-       {showPassengerModal && (
-        <PassengerDetailsModal flight={flight} onClose={onClose} />
-      )}
+     
     </>
   );
 };
 
-const FlightResultCard = ({ flight, isSelected, onToggleSelect }) => {
+const FlightResultCard = ({ flight, isSelected, onToggleSelect, setShowBookingModal, showBookingModal }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showMoreFares, setShowMoreFares] = useState(false);
-  const [showBookingModal, setShowBookingModal] = useState(false);
+  // 
 
   const handleCheckboxClick = () => {
     onToggleSelect(flight.id);
@@ -294,10 +291,6 @@ const FlightResultCard = ({ flight, isSelected, onToggleSelect }) => {
             <span className="font-bold text-gray-900">₹{(flight.price - 400).toFixed(2)}</span>
           </div>
         </div>
-      )}
-
-       {showBookingModal && (
-        <FlightBookingModal flight={flight} onClose={() => setShowBookingModal(false)} />
       )}
     </div>
   );
@@ -413,7 +406,7 @@ const SeatSelectionModal = ({ flight, selectedSeat, onConfirm, onClose }) => {
   );
 };
 
-const PassengerDetailsModal = ({ flight, onClose }) => {
+const PassengerDetails = ({ flight }) => {
   const [showSeatModal, setShowSeatModal] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("online");
@@ -425,16 +418,11 @@ const PassengerDetailsModal = ({ flight, onClose }) => {
   const totalAmount = subTotal + seatCharge;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
-      <div className="bg-white w-full sm:max-w-4xl rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
+    <div className="">
+      <div className="bg-white w-full sm:max-w-7xl rounded-t-3xl sm:rounded-3xl  flex flex-col mx-auto  ">
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">Enter Your Details</h3>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white flex-shrink-0"
-          >
-            <FiX size={18} />
-          </button>
+    
         </div>
 
         <div className="overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0">
@@ -550,7 +538,7 @@ const PassengerDetailsModal = ({ flight, onClose }) => {
                   Wallet
                 </button>
                 <button
-                  onClick={onClose}
+                 
                   className="sm:ml-auto bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
                 >
                   Book Now
@@ -646,7 +634,93 @@ const PassengerDetailsModal = ({ flight, onClose }) => {
   );
 };
 
-const FlightFilterSidebar = ({ filters, setFilters }) => {
+const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden mt-4">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between">
+        <h3 className="text-white font-bold text-base">Your Selected Booking Details</h3>
+      </div>
+
+      {/* Flight Info */}
+      <div className="px-5 py-5">
+        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-xl ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0`}>
+                <TbPlaneDeparture className="text-white" size={20} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold text-gray-900">{flight.airline}</p>
+                  <span className="text-xs text-gray-400 font-medium">{flight.flightNo}</span>
+                </div>
+                <p className="text-xs text-gray-500 mt-0.5">{flight.fareType}</p>
+              </div>
+            </div>
+            <button className="text-xs font-bold text-orange-600 hover:text-orange-700 flex-shrink-0">
+              Show Rules
+            </button>
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div>
+              <p className="text-xs text-gray-400 font-medium">{flight.date}</p>
+              <p className="text-lg font-bold text-gray-900">{flight.depTime}</p>
+              <p className="text-xs text-gray-500">{flight.depCode}</p>
+            </div>
+            <div className="flex flex-col items-center px-2">
+              <p className="text-xs text-gray-500 mb-1 whitespace-nowrap">{flight.duration}</p>
+              <div className="flex items-center gap-1 w-16">
+                <span className="h-px flex-1 border-t border-dashed border-orange-400" />
+                <TbPlaneDeparture className="text-orange-500 rotate-90 flex-shrink-0" size={14} />
+                <span className="h-px flex-1 border-t border-dashed border-orange-400" />
+              </div>
+              <p className="text-xs font-semibold text-blue-600 mt-1 whitespace-nowrap">{flight.stops}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-gray-400 font-medium">{flight.date}</p>
+              <p className="text-lg font-bold text-gray-900">{flight.arrTime}</p>
+              <p className="text-xs text-gray-500">{flight.arrCode}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Cabin baggage</span>
+            <span className="font-semibold text-gray-800">7 KG</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Check-in baggage</span>
+            <span className="font-semibold text-gray-800">15 KG</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Operated by</span>
+            <span className="font-semibold text-gray-800">{flight.airline}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between px-5 py-4 bg-gray-50 border-t border-gray-100">
+        <div>
+          <p className="text-xs text-gray-400">Total price</p>
+          <p className="text-xl font-bold text-gray-900">₹{flight.price.toFixed(2)}</p>
+        </div>
+        <button
+          onClick={() => setShowPassengerModal(true)}
+          className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const FlightFilterSidebar = ({ filters, setFilters, setShowBookingModal, showBookingModal, flight, setShowPassengerModal }) => {
   const airlineCounts = sampleFlights.reduce((acc, f) => {
     acc[f.airline] = (acc[f.airline] || 0) + 1;
     return acc;
@@ -678,7 +752,8 @@ const FlightFilterSidebar = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden sticky top-4">
+    <div> 
+    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden top-4">
       <div className="flex items-center justify-between bg-blue-50 px-5 py-4">
         <p className="text-sm font-bold text-gray-900">Filter Search</p>
         <button
@@ -697,6 +772,7 @@ const FlightFilterSidebar = ({ filters, setFilters }) => {
               <span className="flex items-center gap-2">
                 <input
                   type="checkbox"
+                  name="passengers"
                   checked={filters.airlines.includes(airline)}
                   onChange={() => toggleAirline(airline)}
                   className="accent-blue-600 w-4 h-4"
@@ -751,6 +827,12 @@ const FlightFilterSidebar = ({ filters, setFilters }) => {
         </div>
       </div>
     </div>
+
+    {showBookingModal && flight && (
+      <InlineBookingCard flight={flight} onClose={() => setShowBookingModal(false)} setShowPassengerModal={setShowPassengerModal} />
+    )}
+      
+    </div>
   );
 };
 
@@ -767,7 +849,11 @@ const FlightHero = () => {
   });
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedFlight, setSelectedFlight] = useState(null);
   const [filters, setFilters] = useState({ airlines: [], fareType: "", stop: "" });
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showDetails, setShowDetails] = useState(false) 
+   const [showPassengerModal, setShowPassengerModal] = useState(false);
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -848,7 +934,9 @@ const handleRemoveCity = (index) => {
   };
 
   const toggleSelect = (id) => {
+    const flight = sampleFlights.find((f) => f.id === id);
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+    setSelectedFlight((prev) => (prev && prev.id === id ? null : flight));
   };
 
   const filteredFlights = useMemo(() => {
@@ -863,8 +951,11 @@ const handleRemoveCity = (index) => {
   const isRoundTrip = tripType === "Round-trip";
 
   return (
-    <div>
-      <section className="bg-[#0A1628] px-4 sm:px-8 lg:px-16 py-10 sm:py-14">
+    <div className="">
+
+     { !showPassengerModal && ( <div> 
+      <section className="bg-[#0A1628] px-4 sm:px-8 lg:px-16 py-10 sm:py-14" style={{ backgroundImage: `url(${aero})` }}
+ >
         <div className="max-w-6xl mx-auto">
           <h1 className="text-center text-2xl sm:text-3xl font-bold text-white mb-6">Book Your Flight</h1>
 
@@ -1261,16 +1352,24 @@ const handleRemoveCity = (index) => {
                       flight={flight}
                       isSelected={selectedIds.includes(flight.id)}
                       onToggleSelect={toggleSelect}
+                      setShowBookingModal={setShowBookingModal} 
+                      showBookingModal={showBookingModal}
+
                     />
                   ))
                 )}
               </div>
 
-              <FlightFilterSidebar filters={filters} setFilters={setFilters} />
+              <FlightFilterSidebar filters={filters}  setFilters={setFilters}  setShowBookingModal={setShowBookingModal}   showBookingModal={showBookingModal} flight={selectedFlight} 
+              setShowPassengerModal={setShowPassengerModal} showPassengerModal={showPassengerModal}
+              />
             </div>
           </div>
         </div>
       )}
+      </div> )}
+
+       {showPassengerModal && (<PassengerDetails flight={selectedFlight} onClose={() => setShowPassengerModal(false)} />)}
     </div>
   );
 };

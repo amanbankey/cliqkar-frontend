@@ -10,11 +10,11 @@ import {
   Cloud,
   Plane,
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 export default function SignInPage({ onClose }) {
   const [showPassword, setShowPassword] = useState(false);
-
-  const [signInForm, setSignInForm] = useState({
+  const navigate = useNavigate()
+   const [signInForm, setSignInForm] = useState({
     email: "",
     password: "",
     rememberDevice: false,
@@ -40,26 +40,27 @@ export default function SignInPage({ onClose }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900/60 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-4xl bg-[#0a1628] rounded-2xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-2">
-        <div className="relative p-8 sm:p-10 hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#0d1f33] to-[#0a1628]">
-          <div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-[#eef1f8]">
+      <div className="fixed inset-0  backdrop-blur-md z-0" />
+      <div className="relative z-10 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl shadow-blue-950/15 grid grid-cols-1 lg:grid-cols-2 border border-blue-100">
+        <div className="relative p-8 sm:p-10 hidden lg:flex flex-col justify-between bg-blue-950 overflow-hidden">
+          <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-orange-500/20 blur-3xl" />
+          <div className="absolute -bottom-16 left-6 h-36 w-36 rounded-full bg-blue-400/10 blur-3xl" />
+
+          <div className="relative">
             <h2 className="text-white text-xl font-extrabold mb-1">
               Cliqkar
             </h2>
-            <p className="text-amber-300 text-[11px] font-semibold tracking-wide mb-6">
-              STITCHED WITH GOOGLE
-            </p>
 
-            <span className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-emerald-300 text-[11px] font-semibold px-3 py-1.5 rounded-full mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-400/40 text-orange-300 text-[11px] font-semibold px-3 py-1.5 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
               SOVEREIGN TRAVELER PASS
             </span>
 
             <h3 className="text-white text-3xl font-extrabold leading-tight mb-4">
               The Intelligent Global Mobility Suite.
             </h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-8">
+            <p className="text-blue-200 text-sm leading-relaxed mb-8">
               Access exclusive consolidator fares, real-time e-visas,
               verified Ok-To-Board desks, and private concierge liaisons
               across 120+ destinations.
@@ -72,86 +73,92 @@ export default function SignInPage({ onClose }) {
                 { icon: Plane, text: "Automated Airline DCS Gate Sync" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
-                  <item.icon className="text-emerald-400 shrink-0" size={16} />
-                  <span className="text-slate-300 text-sm">{item.text}</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-orange-400">
+                    <item.icon size={15} />
+                  </span>
+                  <span className="text-blue-100 text-sm">{item.text}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="relative p-6 sm:p-10 bg-[#0d1f33]">
+        <div className="relative p-6 sm:p-10 bg-white">
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 transition-colors"
+            className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#eef1f8] hover:bg-blue-100 flex items-center justify-center text-blue-900 border border-blue-100 transition-colors duration-200"
           >
             <X size={16} />
           </button>
 
-          <p className="text-amber-300 text-xs font-semibold tracking-wide mb-2">
+          <p className="text-blue-900 text-xs font-bold tracking-wide mb-2">
             AUTHENTICATION CONSOLE
           </p>
-          <h2 className="text-white text-2xl sm:text-3xl font-extrabold mb-6">
+          <h2 className="text-blue-950 text-2xl sm:text-3xl font-extrabold mb-6">
             Welcome to Cliqkar
           </h2>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3 rounded-lg transition-colors">
+            <button className="bg-slate-800 hover:-translate-y-0.5   hover:bg-white text-white hover:border-2 hover:text-slate-800  hover:border-slate-800 font-semibold text-sm py-3 rounded-lg transition-all duration-200">
               Sign In
             </button>
-            <button className="bg-white/5 border border-white/10 text-slate-300 font-semibold text-sm py-3 rounded-lg">
+            <button onClick={() => navigate("/signup")} className="bg-white border-2 border-slate-800 hover:text-white hover:bg-slate-800 hover:border-slate-800 text-slate-800 font-semibold text-sm py-3 rounded-lg transition-colors duration-200">
               Create Account
             </button>
           </div>
 
           <div className="flex items-center gap-3 mb-6">
-            <span className="flex-1 h-px bg-white/10" />
-            <span className="text-slate-500 text-[11px] font-semibold tracking-wide whitespace-nowrap">
+            <span className="flex-1 h-px bg-blue-100" />
+            <span className="text-slate-400 text-[11px] font-semibold tracking-wide whitespace-nowrap">
               OR CONTINUE WITH EMAIL
             </span>
-            <span className="flex-1 h-px bg-white/10" />
+            <span className="flex-1 h-px bg-blue-100" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="text-white text-sm font-semibold mb-1.5 block">
+              <label className="text-blue-950 text-sm font-semibold mb-1.5 block">
                 Work or Personal Email
               </label>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3.5 py-3">
-                <Mail className="text-slate-400 shrink-0" size={17} />
+              <div className="flex items-center gap-2.5 bg-[#eef1f8] border-[1.5px] border-slate-800 hover:border-slate-800 focus-within:border-slate-800   rounded-xl px-3.5 py-3 transition-all duration-200">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white">
+                  <Mail size={16} />
+                </span>
                 <input
                   type="email"
                   value={signInForm.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   placeholder="alexander.ross@aviation.io"
-                  className="text-sm outline-none w-full bg-transparent text-white placeholder:text-slate-500"
+                  className="text-[15px] outline-none w-full bg-transparent bg-[#eef1f8] text-blue-950 font-medium placeholder:text-slate-400 placeholder:font-normal"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-white text-sm font-semibold">
+                <label className="text-blue-950 text-sm font-semibold">
                   Password
                 </label>
-                <a href="#" className="text-blue-400 text-xs font-semibold">
+                <a href="#" className="text-slate-800 text-xs font-semibold hover:text-slate-800">
                   Forgot Password?
                 </a>
               </div>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3.5 py-3">
-                <Lock className="text-slate-400 shrink-0" size={17} />
+              <div className="flex items-center gap-2.5 bg-[#eef1f8] border-[1.5px] border-slate-800 hover:border-slate-800 focus-within:border-slate-800   rounded-xl px-3.5 py-3 transition-all duration-200">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white">
+                  <Lock size={16} />
+                </span>
                 <input
                   type={showPassword ? "text" : "password"}
                   value={signInForm.password}
                   onChange={(e) => handleChange("password", e.target.value)}
                   placeholder="Enter your password"
-                  className="text-sm outline-none w-full bg-transparent text-white placeholder:text-slate-500"
+                  className="text-[15px] outline-none w-full bg-transparent bg-[#eef1f8] text-blue-950 font-medium placeholder:text-slate-400 placeholder:font-normal"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="text-slate-400 shrink-0"
+                  className="text-slate-400 hover:text-slate-800 shrink-0 transition-colors duration-150"
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -159,29 +166,33 @@ export default function SignInPage({ onClose }) {
             </div>
 
             <label className="flex items-center gap-2.5 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={signInForm.rememberDevice}
-                onChange={(e) =>
-                  handleChange("rememberDevice", e.target.checked)
-                }
-                className="accent-blue-600 w-4 h-4"
-              />
-              <span className="text-slate-300 text-sm">
+              <span
+                onClick={() => handleChange("rememberDevice", !signInForm.rememberDevice)}
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-200 ${
+                  signInForm.rememberDevice
+                    ? "border-slate-800 bg-slate-800"
+                    : "border-blue-200 bg-white hover:border-slate-800"
+                }`}
+              >
+                {signInForm.rememberDevice && (
+                  <span className="h-2 w-2 rounded-sm bg-white" />
+                )}
+              </span>
+              <span className="text-slate-600 text-sm">
                 Remember this device for 30 days
               </span>
             </label>
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-slate-800 hover:shadow-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition-all duration-200"
             >
               Sign In to Cliqkar <ArrowRight size={16} />
             </button>
           </form>
 
-          <p className="flex items-center justify-center gap-1.5 text-slate-500 text-xs mt-6">
-            <Lock size={12} />
+          <p className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mt-6">
+            <ShieldCheck size={13} className="text-blue-800" />
             Protected by enterprise-grade aviation SSL &amp; biometric
             clearance encryption.
           </p>

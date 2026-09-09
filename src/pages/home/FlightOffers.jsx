@@ -2,15 +2,13 @@ import { useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { MdFlight } from "react-icons/md";
 import { PiSuitcaseRolling } from "react-icons/pi";
-
+import { useNavigate } from "react-router-dom";
 const filters = [
   "All",
   "Domestic",
   "International",
   "Student",
-  "Family",
-  "Business",
-  "Weekend",
+   
 ];
 
 const flights = [
@@ -75,6 +73,7 @@ const flights = [
 
 export default function FlightOffers() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const navigate = useNavigate()
 
   return (
     <section className="bg-white py-14 sm:py-20 px-4 sm:px-6 lg:px-10">
@@ -91,9 +90,7 @@ export default function FlightOffers() {
               Exclusive flight offers curated for your next journey.
             </p>
           </div>
-          <button className="flex items-center gap-1.5 text-blue-600 font-semibold text-sm shrink-0">
-            View All Offers <FiArrowRight />
-          </button>
+      
         </div>
 
         <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-1">
@@ -132,11 +129,7 @@ export default function FlightOffers() {
                     </p>
                   </div>
                 </div>
-                <span
-                  className={`text-[10px] font-bold px-2 py-1 rounded-full ${flight.tagColor}`}
-                >
-                  {flight.tag}
-                </span>
+               
               </div>
 
               <div className="flex items-center justify-between mb-4">
@@ -191,9 +184,7 @@ export default function FlightOffers() {
                   </p>
                   <p className="text-slate-900 text-xl font-extrabold">
                     {flight.price}
-                    <span className="text-emerald-600 text-[11px] font-bold ml-2">
-                      {flight.save}
-                    </span>
+                   
                   </p>
                 </div>
                 <button className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors">
@@ -211,7 +202,7 @@ export default function FlightOffers() {
               FEATURED GETAWAY
             </p>
             <h3 className="text-white text-3xl sm:text-4xl font-extrabold mb-3">
-              Dubai Escape Special
+               Escape Special
             </h3>
             <p className="text-slate-300 text-sm sm:text-base mb-6">
               Direct flights from Delhi &amp; Mumbai starting at just
@@ -219,12 +210,10 @@ export default function FlightOffers() {
               visa bundles.
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <button className="flex items-center gap-2 bg-white text-slate-900 font-semibold px-5 py-2.5 rounded-lg text-sm">
-                Explore Dubai Flights <FiArrowRight />
+              <button onClick={() => navigate("flight")} className="flex items-center gap-2 bg-white text-slate-900 font-semibold px-5 py-2.5 rounded-lg text-sm">
+                Explore Flights <FiArrowRight />
               </button>
-              <span className="text-slate-300 text-xs sm:text-sm">
-                Valid for travel through Dec 2026
-              </span>
+             
             </div>
           </div>
         </div>

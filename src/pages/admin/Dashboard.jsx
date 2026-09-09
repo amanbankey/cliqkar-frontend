@@ -413,13 +413,16 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
   <TransactionHistoryPage />
 )}
 
+{activeItem === "Applied Tickets" && (
+  <TicketOperationsPage />
+)}
     {/* <VisaProductSpecification/> */}
     {/* <UpdateVisaProductRules/> */}
     {/* <UpdateVisaCharges /> */}
    {activeItem === "Applied OTB" && ( <AppliedOTB />)}  {/* */}
      {/* <OTBApplicationDetailsModal /> */}
     {/* <TransactionHistoryPage /> */}
-      {/* <TicketOperationsPage /> */}
+    
     </div>
   );
 };

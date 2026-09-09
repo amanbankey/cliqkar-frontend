@@ -54,9 +54,7 @@ export default function Footer() {
             <h3 className="text-white text-xl font-extrabold mb-1">
               Cliqkar
             </h3>
-            <p className="text-amber-300 text-[11px] font-semibold tracking-wide mb-4">
-              STITCHED WITH GOOGLE
-            </p>
+          
             <p className="text-slate-400 text-sm leading-relaxed mb-5">
               Concierge-grade flight reservations, verified Ok-To-Board
               protocols, and streamlined diplomatic visas engineered for
@@ -91,7 +89,7 @@ export default function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6">
           <p className="text-slate-500 text-xs text-center sm:text-left">
-            © 2026 Cliqkar Technologies Inc. Stitched with Google. All
+            © 2026 Cliqkar Technologies Inc. All
             rights reserved.
           </p>
           <div className="flex items-center gap-5">

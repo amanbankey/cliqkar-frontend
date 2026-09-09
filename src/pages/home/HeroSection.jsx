@@ -181,7 +181,7 @@ export default function HeroSection() {
               >
                 Search Flights <FiArrowRight />
               </button>
-              <button className="flex items-center gap-2 bg-white/5 border border-white/15 hover:bg-white/10 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors">
+              <button onClick={()=> navigate("/visa")} className="flex items-center gap-2 bg-white/5 border border-white/15 hover:bg-white/10 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors">
                 <MdOutlineVerifiedUser /> Explore Visa Services
               </button>
             </div>

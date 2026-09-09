@@ -36,7 +36,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-   <div>
+   <>
   <Routes>
 
     {/* Layout Parent */}
@@ -130,7 +130,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
  </Route>
   </Routes>
-</div>
+</>
   )
 }
 

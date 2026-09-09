@@ -18,8 +18,7 @@ const Layout = () => {
       {!hideNavbar && <Navbar show={show} setShow={setShow}/> }
       <Outlet />
 
-      {/* {show && <Signup setShow={setShow} />} */}
-      
+
       {!hideFooter && <Footer />}
       
       
