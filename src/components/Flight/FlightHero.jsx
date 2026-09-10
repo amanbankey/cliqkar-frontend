@@ -132,6 +132,8 @@ const FlightBookingModal = ({
   return (
     <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
+
+        {/* <div className="bg-slate-800 px-5 py-4 flex items-center justify-between flex-shrink-0"> */}
         <div className="bg-gradient-to-r from-blue-900 to-blue-950 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">
             Your Selected Booking Details
@@ -249,8 +251,9 @@ const FlightBookingModal = ({
           </div>
 
           <button
-            onClick={() => setShowPassengerModal(true)}
+           onClick={() => setShowPassengerModal(true)}
             className="bg-blue-950 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-200"
+
           >
             Next
           </button>
