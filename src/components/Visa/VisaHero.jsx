@@ -8,7 +8,14 @@ import {
   CalendarDays,
   ShieldCheck,
 } from "lucide-react";
-
+import {
+  X,
+  Upload,
+  FileText,
+  Image as ImageIcon,
+  ArrowRight,
+  LockKeyhole,
+} from "lucide-react";
 /* =========================================================
    VISA DATA
 ========================================================= */
@@ -407,7 +414,11 @@ function VisaSelect({
 
 function VisaCard({ visa }) {
   const [hovered, setHovered] = useState(false);
-
+  const [show, setShow] = useState(0)
+  const [travelerFirstName, setTravelerFirstName] = useState("");
+  const [photoFile, setPhotoFile] = useState(null);
+const [passportFile, setPassportFile] = useState(null);
+  const [showDocumentsPopup, setShowDocumentsPopup] = useState(false);
   return (
     <div className="group">
       {/* CARD */}
@@ -583,6 +594,32 @@ function VisaCard({ visa }) {
               </p>
             </div>
           </div>
+          <div className="flex justify-center mt-2">
+            <button onClick={() => setShow(1)}  className="
+    group
+    relative
+    flex
+    h-[40px]
+    items-center
+    justify-center
+    gap-2
+    overflow-hidden
+    rounded-2xl
+    bg-gradient-to-r
+    from-[#4d5bd1]
+    via-[#5665d6]
+    to-[#7180ef]
+    px-8
+    text-[14px]
+    font-bold
+    text-white
+    shadow-[0_15px_35px_rgba(86,101,214,0.30)]
+    transition-all
+    duration-300
+    hover:-translate-y-1
+    hover:shadow-[0_22px_45px_rgba(86,101,214,0.40)]
+    active:translate-y-0 ">Start new application</button>
+          </div>
         </div>
       </div>
 
@@ -602,6 +639,401 @@ function VisaCard({ visa }) {
           {visa.guaranteedDate}
         </p>
       </div>
+
+
+      {show === 1 &&  (
+            <div
+              className="
+                fixed
+                inset-0
+                z-[999]
+                flex
+                items-center
+                justify-center
+                bg-black/40
+                px-4
+                backdrop-blur-[4px]
+              "
+              onClick={() => setShowTravelerPopup(false)}
+            >
+              <div
+                className="
+                  relative
+                  w-full
+                  max-w-[460px]
+                  rounded-[28px]
+                  border
+                  border-slate-200
+                  bg-white
+                  p-6
+                  shadow-[0_30px_100px_rgba(15,23,42,0.25)]
+                  sm:p-8
+                  animate-[popupIn_0.25s_ease-out]
+                "
+                onClick={(e) => e.stopPropagation()}
+              >
+
+                {/* CLOSE BUTTON */}
+
+                <button
+                  type="button"
+                  onClick={() => setShow(0)}
+                  className="
+                    absolute
+                    right-5
+                    top-5
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-slate-100
+                    text-slate-500
+                    transition
+                    hover:bg-slate-900
+                    hover:text-white
+                  "
+                >
+                  ×
+                </button>
+
+
+                {/* ICON */}
+
+                <div
+                  className="
+                    mb-5
+                    flex
+                    h-12
+                    w-12
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    bg-slate-900
+                  "
+                >
+                  <Plane
+                    size={21}
+                    className="rotate-[25deg] text-white"
+                  />
+                </div>
+
+
+                {/* TITLE */}
+
+                <h3 className="text-[24px] font-bold text-slate-900">
+                  Enter traveler details
+                </h3>
+
+                <p className="mt-2 max-w-[360px] text-[14px] leading-6 text-slate-500">
+                  Please enter the traveler's first name to continue
+                  with your visa application.
+                </p>
+
+
+                {/* FIRST NAME */}
+
+                <div className="mt-7">
+
+                  <label
+                    htmlFor="travelerFirstName"
+                    className="
+                      mb-2
+                      block
+                      text-[13px]
+                      font-semibold
+                      text-slate-900
+                    "
+                  >
+                    Traveler first name
+                    <span className="ml-1 text-red-500">*</span>
+                  </label>
+
+                  <input
+                    id="travelerFirstName"
+                    type="text"
+                    value={travelerFirstName}
+                    onChange={(e) =>
+                      setTravelerFirstName(e.target.value)
+                    }
+                    placeholder="Enter first name"
+                    autoFocus
+                    className="
+                      w-full
+                      rounded-xl
+                      border
+                      border-slate-900
+                      bg-white
+                      px-4
+                      py-3.5
+                      text-[14px]
+                      font-medium
+                      text-slate-900
+                      placeholder:text-slate-400
+                      outline-none
+                      transition-all
+                      duration-200
+                      focus:ring-2
+                      focus:ring-slate-900/10
+                    "
+                  />
+
+                </div>
+
+
+                {/* CONTINUE */}
+
+                <button
+                  type="button"
+                  disabled={!travelerFirstName.trim()}
+                  onClick={() => {
+                    if (!travelerFirstName.trim()) return;
+                    console.log(
+                      "Traveler First Name:",
+                      travelerFirstName
+                    );
+                    setShow(2);
+                  }}
+                  className="
+                    mt-6
+                    flex
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-xl
+                    border
+                    border-slate-900
+                    bg-slate-900
+                    px-5
+                    py-3.5
+                    text-[14px]
+                    font-bold
+                    text-white
+                    transition-all
+                    duration-300
+                    hover:bg-white
+                    hover:text-slate-900
+                    disabled:cursor-not-allowed
+                    disabled:border-slate-300
+                    disabled:bg-slate-200
+                    disabled:text-slate-400
+                  "
+                >
+                  Continue
+                </button>
+
+              </div>
+            </div>
+          )}
+
+        {show === 2  && (
+          <div
+    className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-900/45 px-4 py-6 backdrop-blur-md"
+    onClick={() => setShow(1)}
+  >
+    <div
+      className="relative w-full max-w-[520px] overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_35px_100px_rgba(15,23,42,0.28)] animate-[documentPopupIn_0.35s_ease-out]"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-[#4d5bd1] via-[#7180ef] to-[#5665d6]" />
+
+      <button
+        type="button"
+        onClick={() => setShow(1)}
+        className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition-all duration-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white"
+      >
+        <X size={17} />
+      </button>
+
+      <div className="p-6 sm:p-8">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 shadow-[0_10px_25px_rgba(15,23,42,0.16)]">
+            <FileText size={21} className="text-white" />
+          </div>
+
+          <div className="pr-8">
+            <p className="text-[10px] font-bold tracking-[0.18em] text-[#5665d6]">
+              ESSENTIAL DOCUMENTS
+            </p>
+
+            <h3 className="mt-1 text-[24px] font-bold tracking-tight text-slate-900">
+              Upload your documents
+            </h3>
+
+            <p className="mt-1.5 text-[13px] leading-5 text-slate-500">
+              Add the required documents to continue your visa application.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-7 space-y-3">
+          <label
+            htmlFor="photoUpload"
+            className={`group flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition-all duration-300 ${
+              photoFile
+                ? "border-emerald-300 bg-emerald-50/50"
+                : "border-slate-900 bg-slate-50/50 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+            }`}
+          >
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                photoFile
+                  ? "bg-emerald-100 text-emerald-600"
+                  : "bg-[#5665d6]/10 text-[#5665d6]"
+              }`}
+            >
+              {photoFile ? (
+                <ShieldCheck size={19} />
+              ) : (
+                <ImageIcon size={19} />
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-bold text-slate-900">
+                Photo
+                <span className="ml-1 text-red-500">*</span>
+              </p>
+
+              <p className="mt-0.5 truncate text-[12px] text-slate-500">
+                {photoFile
+                  ? photoFile.name
+                  : "Upload your recent passport-size photo"}
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-slate-500 shadow-sm transition group-hover:text-slate-900">
+              <Upload size={16} />
+            </div>
+
+            <input
+              id="photoUpload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                setPhotoFile(e.target.files?.[0] || null);
+              }}
+            />
+          </label>
+
+          <label
+            htmlFor="passportUpload"
+            className={`group flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition-all duration-300 ${
+              passportFile
+                ? "border-emerald-300 bg-emerald-50/50"
+                : "border-slate-900 bg-slate-50/50 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+            }`}
+          >
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                passportFile
+                  ? "bg-emerald-100 text-emerald-600"
+                  : "bg-[#5665d6]/10 text-[#5665d6]"
+              }`}
+            >
+              {passportFile ? (
+                <ShieldCheck size={19} />
+              ) : (
+                <FileText size={19} />
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-bold text-slate-900">
+                Passport
+                <span className="ml-1 text-red-500">*</span>
+              </p>
+
+              <p className="mt-0.5 truncate text-[12px] text-slate-500">
+                {passportFile
+                  ? passportFile.name
+                  : "Upload your valid passport"}
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-slate-500 shadow-sm transition group-hover:text-slate-900">
+              <Upload size={16} />
+            </div>
+
+            <input
+              id="passportUpload"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              className="hidden"
+              onChange={(e) => {
+                setPassportFile(e.target.files?.[0] || null);
+              }}
+            />
+          </label>
+        </div>
+
+        <div className="mt-6 flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3.5 py-3">
+          <LockKeyhole size={14} className="shrink-0 text-slate-500" />
+
+          <p className="text-[11px] leading-4 text-slate-500">
+            Your documents are securely handled and used only for visa processing.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled={!photoFile || !passportFile}
+          onClick={() => {
+            if (!photoFile || !passportFile) return;
+
+            console.log("Photo:", photoFile);
+            console.log("Passport:", passportFile);
+
+            setShow(0);
+          }}
+          className="
+            group
+            relative
+            mt-6
+            flex
+            h-[54px]
+            w-full
+            items-center
+            justify-center
+            gap-2
+            overflow-hidden
+            rounded-2xl
+            border
+            border-slate-900
+            bg-slate-900
+            text-[14px]
+            font-bold
+            text-white
+            shadow-[0_12px_30px_rgba(15,23,42,0.16)]
+            transition-all
+            duration-300
+            hover:-translate-y-0.5
+            hover:bg-white
+            hover:text-slate-900
+            hover:shadow-[0_18px_35px_rgba(15,23,42,0.14)]
+            disabled:cursor-not-allowed
+            disabled:border-slate-200
+            disabled:bg-slate-100
+            disabled:text-slate-400
+            disabled:shadow-none
+          "
+        >
+          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+          <span className="relative">
+            Proceed to Checkout
+          </span>
+
+          <ArrowRight
+            size={17}
+            className="relative transition-transform duration-300 group-hover:translate-x-1"
+          />
+        </button>
+      </div>
+    </div> </div>
+        )}
     </div>
   );
 }
