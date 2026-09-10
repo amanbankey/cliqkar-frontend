@@ -110,7 +110,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
      
     <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between flex-shrink-0">
+        <div className="bg-slate-800 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">Your Selected Booking Details</h3>
           <button
             onClick={onClose}
@@ -188,7 +188,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
           </div>
           <button
            onClick={() => setShowPassengerModal(true)}
-            className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
+            className="bg-slate-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange"
           >
             Next
           </button>

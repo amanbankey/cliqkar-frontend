@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiArrowRight,
@@ -7,6 +7,7 @@ import {
   FiUsers,
   FiGlobe,
 } from "react-icons/fi";
+import aero from "../../assets/image/aero.png"
 import {
   MdFlight,
   MdOutlineVerifiedUser,
@@ -24,18 +25,43 @@ const trendingRoutes = [
 ];
 
 const stats = [
-  { value: "50K+", label: "Happy Travelers" },
-  { value: "120+", label: "Global Destinations" },
-  { value: "500+", label: "Verified Agents" },
-  { value: "24/7", label: "Travel Support Concierge" },
+  { value: 50, suffix: "K+", label: "Happy Travelers" },
+  { value: 120, suffix: "+", label: "Global Destinations" },
+  { value: 500, suffix: "+", label: "Verified Agents" },
+  { value: "24/7", suffix: "", label: "Travel Support Concierge" },
 ];
-
 const orbitChips = [
   { label: "Dubai (DXB)", position: "-left-6 top-4", delay: "0s", duration: "3s" },
   { label: "Zurich (ZRH)", position: "-right-8 bottom-8", delay: "1s", duration: "3.6s" },
   { label: "Maldives (MLE)", position: "left-1/2 -translate-x-1/2 -bottom-4", delay: "0.5s", duration: "4s" },
 ];
 
+const CountUp = ({ end, suffix = "", duration = 1500 }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime = null;
+
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+
+      const progress = Math.min(
+        (currentTime - startTime) / duration,
+        1
+      );
+
+      setCount(Math.floor(progress * end));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [end, duration]);
+
+  return `${count}${suffix}`;
+};
 function FlightGlobeAnimation() {
   return (
     <div className="hidden lg:flex flex-1 items-center justify-center relative min-h-[380px]">
@@ -90,6 +116,166 @@ function FlightGlobeAnimation() {
   );
 }
 
+const windowShape = "46% 46% 40% 40% / 62% 62% 34% 34%";
+ 
+function ProgressRing({ value }) {
+  return (
+    <div
+      className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+      style={{ background: `conic-gradient(#fbbf24 ${value}%, rgba(255,255,255,0.18) ${value}%)` }}
+    >
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900">
+        <span className="text-[9px] font-bold text-amber-300">{value}%</span>
+      </div>
+    </div>
+  );
+}
+ 
+function HudBox({ title, children, className = "" }) {
+  return (
+    <div className={`rounded-lg border border-amber-300/25 bg-slate-950/60 px-2.5 py-2 backdrop-blur-sm ${className}`}>
+      {title && <p className="mb-1.5 text-[8px] font-bold tracking-[0.15em] text-slate-300">{title}</p>}
+      {children}
+    </div>
+  );
+}
+
+
+function PlaneWindow({ flight }) {
+  const aircraft = flight.flightInfo.split("·")[1]?.trim() || flight.flightInfo;
+ 
+  return (
+    <div className="relative mx-auto w-full max-w-[290px]" style={{ aspectRatio: "4 / 5" }}>
+      <div
+        className="absolute inset-0"
+        style={{
+          borderRadius: windowShape,
+          background: "linear-gradient(155deg, #4a6280 0%, #223349 45%, #101c2b 100%)",
+          boxShadow: "0 25px 45px -15px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06)",
+        }}
+      />
+ 
+      <div
+        className="absolute"
+        style={{
+          inset: "11px",
+          borderRadius: windowShape,
+          boxShadow: "inset 0 0 22px 6px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.12)",
+          background: "linear-gradient(155deg, rgba(255,255,255,0.06), rgba(0,0,0,0.1))",
+        }}
+      />
+ 
+      <div
+        className="absolute overflow-hidden"
+        style={{ inset: "19px", borderRadius: windowShape, boxShadow: "0 0 0 2px rgba(0,0,0,0.35)" }}
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1763455892848-39bbc7ca90a0?fm=jpg&q=70&w=900&auto=format&fit=crop')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/40" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-30"
+          style={{ background: "linear-gradient(115deg, rgba(255,255,255,0.5) 0%, transparent 22%, transparent 78%, rgba(255,255,255,0.2) 100%)" }}
+        />
+ 
+        <div className="relative flex h-full flex-col justify-between p-2.5">
+          <HudBox title="ROUTE MAP">
+            <div className="flex items-center gap-1">
+              <div className="flex flex-col items-start">
+                <span className="text-[10px] font-extrabold text-amber-300">{flight.departCode}</span>
+                <MapPin size={9} className="text-amber-300" />
+              </div>
+              <div className="mx-1 flex flex-1 items-center gap-0.5">
+                <span className="h-px flex-1 border-t border-dashed border-amber-300/60" />
+                <Plane size={10} className="rotate-90 text-amber-300" />
+                <span className="h-px flex-1 border-t border-dashed border-amber-300/60" />
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] font-extrabold text-amber-300">{flight.arriveCode}</span>
+                <MapPin size={9} className="text-amber-300" />
+              </div>
+            </div>
+          </HudBox>
+ 
+          <div className="flex justify-end">
+            <HudBox title="FLIGHT STATUS">
+              <div className="flex items-center gap-2">
+                <Plane size={11} className="text-amber-300" />
+                <span className="text-[9px] font-bold text-white">EN ROUTE</span>
+              </div>
+              <div className="mt-1.5 flex items-center gap-2">
+                <div>
+                  <p className="text-[7px] text-slate-300">ETA</p>
+                  <p className="text-[10px] font-bold text-white">{flight.duration}</p>
+                </div>
+                <ProgressRing value={flight.progress} />
+              </div>
+            </HudBox>
+          </div>
+ 
+          <HudBox title="FLIGHT DETAILS" className="w-[64%]">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <Plane size={9} className="text-amber-300" />
+                <span className="text-[9px] font-semibold text-white">{aircraft}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Route size={9} className="text-amber-300" />
+                <span className="text-[9px] font-semibold text-white">{flight.distance}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock size={9} className="text-amber-300" />
+                <span className="text-[9px] font-semibold text-white">{flight.duration}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Mountain size={9} className="text-amber-300" />
+                <span className="text-[9px] font-semibold text-white">{flight.altitude}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Gauge size={9} className="text-amber-300" />
+                <span className="text-[9px] font-semibold text-white">{flight.speed}</span>
+              </div>
+            </div>
+          </HudBox>
+ 
+          <HudBox>
+            <div className="flex items-center gap-1.5">
+              <div className="flex flex-col items-start">
+                <span className="text-[9px] font-extrabold text-amber-300">{flight.departCode}</span>
+                <span className="text-[7px] text-slate-300">{flight.departCity}</span>
+              </div>
+              <div className="mx-1 flex flex-1 flex-col items-center">
+                <span className="text-[7px] text-slate-300">{flight.distance}</span>
+                <div className="flex w-full items-center gap-0.5">
+                  <span className="h-px flex-1 border-t border-dashed border-amber-300/60" />
+                  <Plane size={9} className="text-amber-300" />
+                  <span className="h-px flex-1 border-t border-dashed border-amber-300/60" />
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[9px] font-extrabold text-amber-300">{flight.arriveCode}</span>
+                <span className="text-[7px] text-slate-300">{flight.arriveCity}</span>
+              </div>
+            </div>
+          </HudBox>
+        </div>
+      </div>
+ 
+      <div
+        className="absolute left-1/2 top-[-6px] h-8 w-[52%] -translate-x-1/2 rounded-full"
+        style={{
+          background: "linear-gradient(180deg, #5c7999 0%, #2a3f57 70%, #1a2837 100%)",
+          boxShadow: "0 6px 10px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.25)",
+        }}
+      />
+    </div>
+  );
+}
+
 export default function HeroSection() {
   const navigate = useNavigate();
   const [tripType, setTripType] = useState("Round Trip");
@@ -139,9 +325,10 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative bg-[#0a1628] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0d1f33] via-[#0a1628] to-[#0a1628]" />
+    <section className="relative   overflow-hidden"  >
+      <div className="absolute inset-0 bg-cover bg-center " style={{ backgroundImage: `url(${aero})` }} />
 
+         <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-10 sm:pb-14">
         
 
@@ -154,8 +341,8 @@ export default function HeroSection() {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold text-white leading-[1.1] mb-6">
-              Stitch Your Journey.
+            <h1 className="text-4xl sm:text-5xl  font-poppins font-extrabold text-white leading-[1.1] mb-6">
+             Your Journey.
               <br />
               Travel Without Friction.
             </h1>
@@ -226,22 +413,27 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <FlightGlobeAnimation />
+          {/* <FlightGlobeAnimation /> */}
         </div>
 
-        <div className="mt-10 sm:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center sm:text-left">
-              <p className="text-white text-2xl sm:text-3xl font-extrabold">
-                {stat.value}
-              </p>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1 flex items-center justify-center sm:justify-start gap-1">
-                <HiOutlineSparkles className="text-amber-400" />
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
+      <div className="mt-10 sm:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+  {stats.map((stat) => (
+    <div key={stat.label} className="text-center sm:text-left">
+      <p className="text-white text-2xl sm:text-3xl font-extrabold">
+        {typeof stat.value === "number" ? (
+          <CountUp end={stat.value} suffix={stat.suffix} />
+        ) : (
+          stat.value
+        )}
+      </p>
+
+      <p className="text-slate-400 text-xs sm:text-sm mt-1 flex items-center justify-center sm:justify-start gap-1">
+        <HiOutlineSparkles className="text-amber-400" />
+        {stat.label}
+      </p>
+    </div>
+  ))}
+</div>
       </div>
     </section>
   );

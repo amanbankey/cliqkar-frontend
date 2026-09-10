@@ -236,7 +236,7 @@ function VisaSearchForm() {
   }
  
   return (
-    <div className="flex min-h-screen w-full items-center justify-center  bg-blue-100 p-4 sm:p-6">
+    <div className="flex min-h-screen w-full items-center justify-center  bg-white p-4 sm:p-6">
       <style>{`
         @keyframes dropIn {
           from { opacity: 0; transform: translateY(-6px) scale(0.98); }
@@ -248,7 +248,7 @@ function VisaSearchForm() {
         }
       `}</style>
  
-      <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-y-auto rounded-3xl border border-orange-200/40 bg-white shadow-2xl shadow-black/40 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-track]:bg-orange-50">
+      <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-y-auto rounded-3xl border border-orange-200/40 bg-white shadow-md [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-track]:bg-orange-50">
         <div className="relative overflow-hidden bg-slate-800 to-s-800 px-6 py-7 sm:px-10 sm:py-9">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-orange-500/20 blur-2xl" />
           <div className="absolute -bottom-14 left-10 h-32 w-32 rounded-full bg-orange-400/10 blur-2xl" />
