@@ -60,7 +60,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center justify-end gap-2 sm:gap-3">
-            {/*<button
+            <button
               className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
               onClick={() => navigate("/dashboard")}
             >
@@ -71,7 +71,7 @@ const Navbar = () => {
               onClick={() => navigate("/user-dashboard")}
             >
               User Dashboard
-            </button>*/}
+            </button>
             <button
               onClick={() => navigate("/signin")}
               className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
@@ -129,7 +129,7 @@ const Navbar = () => {
             ))}
 
             <div className="flex flex-col items-center gap-3 mt-2 mb-1">
-              {/*<button
+              <button
                 className="hover:text-white text-[#0A2540] bg-white hover:bg-[#0A2540] border border-[#0A2540] px-3 py-2 rounded-full w-full"
                 onClick={onDashboard}
               >
@@ -143,7 +143,7 @@ const Navbar = () => {
                 }}
               >
                 User Dashboard
-              </button>*/}
+              </button>
 
               <button
                 onClick={() => navigate("/signin")}
