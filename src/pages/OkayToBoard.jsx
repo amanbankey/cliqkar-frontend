@@ -12,7 +12,7 @@ import OTBCTABanner from "../components/OkayToBoard/OTBCTABanner";
 const OkayToBoard = () => {
   return (
     <div>
-      <OTBHero />
+      {/* <OTBHero /> */}
       <LiveStatusSimulation />
       <SupportedAirlines />
       <ThreeStepWorkflow />
