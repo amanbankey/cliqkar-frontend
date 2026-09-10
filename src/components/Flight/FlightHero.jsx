@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { FiRepeat, FiCalendar, FiUsers, FiChevronDown, FiChevronUp, FiX , FiCreditCard  } from "react-icons/fi";
 import { TbPlaneDeparture , TbWallet } from "react-icons/tb";
 import { MdEventSeat } from "react-icons/md";
-import aero from "../../assets/image/aero.png"
+import aero from "../../assets/image/aeroplane.jfif"
 import {
   Plus,
   Trash2,   ArrowLeftRight,
@@ -29,7 +29,7 @@ const dummySeatStatus = {
 
 const seatStyles = {
   open: "bg-white border-gray-300 text-gray-300 hover:border-blue-400 hover:text-blue-400 cursor-pointer",
-  selected: "bg-orange-500 border-orange-500 text-white cursor-pointer",
+  selected: "bg-blue-600 border-blue-600 text-white cursor-pointer",
   occupied: "bg-gray-800 border-gray-800 text-gray-500 cursor-not-allowed",
   blocked: "bg-red-500 border-red-500 text-white cursor-not-allowed",
   other: "bg-green-500 border-green-500 text-white cursor-not-allowed",
@@ -110,7 +110,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
      
     <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between flex-shrink-0">
+        <div className="bg-gradient-to-r from-blue-900 to-blue-950 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">Your Selected Booking Details</h3>
           <button
             onClick={onClose}
@@ -121,7 +121,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
         </div>
 
         <div className="overflow-y-auto px-5 py-5">
-          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+          <div className="bg-blue-100 border border-blue-500 rounded-2xl p-4">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className={`w-12 h-12 rounded-xl ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0`}>
@@ -135,7 +135,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
                   <p className="text-xs text-gray-500 mt-0.5">{flight.fareType}</p>
                 </div>
               </div>
-              <button className="text-xs font-bold text-orange-600 hover:text-orange-700 flex-shrink-0">
+              <button className="text-xs font-bold text-blue-600 hover:text-blue-700 flex-shrink-0">
                 Show Rules
               </button>
             </div>
@@ -150,9 +150,9 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
               <div className="flex flex-col items-center px-2">
                 <p className="text-xs text-gray-500 mb-1 whitespace-nowrap">{flight.duration}</p>
                 <div className="flex items-center gap-1 w-16 sm:w-20">
-                  <span className="h-px flex-1 border-t border-dashed border-orange-400" />
-                  <TbPlaneDeparture className="text-orange-500 rotate-90 flex-shrink-0" size={14} />
-                  <span className="h-px flex-1 border-t border-dashed border-orange-400" />
+                  <span className="h-px flex-1 border-t border-dashed border-blue-400" />
+                  <TbPlaneDeparture className="text-blue-500 rotate-90 flex-shrink-0" size={14} />
+                  <span className="h-px flex-1 border-t border-dashed border-blue-400" />
                 </div>
                 <p className="text-xs font-semibold text-blue-600 mt-1 whitespace-nowrap">{flight.stops}</p>
               </div>
@@ -188,7 +188,7 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
           </div>
           <button
            onClick={() => setShowPassengerModal(true)}
-            className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
+            className="bg-blue-950 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-200"
           >
             Next
           </button>
@@ -200,98 +200,153 @@ const FlightBookingModal = ({ flight, onClose, showPassengerModal, setShowPassen
   );
 };
 
-const FlightResultCard = ({ flight, isSelected, onToggleSelect, setShowBookingModal, showBookingModal }) => {
+const FlightResultCard = ({ flight, isSelected, onToggleSelect, setShowBookingModal, showBookingModal, index = 0 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showMoreFares, setShowMoreFares] = useState(false);
-  // 
 
   const handleCheckboxClick = () => {
     onToggleSelect(flight.id);
     setShowBookingModal(true);
   };
 
+  // All cards stay light — only turn dark on hover
+  const theme = {
+    card: "bg-white border-gray-100 hover:bg-[#0A1628] hover:border-[#0A1628]",
+    airlineName: "text-gray-900 group-hover:text-white",
+    flightNo: "text-gray-400 group-hover:text-slate-400",
+    time: "text-gray-900 group-hover:text-white",
+    code: "text-gray-500 group-hover:text-slate-400",
+    duration: "text-gray-500 group-hover:text-slate-400",
+    line: "border-blue-300 group-hover:border-blue-400/50",
+    stopText: "text-gray-600 group-hover:text-blue-300",
+    price: "text-gray-900 group-hover:text-white",
+    dateRow: "border-t border-gray-50 group-hover:border-white/10",
+    dateText: "text-gray-500 group-hover:text-slate-400",
+    detailsBtn: "text-blue-600 group-hover:text-blue-300",
+    detailsPanel: "bg-gray-50 text-gray-500 border-t border-gray-100 group-hover:bg-white/5 group-hover:text-slate-300 group-hover:border-white/10",
+    moreFaresBtn: "bg-blue-50 text-blue-600 group-hover:bg-blue-500/10 group-hover:text-blue-300",
+    moreFaresPanel: "border-t border-blue-100 text-gray-600 group-hover:border-blue-400/20 group-hover:text-slate-300",
+    pricePanel: "border-gray-200 bg-gray-50 group-hover:border-white/15 group-hover:bg-white/5",
+    badge: "bg-blue-50 text-blue-700 group-hover:bg-blue-500/15 group-hover:text-blue-300",
+    startsAt: "text-gray-400 group-hover:text-slate-400",
+  };
+
+  // common smooth transition class — reused everywhere for consistency
+  const smooth = "transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]";
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 mb-3 overflow-hidden">
+    <div
+      className={`group rounded-xl border mb-3 overflow-hidden ${smooth} 
+      hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-900/10 
+      will-change-transform ${theme.card}`}
+    >
       <div className="px-4 sm:px-6 py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] gap-4 items-center">
-          <div className="flex items-center gap-3">
-            <div className={`w-11 h-11 rounded-lg ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0`}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center gap-3 sm:w-44 flex-shrink-0">
+            <div
+              className={`w-11 h-11 rounded-lg ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0 ${smooth} group-hover:scale-110 group-hover:rotate-3`}
+            >
               <TbPlaneDeparture className="text-white" size={18} />
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-900">{flight.airline}</p>
-              <p className="text-xs text-gray-400">{flight.flightNo}</p>
+              <p className={`text-sm font-bold ${smooth} ${theme.airlineName}`}>{flight.airline}</p>
+              <p className={`text-xs ${smooth} ${theme.flightNo}`}>{flight.flightNo}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-8">
+          <div className="flex-1 flex items-center gap-4 sm:gap-8">
             <div className="text-center">
-              <p className="text-base font-bold text-gray-900">{flight.depTime}</p>
-              <p className="text-xs text-gray-500">{flight.depCode}</p>
+              <p className={`text-base font-bold ${smooth} ${theme.time}`}>{flight.depTime}</p>
+              <p className={`text-xs ${smooth} ${theme.code}`}>{flight.depCode}</p>
             </div>
-            <div className="flex-1 min-w-[110px] text-center">
-              <p className="text-xs text-gray-500">{flight.duration}</p>
+            <div className="flex-1 min-w-[100px] text-center">
+              <p className={`text-xs ${smooth} ${theme.duration}`}>{flight.duration}</p>
               <div className="flex items-center gap-1 my-1">
-                <span className="h-px flex-1 border-t border-dashed border-orange-300" />
-                <TbPlaneDeparture className="text-orange-400 rotate-90" size={14} />
-                <span className="h-px flex-1 border-t border-dashed border-orange-300" />
+                <span className={`h-px flex-1 border-t border-dashed ${smooth} ${theme.line}`} />
+                <TbPlaneDeparture
+                  className={`text-blue-400 rotate-90 flex-shrink-0 ${smooth} group-hover:translate-x-1`}
+                  size={14}
+                />
+                <span className={`h-px flex-1 border-t border-dashed ${smooth} ${theme.line}`} />
               </div>
-              <p className="text-xs font-semibold text-gray-600">{flight.stops}</p>
+              <p className={`text-xs font-semibold ${smooth} ${theme.stopText}`}>{flight.stops}</p>
             </div>
             <div className="text-center">
-              <p className="text-base font-bold text-gray-900">{flight.arrTime}</p>
-              <p className="text-xs text-gray-500">{flight.arrCode}</p>
+              <p className={`text-base font-bold ${smooth} ${theme.time}`}>{flight.arrTime}</p>
+              <p className={`text-xs ${smooth} ${theme.code}`}>{flight.arrCode}</p>
             </div>
           </div>
 
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
-            <p className="text-lg font-bold text-gray-900">₹{flight.price.toFixed(2)}</p>
+          <div className="flex items-center gap-3 flex-shrink-0">
             <input
               type="checkbox"
               checked={isSelected}
               onChange={handleCheckboxClick}
               className="accent-blue-600 w-4 h-4"
             />
+            <div
+              className={`rounded-xl border px-4 py-2.5 text-right min-w-[130px] ${smooth} group-hover:scale-[1.03] ${theme.pricePanel}`}
+            >
+              <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${smooth} ${theme.badge}`}>
+                ECONOMY
+              </span>
+              <p className={`text-[10px] ${smooth} ${theme.startsAt}`}>Starts at</p>
+              <p className={`text-base font-bold flex items-center justify-end gap-1 ${smooth} ${theme.price}`}>
+                ₹{flight.price.toFixed(2)} <FiChevronDown size={12} />
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-t border-gray-50">
-        <p className="text-xs text-gray-500">{flight.date}</p>
+      <div className={`flex items-center justify-between px-4 sm:px-6 py-2.5 ${smooth} ${theme.dateRow}`}>
+        <p className={`text-xs ${smooth} ${theme.dateText}`}>{flight.date}</p>
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700"
+          className={`flex items-center gap-1 text-xs font-semibold ${smooth} hover:gap-2 ${theme.detailsBtn}`}
         >
           {showDetails ? <FiChevronUp size={13} /> : <FiChevronDown size={13} />}
           View More Details
         </button>
       </div>
 
-      {showDetails && (
-        <div className="px-4 sm:px-6 py-3 bg-gray-50 text-xs text-gray-500 leading-relaxed border-t border-gray-100">
-          Fare type: <span className="font-semibold text-gray-700">{flight.fareType}</span> · Cabin baggage
-          7KG · Check-in baggage 15KG · Operated by {flight.airline}.
+      <div
+        className={`grid overflow-hidden ${smooth} ${
+          showDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0">
+          <div className={`px-4 sm:px-6 py-3 text-xs leading-relaxed ${smooth} ${theme.detailsPanel}`}>
+            Fare type: <span className="font-semibold">{flight.fareType}</span> · Cabin baggage
+            7KG · Check-in baggage 15KG · Operated by {flight.airline}.
+          </div>
         </div>
-      )}
+      </div>
 
       <button
         onClick={() => setShowMoreFares(!showMoreFares)}
-        className="w-full flex items-center gap-1.5 justify-start px-4 sm:px-6 py-2.5 bg-blue-50 text-xs font-semibold text-blue-600 hover:bg-blue-100"
+        className={`w-full flex items-center gap-1.5 justify-start px-4 sm:px-6 py-2.5 text-xs font-semibold ${smooth} hover:gap-2.5 ${theme.moreFaresBtn}`}
       >
         {showMoreFares ? <FiChevronUp size={13} /> : <FiChevronDown size={13} />}
         View More Fares (+{flight.moreFares})
       </button>
 
-      {showMoreFares && (
-        <div className="px-4 sm:px-6 py-3 border-t border-blue-100">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">
-              {flight.fareType === "Refundable" ? "NON Refundable" : "Refundable"} fare
-            </span>
-            <span className="font-bold text-gray-900">₹{(flight.price - 400).toFixed(2)}</span>
+      <div
+        className={`grid overflow-hidden ${smooth} ${
+          showMoreFares ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0">
+          <div className={`px-4 sm:px-6 py-3 ${smooth} ${theme.moreFaresPanel}`}>
+            <div className="flex items-center justify-between text-sm">
+              <span>
+                {flight.fareType === "Refundable" ? "NON Refundable" : "Refundable"} fare
+              </span>
+              <span className={`font-bold ${smooth} ${theme.price}`}>₹{(flight.price - 400).toFixed(2)}</span>
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -327,13 +382,13 @@ const SeatSelectionModal = ({ flight, selectedSeat, onConfirm, onClose }) => {
             <p className="text-base font-bold text-gray-900 mb-2">{tempSeat || "-"}</p>
 
             <p className="text-xs text-gray-500">Total</p>
-            <p className="text-lg font-bold text-orange-600 mb-4">₹{tempSeat ? SEAT_PRICE.toFixed(2) : "0.00"}</p>
+            <p className="text-lg font-bold text-blue-600 mb-4">₹{tempSeat ? SEAT_PRICE.toFixed(2) : "0.00"}</p>
 
             <p className="text-xs font-bold text-gray-700 mb-2">Pax(s) Details</p>
             <div className="space-y-2">
               {[
                 { label: "Open Seat", color: "bg-white border border-gray-300" },
-                { label: "Selected Seat", color: "bg-orange-500" },
+                { label: "Selected Seat", color: "bg-blue-600" },
                 { label: "Occupied Seat", color: "bg-gray-800" },
                 { label: "Block Seat", color: "bg-red-500" },
                 { label: "Selected for other passenger", color: "bg-green-500" },
@@ -359,7 +414,7 @@ const SeatSelectionModal = ({ flight, selectedSeat, onConfirm, onClose }) => {
                         <button
                           key={seatId}
                           onClick={() => handleSeatClick(seatId, dummySeatStatus[seatId] || "open")}
-                          className={`w-7 h-7 rounded-md border flex items-center justify-center ${seatStyles[status]}`}
+                          className={`w-7 h-7 rounded-md border flex items-center justify-center transition-all duration-200 ${seatStyles[status]}`}
                         >
                           <MdEventSeat size={14} />
                         </button>
@@ -375,7 +430,7 @@ const SeatSelectionModal = ({ flight, selectedSeat, onConfirm, onClose }) => {
                         <button
                           key={seatId}
                           onClick={() => handleSeatClick(seatId, dummySeatStatus[seatId] || "open")}
-                          className={`w-7 h-7 rounded-md border flex items-center justify-center ${seatStyles[status]}`}
+                          className={`w-7 h-7 rounded-md border flex items-center justify-center transition-all duration-200 ${seatStyles[status]}`}
                         >
                           <MdEventSeat size={14} />
                         </button>
@@ -396,7 +451,7 @@ const SeatSelectionModal = ({ flight, selectedSeat, onConfirm, onClose }) => {
           <button
             onClick={() => { onConfirm(tempSeat); onClose(); }}
             disabled={!tempSeat}
-            className="bg-gradient-to-r from-orange-500 to-orange-400 disabled:from-gray-300 disabled:to-gray-300 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200 disabled:shadow-none"
+            className="bg-blue-600 disabled:bg-gray-300 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-200 disabled:shadow-none transition-all duration-300"
           >
             Confirm Seat
           </button>
@@ -420,7 +475,7 @@ const PassengerDetails = ({ flight }) => {
   return (
     <div className="">
       <div className="bg-white w-full sm:max-w-7xl rounded-t-3xl sm:rounded-3xl  flex flex-col mx-auto  ">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between flex-shrink-0">
+        <div className="bg-gradient-to-r from-blue-900 to-blue-950 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">Enter Your Details</h3>
     
         </div>
@@ -494,12 +549,12 @@ const PassengerDetails = ({ flight }) => {
               <p className="text-xs text-gray-500 mb-2">
                 Special Service Request For Trip <span className="font-bold text-gray-700">{flight.depCode} - {flight.arrCode}</span>
               </p>
-              <p className="text-sm font-semibold text-blue-600 mb-3">
+              <p className="text-sm font-semibold text-blue-800 mb-3">
                 {flight.depCode} - {flight.arrCode}
               </p>
               <button
                 onClick={() => setShowSeatModal(true)}
-                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-4 py-2.5 rounded-lg"
+                className="flex items-center gap-2 bg-blue-950 hover:bg-blue-750 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition-all duration-300"
               >
                 <MdEventSeat size={16} />
                 SEAT
@@ -521,8 +576,8 @@ const PassengerDetails = ({ flight }) => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   onClick={() => setPaymentMethod("online")}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 text-sm font-semibold ${
-                    paymentMethod === "online" ? "border-orange-500 text-orange-600 bg-orange-50" : "border-gray-200 text-gray-500"
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 text-sm font-semibold transition-all duration-300 ${
+                    paymentMethod === "online" ? "border-blue-600 text-blue-700 bg-blue-50" : "border-gray-200 text-gray-500"
                   }`}
                 >
                   <FiCreditCard size={16} />
@@ -530,8 +585,8 @@ const PassengerDetails = ({ flight }) => {
                 </button>
                 <button
                   onClick={() => setPaymentMethod("wallet")}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 text-sm font-semibold ${
-                    paymentMethod === "wallet" ? "border-orange-500 text-orange-600 bg-orange-50" : "border-gray-200 text-gray-500"
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 text-sm font-semibold transition-all duration-300 ${
+                    paymentMethod === "wallet" ? "border-blue-600 text-blue-700 bg-blue-50" : "border-gray-200 text-gray-500"
                   }`}
                 >
                   <TbWallet size={16} />
@@ -539,7 +594,7 @@ const PassengerDetails = ({ flight }) => {
                 </button>
                 <button
                  
-                  className="sm:ml-auto bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
+                  className="sm:ml-auto bg-blue-950 hover:bg-blue-750 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-200 transition-all duration-300"
                 >
                   Book Now
                 </button>
@@ -570,9 +625,9 @@ const PassengerDetails = ({ flight }) => {
               <div className="flex flex-col items-center px-1">
                 <p className="text-[10px] text-gray-400 mb-1 whitespace-nowrap">{flight.duration}</p>
                 <div className="flex items-center gap-1 w-10">
-                  <span className="h-px flex-1 border-t border-dashed border-orange-400" />
-                  <TbPlaneDeparture className="text-orange-500 rotate-90 flex-shrink-0" size={12} />
-                  <span className="h-px flex-1 border-t border-dashed border-orange-400" />
+                  <span className="h-px flex-1 border-t border-dashed border-blue-400" />
+                  <TbPlaneDeparture className="text-blue-500 rotate-90 flex-shrink-0" size={12} />
+                  <span className="h-px flex-1 border-t border-dashed border-blue-400" />
                 </div>
               </div>
               <div className="text-right">
@@ -637,15 +692,15 @@ const PassengerDetails = ({ flight }) => {
 const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden mt-4">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden mt-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-900 to-blue-950 px-5 py-4 flex items-center justify-between">
         <h3 className="text-white font-bold text-base">Your Selected Booking Details</h3>
       </div>
 
       {/* Flight Info */}
       <div className="px-5 py-5">
-        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+        <div className="bg-blue-100 border border-blue-500 rounded-2xl p-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 rounded-xl ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0`}>
@@ -659,7 +714,7 @@ const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
                 <p className="text-xs text-gray-500 mt-0.5">{flight.fareType}</p>
               </div>
             </div>
-            <button className="text-xs font-bold text-orange-600 hover:text-orange-700 flex-shrink-0">
+            <button className="text-xs font-bold text-blue-600 hover:text-blue-700 flex-shrink-0">
               Show Rules
             </button>
           </div>
@@ -673,9 +728,9 @@ const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
             <div className="flex flex-col items-center px-2">
               <p className="text-xs text-gray-500 mb-1 whitespace-nowrap">{flight.duration}</p>
               <div className="flex items-center gap-1 w-16">
-                <span className="h-px flex-1 border-t border-dashed border-orange-400" />
-                <TbPlaneDeparture className="text-orange-500 rotate-90 flex-shrink-0" size={14} />
-                <span className="h-px flex-1 border-t border-dashed border-orange-400" />
+                <span className="h-px flex-1 border-t border-dashed border-blue-400" />
+                <TbPlaneDeparture className="text-blue-500 rotate-90 flex-shrink-0" size={14} />
+                <span className="h-px flex-1 border-t border-dashed border-blue-400" />
               </div>
               <p className="text-xs font-semibold text-blue-600 mt-1 whitespace-nowrap">{flight.stops}</p>
             </div>
@@ -711,7 +766,7 @@ const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
         </div>
         <button
           onClick={() => setShowPassengerModal(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-200"
+          className="bg-blue-950 hover:bg-blue-800 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-200 transition-all duration-300"
         >
           Next
         </button>
@@ -720,7 +775,7 @@ const InlineBookingCard = ({ flight, setShowPassengerModal }) => {
   );
 };
 
-const FlightFilterSidebar = ({ filters, setFilters, setShowBookingModal, showBookingModal, flight, setShowPassengerModal }) => {
+const FlightFilterBar = ({ filters, setFilters }) => {
   const airlineCounts = sampleFlights.reduce((acc, f) => {
     acc[f.airline] = (acc[f.airline] || 0) + 1;
     return acc;
@@ -752,86 +807,69 @@ const FlightFilterSidebar = ({ filters, setFilters, setShowBookingModal, showBoo
   };
 
   return (
-    <div> 
-    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden top-4">
-      <div className="flex items-center justify-between bg-blue-50 px-5 py-4">
-        <p className="text-sm font-bold text-gray-900">Filter Search</p>
-        <button
-          onClick={() => setFilters({ airlines: [], fareType: "", stop: "" })}
-          className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-        >
-          Clear
-        </button>
-      </div>
-
-      <div className="px-5 py-4 border-b border-gray-100">
-        <p className="text-sm font-bold text-gray-900 mb-3">Airlines</p>
-        <div className="space-y-2.5">
+    <div className="bg-blue-100 rounded-xl border border-gray-100 mb-4 px-5 py-4">
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="text-xs font-bold text-gray-800">AIRLINES</span>
           {Object.entries(airlineCounts).map(([airline, count]) => (
-            <label key={airline} className="flex items-center justify-between cursor-pointer">
-              <span className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="passengers"
-                  checked={filters.airlines.includes(airline)}
-                  onChange={() => toggleAirline(airline)}
-                  className="accent-blue-600 w-4 h-4"
-                />
-                <span className="text-sm text-gray-700">{airline}</span>
-              </span>
+            <label key={airline} className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filters.airlines.includes(airline)}
+                onChange={() => toggleAirline(airline)}
+                className="accent-blue-600 w-4 h-4"
+              />
+              <span className="text-sm text-gray-700">{airline}</span>
               <span className="text-xs text-gray-400">({count})</span>
             </label>
           ))}
         </div>
-      </div>
 
-      <div className="px-5 py-4 border-b border-gray-100">
-        <p className="text-sm font-bold text-gray-900 mb-3">Fare Type</p>
-        <div className="space-y-2.5">
+        <span className="hidden sm:block w-px h-6 bg-gray-100" />
+
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="text-xs font-bold text-gray-500">FARE TYPE</span>
           {Object.entries(fareTypeCounts).map(([fareType, count]) => (
-            <label key={fareType} className="flex items-center justify-between cursor-pointer">
-              <span className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="fareType"
-                  checked={filters.fareType === fareType}
-                  onChange={() => setFareType(fareType)}
-                  className="accent-blue-600 w-4 h-4"
-                />
-                <span className="text-sm text-gray-700">{fareType}</span>
-              </span>
-              <span className="text-xs text-gray-400">{count}</span>
+            <label key={fareType} className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="radio"
+                name="fareType"
+                checked={filters.fareType === fareType}
+                onChange={() => setFareType(fareType)}
+                className="accent-blue-600 w-4 h-4"
+              />
+              <span className="text-sm text-gray-700">{fareType}</span>
+              <span className="text-xs text-gray-400">({count})</span>
             </label>
           ))}
         </div>
-      </div>
 
-      <div className="px-5 py-4">
-        <p className="text-sm font-bold text-gray-900 mb-3">Stop</p>
-        <div className="space-y-2.5">
+        <span className="hidden sm:block w-px h-6 bg-gray-100" />
+
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="text-xs font-bold text-gray-500">STOP</span>
           {Object.entries(stopCounts).map(([stop, count]) => (
-            <label key={stop} className="flex items-center justify-between cursor-pointer">
-              <span className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="stop"
-                  checked={filters.stop === stop}
-                  onChange={() => setStop(stop)}
-                  className="accent-blue-600 w-4 h-4"
-                />
-                <span className="text-sm text-gray-700">{stop}</span>
-              </span>
-              <span className="text-xs text-gray-400">{count}</span>
+            <label key={stop} className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="radio"
+                name="stop"
+                checked={filters.stop === stop}
+                onChange={() => setStop(stop)}
+                className="accent-blue-600 w-4 h-4"
+              />
+              <span className="text-sm text-gray-700">{stop}</span>
+              <span className="text-xs text-gray-400">({count})</span>
             </label>
           ))}
         </div>
-      </div>
-    </div>
 
-    {showBookingModal && flight && (
-      <InlineBookingCard flight={flight} onClose={() => setShowBookingModal(false)} setShowPassengerModal={setShowPassengerModal} />
-    )}
-      
+        <button
+          onClick={() => setFilters({ airlines: [], fareType: "", stop: "" })}
+          className="ml-auto text-xs font-semibold text-blue-600 hover:text-blue-700"
+        >
+          Clear
+        </button>
+      </div>
     </div>
   );
 };
@@ -954,376 +992,245 @@ const handleRemoveCity = (index) => {
     <div className="">
 
      { !showPassengerModal && ( <div> 
-      <section className="bg-[#0A1628] px-4 sm:px-8 lg:px-16 py-10 sm:py-14" style={{ backgroundImage: `url(${aero})` }}
- >
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-center text-2xl sm:text-3xl font-bold text-white mb-6">Book Your Flight</h1>
+      <section className="relative px-4 sm:px-8 lg:px-16 py-14 sm:py-20 overflow-hidden">
+        {/* background photo, clearly visible with just enough overlay for text contrast */}
+        <div className="absolute inset-0 -z-10">
+          <img src={aero} alt="" className="w-full h-full object-cover" />
+          {/* light overall wash so the photo stays visible but text still reads clearly */}
+          <div className="absolute inset-0 bg-white/35" />
+          {/* extra clarity right behind the headline only */}
+          <div className="absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-white/85 via-white/30 to-transparent" />
+          {/* short fade at the very bottom into the page background */}
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-blue-50" />
+        </div>
 
-          <div className="bg-white rounded-2xl p-5 sm:p-7 shadow-xl">
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mb-5">
+        {/* decorative dotted arcs — subtle, like the reference */}
+        <span className="hidden lg:block absolute left-[8%] top-[28%] text-xs italic text-gray-400 -rotate-6">Quick Bookings</span>
+        <svg className="hidden lg:block absolute left-[6%] top-[34%] w-28 h-20 text-gray-300" viewBox="0 0 120 80" fill="none">
+          <path d="M5 5 C -10 40, 30 70, 60 60" stroke="currentColor" strokeWidth="1" strokeDasharray="3 4" />
+        </svg>
+        <span className="hidden lg:block absolute right-[8%] top-[24%] text-xs italic text-gray-400 rotate-3">Trip Planner</span>
+        <svg className="hidden lg:block absolute right-[6%] top-[30%] w-28 h-24 text-gray-300" viewBox="0 0 120 90" fill="none">
+          <path d="M115 5 C 130 45, 90 75, 55 65" stroke="currentColor" strokeWidth="1" strokeDasharray="3 4" />
+        </svg>
+
+        <div className="relative max-w-3xl mx-auto text-center mb-10">
+          <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 leading-tight mb-4">
+            Discover Your Flight <br className="hidden sm:block" />
+            under <span className="text-gray-300">60</span> seconds
+          </h1>
+          <p className="text-sm sm:text-base text-gray-500 max-w-xl mx-auto">
+            Compare fares across airlines, pick your seat, and book your trip in minutes — all in one place.
+          </p>
+        </div>
+
+        <div className="relative max-w-5xl mx-auto">
+          <div className="bg-white/30 backdrop-blur rounded-3xl shadow-xl shadow-blue-200/160 border border-gray-500 p-5 sm:p-7">
+            {/* trip type — pill segmented control */}
+            <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full p-1 mb-6">
               {tripTypes.map((type) => (
-                <label key={type} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="tripType"
-                    checked={tripType === type}
-                    onChange={() => setTripType(type)}
-                    className="accent-blue-600 w-4 h-4"
-                  />
-                  <span className={`text-sm font-medium ${tripType === type ? "text-blue-700 font-semibold" : "text-gray-600"}`}>
-                    {type}
-                  </span>
-                </label>
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setTripType(type)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    tripType === type
+                      ? "bg-white text-gray-900 shadow"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {type === "One way" ? <TbPlaneDeparture size={14} /> : null}
+                  {type}
+                </button>
               ))}
             </div>
 
-            {/* <form onSubmit={handleSubmit}>
-              <div className="bg-blue-50 rounded-xl p-4 sm:p-5">
-                <div
-                  className={`grid grid-cols-1 sm:grid-cols-2 ${
-                    isRoundTrip ? "lg:grid-cols-6" : "lg:grid-cols-5"
-                  } gap-4 lg:gap-3 items-end relative`}
-                >
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1">From</p>
-                    <input
-                      type="text"
-                      value={form.from}
-                      onChange={(e) => handleChange("from", e.target.value)}
-                      placeholder="From"
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent"
-                    />
-                  </div>
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-3">
 
-                  <button
-                    type="button"
-                    onClick={handleSwap}
-                    className="hidden lg:flex absolute left-[12%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-blue-200 rounded-full items-center justify-center shadow"
+                <div className="rounded-2xl border border-gray-100 bg-gray-50/60 overflow-hidden">
+                  <div
+                    className={`grid grid-cols-1 sm:grid-cols-2 ${
+                      isRoundTrip ? "lg:grid-cols-6" : "lg:grid-cols-5"
+                    } divide-y sm:divide-y-0 sm:divide-x divide-gray-100 relative`}
                   >
-                    <FiRepeat className="text-blue-600" size={14} />
-                  </button>
-
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1">To</p>
-                    <input
-                      type="text"
-                      value={form.to}
-                      onChange={(e) => handleChange("to", e.target.value)}
-                      placeholder="To"
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent "
-                    />
-                  </div>
-
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                      <FiCalendar size={11} /> Departure
-                    </p>
-                    <input
-                      type="date"
-                      value={form.departure}
-                      onChange={(e) => handleChange("departure", e.target.value)}
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                    />
-                  </div>
-
-                  {isRoundTrip && (
-                    <div className="lg:col-span-1">
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                        <FiCalendar size={11} /> Return
-                      </p>
-                      <input
-                        type="date"
-                        value={form.returnDate}
-                        onChange={(e) => handleChange("returnDate", e.target.value)}
-                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                      />
-                    </div>
-                  )}
-
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                      <FiUsers size={11} /> Passengers No.
-                    </p>
-                    <select
-                      value={form.passengers}
-                      onChange={(e) => handleChange("passengers", Number(e.target.value))}
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((n) => (
-                        <option key={n} value={n}>
-                          {n} Passenger{n > 1 ? "s" : ""}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1">Class Type</p>
-                    <select
-                      value={form.classType}
-                      onChange={(e) => handleChange("classType", e.target.value)}
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                    >
-                      {classTypes.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 mt-5">
-                {tripType === "Multi-City" && (<button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-7 py-3 rounded-xl">
-                     Add City
-                   </button>)
-                }
-                <button
-                  type="submit"
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-7 py-3 rounded-xl"
-                >
-                  Search Flight <TbPlaneDeparture size={17} />
-                </button>
-              </div>
-            </form> */}
-
-          <form onSubmit={handleSubmit}>
-          <div className="space-y-3">
-            
-            <div className="bg-blue-50 rounded-xl p-4 sm:p-5">
-              <div
-                className={`grid grid-cols-1 sm:grid-cols-2 ${
-                  isRoundTrip ? "lg:grid-cols-6" : "lg:grid-cols-5"
-                } gap-4 lg:gap-3 items-end relative`}
-              >
-                <div className="lg:col-span-1">
-                  <p className="text-[11px] font-semibold text-gray-500 mb-1">
-                    From
-                  </p>
-
-                  <input
-                    type="text"
-                    value={form.from}
-                    onChange={(e) => handleChange("from", e.target.value)}
-                    placeholder="From"
-                    className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSwap}
-                  className="hidden lg:flex absolute left-[12%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-blue-200 rounded-full items-center justify-center shadow"
-                >
-                  <FiRepeat className="text-blue-600" size={14} />
-                </button>
-
-                <div className="lg:col-span-1">
-                  <p className="text-[11px] font-semibold text-gray-500 mb-1">
-                    To
-                  </p>
-
-                  <input
-                    type="text"
-                    value={form.to}
-                    onChange={(e) => handleChange("to", e.target.value)}
-                    placeholder="To"
-                    className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent"
-                  />
-                </div>
-
-                <div className="lg:col-span-1">
-                  <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                    <FiCalendar size={11} />
-                    Departure
-                  </p>
-
-                  <input
-                    type="date"
-                    value={form.departure}
-                    onChange={(e) =>
-                      handleChange("departure", e.target.value)
-                    }
-                    className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                  />
-                </div>
-
-                {isRoundTrip && (
-                  <div className="lg:col-span-1">
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                      <FiCalendar size={11} />
-                      Return
-                    </p>
-
-                    <input
-                      type="date"
-                      value={form.returnDate}
-                      onChange={(e) =>
-                        handleChange("returnDate", e.target.value)
-                      }
-                      className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                    />
-                  </div>
-                )}
-
-                <div className="lg:col-span-1">
-                  <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
-                    <FiUsers size={11} />
-                    Passengers No.
-                  </p>
-
-                  <select
-                    value={form.passengers}
-                    onChange={(e) =>
-                      handleChange("passengers", Number(e.target.value))
-                    }
-                    className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                      <option key={n} value={n}>
-                        {n} Passenger{n > 1 ? "s" : ""}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="lg:col-span-1">
-                  <p className="text-[11px] font-semibold text-gray-500 mb-1">
-                    Class Type
-                  </p>
-
-                  <select
-                    value={form.classType}
-                    onChange={(e) =>
-                      handleChange("classType", e.target.value)
-                    }
-                    className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
-                  >
-                    {classTypes.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            
-            {tripType === "Multi-City" &&
-              form.cities.map((city, index) => (
-                <div
-                  key={index}
-                  className="bg-blue-50 rounded-xl p-4 sm:p-5"
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-3 items-end relative">
-                    <div className="lg:col-span-1">
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1">
-                        From
-                      </p>
-
+                    <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                      <p className="text-[11px] font-semibold text-gray-400 mb-1">From</p>
                       <input
                         type="text"
-                        value={city.from}
-                        onChange={(e) =>
-                          handleCityChange(
-                            index,
-                            "from",
-                            e.target.value
-                          )
-                        }
+                        value={form.from}
+                        onChange={(e) => handleChange("from", e.target.value)}
                         placeholder="From"
-                        className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent"
+                        className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none"
                       />
                     </div>
 
                     <button
                       type="button"
-                      onClick={() => handleCitySwap(index)}
-                      className="hidden lg:flex absolute left-[16%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-blue-200 rounded-full items-center justify-center shadow"
+                      onClick={handleSwap}
+                      className="hidden lg:flex absolute z-10 top-1/2 -translate-y-1/2 w-8 h-8 bg-white border border-gray-200 rounded-full items-center justify-center shadow transition-all duration-300 hover:border-blue-300 hover:rotate-180"
+                      style={{ left: `calc(${100 / (isRoundTrip ? 6 : 5)}% - 16px)` }}
                     >
-                      <FiRepeat
-                        className="text-blue-600"
-                        size={14}
-                      />
+                      <FiRepeat className="text-blue-600" size={14} />
                     </button>
 
-                    <div className="lg:col-span-1">
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1">
-                        To
-                      </p>
-
+                    <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                      <p className="text-[11px] font-semibold text-gray-400 mb-1">To</p>
                       <input
                         type="text"
-                        value={city.to}
-                        onChange={(e) =>
-                          handleCityChange(
-                            index,
-                            "to",
-                            e.target.value
-                          )
-                        }
+                        value={form.to}
+                        onChange={(e) => handleChange("to", e.target.value)}
                         placeholder="To"
-                        className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none border-b border-transparent"
+                        className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none"
                       />
                     </div>
 
-                    <div className="lg:col-span-1">
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1 flex items-center gap-1">
+                    <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                      <p className="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1">
                         <FiCalendar size={11} />
                         Departure
                       </p>
-
                       <input
                         type="date"
-                        value={city.departure}
-                        onChange={(e) =>
-                          handleCityChange(
-                            index,
-                            "departure",
-                            e.target.value
-                          )
-                        }
-                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none border-b border-transparent focus:border-blue-400 pb-1"
+                        value={form.departure}
+                        onChange={(e) => handleChange("departure", e.target.value)}
+                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
                       />
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCity(index)}
-                      className="absolute right-0 top-0 w-8 h-8 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all"
-                      title="Remove city"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    {isRoundTrip && (
+                      <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                        <p className="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1">
+                          <FiCalendar size={11} />
+                          Return
+                        </p>
+                        <input
+                          type="date"
+                          value={form.returnDate}
+                          onChange={(e) => handleChange("returnDate", e.target.value)}
+                          className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                        />
+                      </div>
+                    )}
+
+                    <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                      <p className="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1">
+                        <FiUsers size={11} />
+                        Passengers No.
+                      </p>
+                      <select
+                        value={form.passengers}
+                        onChange={(e) => handleChange("passengers", Number(e.target.value))}
+                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                      >
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                          <option key={n} value={n}>
+                            {n} Passenger{n > 1 ? "s" : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                      <p className="text-[11px] font-semibold text-gray-400 mb-1">Class Type</p>
+                      <select
+                        value={form.classType}
+                        onChange={(e) => handleChange("classType", e.target.value)}
+                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                      >
+                        {classTypes.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              ))}
+
+                {tripType === "Multi-City" &&
+                  form.cities.map((city, index) => (
+                    <div key={index} className="rounded-2xl border border-gray-100 bg-gray-50/60 overflow-hidden relative">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+                        <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                          <p className="text-[11px] font-semibold text-gray-400 mb-1">From</p>
+                          <input
+                            type="text"
+                            value={city.from}
+                            onChange={(e) => handleCityChange(index, "from", e.target.value)}
+                            placeholder="From"
+                            className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none"
+                          />
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleCitySwap(index)}
+                          className="hidden lg:flex absolute z-10 left-1/4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-gray-200 rounded-full items-center justify-center shadow transition-all duration-300 hover:border-blue-300 hover:rotate-180"
+                        >
+                          <FiRepeat className="text-blue-600" size={14} />
+                        </button>
+
+                        <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                          <p className="text-[11px] font-semibold text-gray-400 mb-1">To</p>
+                          <input
+                            type="text"
+                            value={city.to}
+                            onChange={(e) => handleCityChange(index, "to", e.target.value)}
+                            placeholder="To"
+                            className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                          <p className="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1">
+                            <FiCalendar size={11} />
+                            Departure
+                          </p>
+                          <input
+                            type="date"
+                            value={city.departure}
+                            onChange={(e) => handleCityChange(index, "departure", e.target.value)}
+                            className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCity(index)}
+                        className="absolute right-2 top-2 w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all duration-300"
+                        title="Remove city"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 mt-5">
+                {tripType === "Multi-City" && (
+                  <button
+                    type="button"
+                    onClick={handleAddCity}
+                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-bold px-6 py-3 rounded-full transition-all duration-300"
+                  >
+                    <Plus size={17} />
+                    Add City
+                  </button>
+                )}
+
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white text-sm font-bold px-7 py-3 rounded-full shadow-lg shadow-gray-300/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl"
+                >
+                  Search Flight
+                  <TbPlaneDeparture size={17} />
+                </button>
+              </div>
+            </form>
           </div>
 
-          <div className="flex items-center justify-end gap-3 mt-5">
-            {tripType === "Multi-City" && (
-              <button
-                type="button"
-                onClick={handleAddCity}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-7 py-3 rounded-xl"
-              >
-                <Plus size={17} />
-                Add City
-              </button>
-            )}
-
-            <button
-              type="submit"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-7 py-3 rounded-xl"
-            >
-              Search Flight
-              <TbPlaneDeparture size={17} />
-            </button>
-          </div>
-        </form>
-          </div>
         </div>
       </section>
 
@@ -1339,31 +1246,31 @@ const handleRemoveCity = (index) => {
               </p>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-              <div>
-                {filteredFlights.length === 0 ? (
-                  <div className="bg-white rounded-xl border border-gray-100 p-10 text-center text-sm text-gray-500">
-                    No flights match the selected filters. Try clearing a filter.
-                  </div>
-                ) : (
-                  filteredFlights.map((flight) => (
-                    <FlightResultCard
-                      key={flight.id}
-                      flight={flight}
-                      isSelected={selectedIds.includes(flight.id)}
-                      onToggleSelect={toggleSelect}
-                      setShowBookingModal={setShowBookingModal} 
-                      showBookingModal={showBookingModal}
+            <FlightFilterBar filters={filters} setFilters={setFilters} />
 
-                    />
-                  ))
-                )}
-              </div>
-
-              <FlightFilterSidebar filters={filters}  setFilters={setFilters}  setShowBookingModal={setShowBookingModal}   showBookingModal={showBookingModal} flight={selectedFlight} 
-              setShowPassengerModal={setShowPassengerModal} showPassengerModal={showPassengerModal}
-              />
+            <div>
+              {filteredFlights.length === 0 ? (
+                <div className="bg-white rounded-xl border border-gray-100 p-10 text-center text-sm text-gray-500">
+                  No flights match the selected filters. Try clearing a filter.
+                </div>
+              ) : (
+                filteredFlights.map((flight, index) => (
+                  <FlightResultCard
+                    key={flight.id}
+                    flight={flight}
+                    index={index}
+                    isSelected={selectedIds.includes(flight.id)}
+                    onToggleSelect={toggleSelect}
+                    setShowBookingModal={setShowBookingModal}
+                    showBookingModal={showBookingModal}
+                  />
+                ))
+              )}
             </div>
+
+            {showBookingModal && selectedFlight && (
+              <InlineBookingCard flight={selectedFlight} setShowPassengerModal={setShowPassengerModal} />
+            )}
           </div>
         </div>
       )}
