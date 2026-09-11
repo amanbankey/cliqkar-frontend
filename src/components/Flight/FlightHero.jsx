@@ -119,6 +119,9 @@ const airlineColors = {
   "Air India": "bg-red-600",
 };
 
+/* fixed bar-width pattern so the decorative barcode never reflows on re-render */
+const barcodePattern = [2, 1, 3, 1, 2, 3, 1, 1, 2, 3, 1, 2, 1, 3, 2, 1, 1, 3, 2, 1];
+
 /* =========================================================
    OLD BOOKING MODAL
    ========================================================= */
@@ -133,7 +136,6 @@ const FlightBookingModal = ({
     <div className="fixed inset-0 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm px-0 sm:px-4">
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
 
-        {/* <div className="bg-slate-800 px-5 py-4 flex items-center justify-between flex-shrink-0"> */}
         <div className="bg-gradient-to-r from-blue-900 to-blue-950 px-5 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-white font-bold text-base">
             Your Selected Booking Details
@@ -264,7 +266,7 @@ const FlightBookingModal = ({
 };
 
 /* =========================================================
-   FLIGHT RESULT CARD
+   FLIGHT RESULT CARD — BOARDING PASS TICKET STYLE
    ========================================================= */
 
 const FlightResultCard = ({
@@ -283,216 +285,216 @@ const FlightResultCard = ({
     setShowBookingModal(true);
   };
 
-  const theme = {
-    card: "bg-white border-gray-100 hover:bg-[#0A1628] hover:border-[#0A1628]",
-    airlineName: "text-gray-900 group-hover:text-white",
-    flightNo: "text-gray-400 group-hover:text-slate-400",
-    time: "text-gray-900 group-hover:text-white",
-    code: "text-gray-500 group-hover:text-slate-400",
-    duration: "text-gray-500 group-hover:text-slate-400",
-    line: "border-blue-300 group-hover:border-blue-400/50",
-    stopText: "text-gray-600 group-hover:text-blue-300",
-    price: "text-gray-900 group-hover:text-white",
-    dateRow: "border-t border-gray-50 group-hover:border-white/10",
-    dateText: "text-gray-500 group-hover:text-slate-400",
-    detailsBtn: "text-blue-600 group-hover:text-blue-300",
-    detailsPanel:
-      "bg-gray-50 text-gray-500 border-t border-gray-100 group-hover:bg-white/5 group-hover:text-slate-300 group-hover:border-white/10",
-    moreFaresBtn:
-      "bg-blue-50 text-blue-600 group-hover:bg-blue-500/10 group-hover:text-blue-300",
-    moreFaresPanel:
-      "border-t border-blue-100 text-gray-600 group-hover:border-blue-400/20 group-hover:text-slate-300",
-    pricePanel:
-      "border-gray-200 bg-gray-50 group-hover:border-white/15 group-hover:bg-white/5",
-    badge:
-      "bg-blue-50 text-blue-700 group-hover:bg-blue-500/15 group-hover:text-blue-300",
-    startsAt: "text-gray-400 group-hover:text-slate-400",
-  };
-
-  const smooth =
-    "transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]";
+  const smooth = "transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]";
 
   return (
     <div
-      className={`group rounded-xl border mb-3 overflow-hidden ${smooth}
-      hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-900/10
-      will-change-transform ${theme.card}`}
+      className={`group relative rounded-xl border border-gray-100 mb-3.5 overflow-hidden bg-white ${smooth}
+      hover:bg-[#0A1628] hover:border-[#0A1628] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:shadow-blue-900/30 will-change-transform`}
     >
-      <div className="px-4 sm:px-6 py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-3 sm:w-44 flex-shrink-0">
-            <div
-              className={`w-11 h-11 rounded-lg ${
-                airlineColors[flight.airline] || "bg-gray-700"
-              } flex items-center justify-center flex-shrink-0 ${smooth} group-hover:scale-110 group-hover:rotate-3`}
-            >
-              <TbPlaneDeparture className="text-white" size={18} />
-            </div>
+      {/* outer edge notches, like a torn ticket stub */}
+      <span
+        className={`hidden sm:block absolute left-[calc(100%-152px)] -top-2 w-4 h-4 rounded-full bg-gray-50 border border-gray-100 z-10 ${smooth} group-hover:bg-[#0A1628] group-hover:border-white/10`}
+      />
+      <span
+        className={`hidden sm:block absolute left-[calc(100%-152px)] -bottom-2 w-4 h-4 rounded-full bg-gray-50 border border-gray-100 z-10 ${smooth} group-hover:bg-[#0A1628] group-hover:border-white/10`}
+      />
 
-            <div>
-              <p
-                className={`text-sm font-bold ${smooth} ${theme.airlineName}`}
-              >
-                {flight.airline}
-              </p>
-
-              <p className={`text-xs ${smooth} ${theme.flightNo}`}>
-                {flight.flightNo}
-              </p>
-            </div>
+      {/* Ticket header band — dark navy at rest, not blue */}
+      <div className="flex items-center justify-between px-4 py-2 bg-[#0A1628]">
+        <div className="flex items-center gap-1.5 text-white">
+          <TbPlaneDeparture size={14} className="-rotate-45" />
+          <span className="font-bold text-[10px] sm:text-xs tracking-widest">
+            BOARDING PASS
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div
+            className={`w-5 h-5 rounded ${airlineColors[flight.airline] || "bg-gray-700"} flex items-center justify-center flex-shrink-0`}
+          >
+            <TbPlaneDeparture className="text-white" size={10} />
           </div>
+          <span className="text-white/90 text-[11px] font-semibold">
+            {flight.airline} · {flight.flightNo}
+          </span>
+        </div>
+      </div>
 
-          <div className="flex-1 flex items-center gap-4 sm:gap-8">
-            <div className="text-center">
-              <p className={`text-base font-bold ${smooth} ${theme.time}`}>
-                {flight.depTime}
+      {/* Ticket body */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_150px]">
+        {/* Main stub — route + meta */}
+        <div className="px-4 sm:px-5 py-3.5">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div>
+              <p className={`text-[9px] font-bold tracking-widest mb-0.5 text-gray-400 ${smooth} group-hover:text-slate-400`}>
+                FROM
               </p>
-              <p className={`text-xs ${smooth} ${theme.code}`}>
+              <p className={`text-2xl font-extrabold text-gray-900 ${smooth} group-hover:text-white`}>
                 {flight.depCode}
               </p>
+              <p className={`text-[11px] font-semibold text-blue-600 mt-0.5 ${smooth} group-hover:text-blue-300`}>
+                {flight.depTime}
+              </p>
             </div>
 
-            <div className="flex-1 min-w-[100px] text-center">
-              <p className={`text-xs ${smooth} ${theme.duration}`}>
+            <div className="flex flex-col items-center px-1">
+              <TbPlaneDeparture
+                className={`text-blue-500 mb-0.5 ${smooth} group-hover:text-blue-300 group-hover:translate-x-1`}
+                size={16}
+              />
+              <div className={`w-10 sm:w-14 border-t border-dashed border-gray-300 ${smooth} group-hover:border-white/20`} />
+              <p className={`text-[9px] mt-0.5 whitespace-nowrap text-gray-400 ${smooth} group-hover:text-slate-400`}>
                 {flight.duration}
               </p>
-
-              <div className="flex items-center gap-1 my-1">
-                <span
-                  className={`h-px flex-1 border-t border-dashed ${smooth} ${theme.line}`}
-                />
-
-                <TbPlaneDeparture
-                  className={`text-blue-400 rotate-90 flex-shrink-0 ${smooth} group-hover:translate-x-1`}
-                  size={14}
-                />
-
-                <span
-                  className={`h-px flex-1 border-t border-dashed ${smooth} ${theme.line}`}
-                />
-              </div>
-
-              <p
-                className={`text-xs font-semibold ${smooth} ${theme.stopText}`}
-              >
-                {flight.stops}
-              </p>
             </div>
 
-            <div className="text-center">
-              <p className={`text-base font-bold ${smooth} ${theme.time}`}>
-                {flight.arrTime}
+            <div className="text-right">
+              <p className={`text-[9px] font-bold tracking-widest mb-0.5 text-gray-400 ${smooth} group-hover:text-slate-400`}>
+                TO
               </p>
-
-              <p className={`text-xs ${smooth} ${theme.code}`}>
+              <p className={`text-2xl font-extrabold text-gray-900 ${smooth} group-hover:text-white`}>
                 {flight.arrCode}
+              </p>
+              <p className={`text-[11px] font-semibold text-blue-600 mt-0.5 ${smooth} group-hover:text-blue-300`}>
+                {flight.arrTime}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <p className={`text-[11px] mt-2 text-gray-400 ${smooth} group-hover:text-slate-400`}>
+            {flight.date} ·{" "}
+            <span className={`font-semibold text-gray-500 ${smooth} group-hover:text-slate-300`}>{flight.stops}</span>
+          </p>
+
+          <div
+            className={`grid grid-cols-3 gap-2 mt-2.5 pt-2.5 border-t border-dashed border-gray-100 ${smooth} group-hover:border-white/10`}
+          >
+            <div>
+              <p className={`text-[8px] font-bold tracking-widest text-gray-400 ${smooth} group-hover:text-slate-500`}>
+                CLASS
+              </p>
+              <p className={`text-[11px] font-bold text-gray-800 mt-0.5 ${smooth} group-hover:text-white`}>
+                ECONOMY
+              </p>
+            </div>
+            <div>
+              <p className={`text-[8px] font-bold tracking-widest text-gray-400 ${smooth} group-hover:text-slate-500`}>
+                FARE TYPE
+              </p>
+              <p className={`text-[11px] font-bold text-gray-800 mt-0.5 ${smooth} group-hover:text-white`}>
+                {flight.fareType}
+              </p>
+            </div>
+            <div>
+              <p className={`text-[8px] font-bold tracking-widest text-gray-400 ${smooth} group-hover:text-slate-500`}>
+                BAGGAGE
+              </p>
+              <p className={`text-[11px] font-bold text-gray-800 mt-0.5 ${smooth} group-hover:text-white`}>
+                15 KG
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Perforation divider with notches, ticket-style */}
+        <div className="hidden sm:block relative">
+          <span
+            className={`absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-50 border border-gray-100 ${smooth} group-hover:bg-[#0A1628] group-hover:border-white/10`}
+          />
+          <div className={`h-full border-l-2 border-dashed border-gray-200 ${smooth} group-hover:border-white/15`} />
+          <span
+            className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-50 border border-gray-100 ${smooth} group-hover:bg-[#0A1628] group-hover:border-white/10`}
+          />
+        </div>
+        <div className={`sm:hidden border-t-2 border-dashed border-gray-200 mx-4 ${smooth} group-hover:border-white/15`} />
+
+        {/* Right stub — price + checkbox + barcode */}
+        <div
+          className={`bg-gray-50 ${smooth} group-hover:bg-white/5 px-4 py-3.5 flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-2`}
+        >
+          <div className="text-left sm:text-right">
+            <p className={`text-[8px] font-bold tracking-widest text-gray-400 ${smooth} group-hover:text-slate-500`}>
+              PRICE
+            </p>
+            <p className={`text-lg font-extrabold text-gray-900 ${smooth} group-hover:text-white`}>
+              ₹{flight.price.toFixed(0)}
+            </p>
+            <p className={`text-[9px] mt-0.5 text-gray-400 ${smooth} group-hover:text-slate-400`}>
+              +{flight.moreFares} more fare{flight.moreFares > 1 ? "s" : ""}
+            </p>
+          </div>
+
+          <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5">
             <input
               type="checkbox"
               checked={isSelected}
               onChange={handleCheckboxClick}
               className="accent-blue-600 w-4 h-4"
             />
-
-            <div
-              className={`rounded-xl border px-4 py-2.5 text-right min-w-[130px] ${smooth} group-hover:scale-[1.03] ${theme.pricePanel}`}
-            >
-              <span
-                className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 ${smooth} ${theme.badge}`}
-              >
-                ECONOMY
-              </span>
-
-              <p className={`text-[10px] ${smooth} ${theme.startsAt}`}>
-                Starts at
-              </p>
-
-              <p
-                className={`text-base font-bold flex items-center justify-end gap-1 ${smooth} ${theme.price}`}
-              >
-                ₹{flight.price.toFixed(2)}
-                <FiChevronDown size={12} />
-              </p>
+            <div className="flex items-end gap-[1.5px] h-4">
+              {barcodePattern.map((w, i) => (
+                <span
+                  key={i}
+                  className={`bg-gray-700 ${smooth} group-hover:bg-slate-300`}
+                  style={{ width: `${w}px`, height: i % 3 === 0 ? "100%" : "65%" }}
+                />
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        className={`flex items-center justify-between px-4 sm:px-6 py-2.5 ${smooth} ${theme.dateRow}`}
-      >
-        <p className={`text-xs ${smooth} ${theme.dateText}`}>
-          {flight.date}
+      {/* Date row + view more details */}
+      <div className={`flex items-center justify-between px-4 sm:px-5 py-2 border-t border-gray-50 ${smooth} group-hover:border-white/10`}>
+        <p className={`text-[11px] text-gray-400 ${smooth} group-hover:text-slate-400`}>
+          Ticket ID #{flight.id.toString().padStart(6, "0")}
         </p>
-
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className={`flex items-center gap-1 text-xs font-semibold ${smooth} hover:gap-2 ${theme.detailsBtn}`}
+          className={`flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:gap-1.5 ${smooth} group-hover:text-blue-300`}
         >
-          {showDetails ? (
-            <FiChevronUp size={13} />
-          ) : (
-            <FiChevronDown size={13} />
-          )}
+          {showDetails ? <FiChevronUp size={12} /> : <FiChevronDown size={12} />}
           View More Details
         </button>
       </div>
 
       <div
         className={`grid overflow-hidden ${smooth} ${
-          showDetails
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0"
+          showDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
         <div className="min-h-0">
           <div
-            className={`px-4 sm:px-6 py-3 text-xs leading-relaxed ${smooth} ${theme.detailsPanel}`}
+            className={`px-4 sm:px-5 py-2.5 text-[11px] leading-relaxed bg-gray-50 text-gray-500 border-t border-gray-100 ${smooth} group-hover:bg-white/5 group-hover:text-slate-300 group-hover:border-white/10`}
           >
-            Fare type:{" "}
-            <span className="font-semibold">{flight.fareType}</span> · Cabin
-            baggage 7KG · Check-in baggage 15KG · Operated by{" "}
-            {flight.airline}.
+            Fare type: <span className="font-semibold">{flight.fareType}</span> · Cabin
+            baggage 7KG · Check-in baggage 15KG · Operated by {flight.airline}.
           </div>
         </div>
       </div>
 
       <button
         onClick={() => setShowMoreFares(!showMoreFares)}
-        className={`w-full flex items-center gap-1.5 justify-start px-4 sm:px-6 py-2.5 text-xs font-semibold ${smooth} hover:gap-2.5 ${theme.moreFaresBtn}`}
+        className={`w-full flex items-center gap-1.5 justify-start px-4 sm:px-5 py-2 text-[11px] font-semibold bg-blue-50 text-blue-600 hover:gap-2 ${smooth} group-hover:bg-blue-500/10 group-hover:text-blue-300`}
       >
-        {showMoreFares ? (
-          <FiChevronUp size={13} />
-        ) : (
-          <FiChevronDown size={13} />
-        )}
+        {showMoreFares ? <FiChevronUp size={12} /> : <FiChevronDown size={12} />}
         View More Fares (+{flight.moreFares})
       </button>
 
       <div
         className={`grid overflow-hidden ${smooth} ${
-          showMoreFares
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0"
+          showMoreFares ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
         <div className="min-h-0">
           <div
-            className={`px-4 sm:px-6 py-3 ${smooth} ${theme.moreFaresPanel}`}
+            className={`px-4 sm:px-5 py-2.5 border-t border-blue-100 text-gray-600 ${smooth} group-hover:border-blue-400/20 group-hover:text-slate-300`}
           >
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-[13px]">
               <span>
-                {flight.fareType === "Refundable"
-                  ? "NON Refundable"
-                  : "Refundable"}{" "}
-                fare
+                {flight.fareType === "Refundable" ? "NON Refundable" : "Refundable"} fare
               </span>
-
-              <span className={`font-bold ${smooth} ${theme.price}`}>
+              <span className={`font-bold text-gray-900 ${smooth} group-hover:text-white`}>
                 ₹{(flight.price - 400).toFixed(2)}
               </span>
             </div>
@@ -1447,18 +1449,10 @@ const FlightHero = () => {
   const [bookingStep, setBookingStep] = useState(0);
 
   /*
-    IMPORTANT:
     Jab Next click hoga aur bookingStep 1 hoga,
     page automatically top par chala jayega.
   */
-  {/*useEffect(() => {
-    if (bookingStep === 1) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  }, [bookingStep]);*/}
+ 
 
   const handleChange = (field, value) => {
     setForm((prev) => ({
@@ -2051,12 +2045,6 @@ const FlightHero = () => {
                 )
               )}
             </div>
-
-            {/* =================================================
-                SAME INLINE BOOKING FLOW
-                STEP 0 -> BOOKING DETAILS
-                STEP 1 -> PASSENGER DETAILS
-               ================================================= */}
 
             {showBookingModal && selectedFlight && (
               <div
