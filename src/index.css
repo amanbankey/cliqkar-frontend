@@ -13,3 +13,106 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+
+@keyframes whiteBeam {
+  0% {
+    left: -55%;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.95;
+  }
+
+  75% {
+    opacity: 0.9;
+  }
+
+  100% {
+    left: 75%;
+    opacity: 0;
+  }
+}
+
+@keyframes orangeSweep {
+  0% {
+    left: -30%;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.75;
+  }
+
+  70% {
+    opacity: 0.55;
+  }
+
+  100% {
+    left: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes orangeSweepSharp {
+  0% {
+    left: -25%;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  65% {
+    opacity: 0.7;
+  }
+
+  100% {
+    left: 110%;
+    opacity: 0;
+  }
+}
+
+
+@keyframes flyPlane {
+  0% {
+    transform: translate(0, 0) rotate(-18deg);
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  25% {
+    transform: translate(250px, -10px) rotate(-8deg);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translate(500px, 5px) rotate(5deg);
+    opacity: 1;
+  }
+
+  75% {
+    transform: translate(750px, -8px) rotate(10deg);
+    opacity: 1;
+  }
+
+  92% {
+    transform: translate(1000px, 0) rotate(15deg);
+    opacity: 1;
+  }
+
+  96% {
+    transform: translate(1100px, 0) rotate(18deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(1100px, 0) rotate(18deg);
+    opacity: 0;
+  }
+}

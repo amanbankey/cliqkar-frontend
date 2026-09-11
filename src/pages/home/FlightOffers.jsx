@@ -78,331 +78,353 @@ const flights = [
   },
 ];
 
+// function BorderBeamCard({ flight, children }) {
+//   return (
+//  <div className="group relative mx-auto h-[560px] w-full max-w-[340px] overflow-visible">
+
+//   {/* Window Body */}
+//   <div className="absolute inset-0 rounded-[90px] bg-slate-950 shadow-2xl shadow-slate-900/50" />
+
+//   {/* Window Image */}
+//   <div className="absolute inset-[10px] overflow-hidden rounded-[82px]">
+//     <img
+//       src={aero}
+//       alt={`${flight.airline} flight`}
+//       className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+//     />
+
+//     {/* Image Dark Overlay */}
+//     <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/15 to-slate-950/90" />
+
+//     {/* Blue Atmospheric Glow */}
+//     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(56,189,248,0.18),transparent_48%)]" />
+//   </div>
+
+//   {/* Outer Aircraft Window Frame */}
+//   <div className="pointer-events-none absolute inset-0 rounded-[90px] border-[11px] border-slate-900/95 shadow-[inset_0_0_35px_rgba(255,255,255,0.10),0_0_0_1px_rgba(255,255,255,0.08)]" />
+
+//   {/* Metallic Inner Frame */}
+//   <div className="pointer-events-none absolute inset-[15px] rounded-[85px] border border-white/10" />
+
+//   {/* Glass Reflection */}
+//   <div className="pointer-events-none absolute inset-[23px] rounded-[75px] bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+
+//   {/* CONTENT */}
+//   <div className="relative z-10 flex h-full flex-col px-9 py-10">
+
+//     {/* Airline Header */}
+//     <div className="flex justify-center">
+
+//       <div className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-slate-950/55 px-3 py-2 backdrop-blur-xl">
+
+//         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[10px] font-extrabold text-slate-900 shadow-lg">
+//           {flight.logo}
+//         </div>
+
+//         <div>
+//           <p className="text-xs font-bold leading-tight text-white">
+//             {flight.airline}
+//           </p>
+
+//           <p className="mt-0.5 text-[9px] leading-tight text-slate-300">
+//             {flight.flightInfo}
+//           </p>
+//         </div>
+
+//       </div>
+
+//     </div>
+
+//     {/* Route Information */}
+//     <div className="mt-auto mb-3">
+
+//       <div className="mx-auto max-w-[260px] rounded-3xl border border-white/15 bg-slate-950/45 p-4 backdrop-blur-xl">
+
+//         <div className="flex items-center justify-between gap-2">
+
+//           {/* Departure */}
+//           <div className="min-w-0">
+
+//             <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
+//               Departure
+//             </p>
+
+//             <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+//               {flight.departCode}
+//             </p>
+
+//             <p className="mt-1 truncate text-[9px] text-slate-300">
+//               {flight.departCity}
+//             </p>
+
+//             <p className="mt-1 text-xs font-bold text-white">
+//               {flight.departTime}
+//             </p>
+
+//           </div>
+
+//           {/* Flight Route */}
+//           <div className="flex min-w-[62px] flex-1 flex-col items-center">
+
+//             <p className="mb-1 text-[8px] text-slate-300">
+//               {flight.duration}
+//             </p>
+
+//             <div className="flex w-full items-center">
+
+//               <span className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-300/70" />
+
+//               <div className="mx-1 flex h-6 w-6 shrink-0 rotate-90 items-center justify-center rounded-full border border-amber-300/30 bg-amber-400/15">
+//                 <Plane size={11} className="text-amber-300" />
+//               </div>
+
+//               <span className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-300/70" />
+
+//             </div>
+
+//             <p className="mt-1 text-[8px] font-semibold text-amber-300">
+//               {flight.stops}
+//             </p>
+
+//           </div>
+
+//           {/* Arrival */}
+//           <div className="min-w-0 text-right">
+
+//             <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
+//               Arrival
+//             </p>
+
+//             <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+//               {flight.arriveCode}
+//             </p>
+
+//             <p className="mt-1 truncate text-[9px] text-slate-300">
+//               {flight.arriveCity}
+//             </p>
+
+//             <p className="mt-1 text-xs font-bold text-white">
+//               {flight.arriveTime}
+//             </p>
+
+//           </div>
+
+//         </div>
+
+//       </div>
+
+//       {/* Baggage */}
+//       <div className="mx-auto mt-2 flex max-w-[260px] items-center gap-2 rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 backdrop-blur-xl">
+
+//         <Luggage
+//           size={13}
+//           className="shrink-0 text-amber-300"
+//         />
+
+//         <span className="truncate text-[9px] text-slate-200">
+//           {flight.baggage}
+//         </span>
+
+//       </div>
+
+//     </div>
+
+//     {/* Price & Booking */}
+//     <div className="mx-auto flex w-full max-w-[260px] items-end justify-between rounded-2xl border border-white/10 bg-slate-950/65 p-3 backdrop-blur-xl">
+
+//       <div>
+
+//         <p className="text-[9px] text-slate-400 line-through">
+//           {flight.oldPrice}
+//         </p>
+
+//         <p className="text-xl font-extrabold leading-tight text-white">
+//           {flight.price}
+//         </p>
+
+//         <p className="mt-0.5 text-[8px] font-semibold text-emerald-300">
+//           {flight.save}
+//         </p>
+
+//       </div>
+
+//       <button className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-900 transition-all duration-300 hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/20">
+//         Book
+
+//         <ArrowRight size={13} />
+
+//       </button>
+
+//     </div>
+
+//   </div>
+
+// </div>
+//   );
+// }
+
 function BorderBeamCard({ flight, children }) {
   return (
-    // <div className="group relative h-[520px] overflow-hidden  rounded-[50%] bg-slate-950 shadow-2xl">
-      
-    //   {/* Flight Image */}
-    //   <img
-    //     src={aero}
-    //     alt={`${flight.airline} flight`}
-    //     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-    //   />
-
-    //   {/* Dark overlay */}
-    //   <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/95" />
-
-    //   {/* Blue atmospheric glow */}
-    //   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(56,189,248,0.18),transparent_45%)]" />
-
-    //   {/* Airplane window frame */}
-    //   <div className="absolute inset-[10px] rounded-[48%] border-[10px] border-slate-900/80 shadow-[inset_0_0_30px_rgba(255,255,255,0.08)]" />
-
-    //   <div className="absolute inset-[20px] rounded-[46%] border border-white/10" />
-
-    //   {/* Content */}
-    //   <div className="relative z-10 flex h-full flex-col p-6">
-        
-    //     {/* Top airline section */}
-    //     <div className="flex items-center justify-between">
-    //       <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-slate-950/45 px-3 py-2 backdrop-blur-xl">
-    //         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xs font-extrabold text-slate-900 shadow-lg">
-    //           {flight.logo}
-    //         </div>
-
-    //         <div>
-    //           <p className="text-sm font-bold text-white">
-    //             {flight.airline}
-    //           </p>
-
-    //           <p className="text-[10px] text-slate-300">
-    //             {flight.flightInfo}
-    //           </p>
-    //         </div>
-    //       </div>
-
-    //       {/* <span className="rounded-full border border-amber-300/30 bg-amber-400/15 px-3 py-1.5 text-[9px] font-bold tracking-wider text-amber-300 backdrop-blur-xl">
-    //         {flight.tag}
-    //       </span> */}
-    //     </div>
-
-    //     {/* Route */}
-    //     <div className="mt-auto mb-6">
-    //       <div className="mx-auto max-w-[290px] rounded-3xl border border-white/15 bg-slate-950/40 p-5 backdrop-blur-xl">
-            
-    //         <div className="flex items-center justify-between">
-              
-    //           <div>
-    //             <p className="text-[10px] uppercase tracking-[0.2em] text-slate-300">
-    //               Departure
-    //             </p>
-
-    //             <p className="mt-1 text-3xl font-extrabold text-white">
-    //               {flight.departCode}
-    //             </p>
-
-    //             <p className="text-xs text-slate-300">
-    //               {flight.departCity}
-    //             </p>
-
-    //             <p className="mt-2 text-sm font-bold text-white">
-    //               {flight.departTime}
-    //             </p>
-    //           </div>
-
-    //           {/* Route line */}
-    //           <div className="flex flex-1 flex-col items-center px-3">
-    //             <p className="mb-2 text-[9px] font-medium text-slate-300">
-    //               {flight.duration}
-    //             </p>
-
-    //             <div className="flex w-full items-center">
-    //               <span className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300/70 to-amber-300/70" />
-
-    //               <div className="mx-2 flex h-8 w-8 rotate-90 items-center justify-center rounded-full border border-amber-300/30 bg-amber-400/15">
-    //                 <Plane size={14} className="text-amber-300" />
-    //               </div>
-
-    //               <span className="h-px flex-1 bg-gradient-to-r from-amber-300/70 via-amber-300/70 to-transparent" />
-    //             </div>
-
-    //             <p className="mt-2 text-[9px] font-semibold text-amber-300">
-    //               {flight.stops}
-    //             </p>
-    //           </div>
-
-    //           <div className="text-right">
-    //             <p className="text-[10px] uppercase tracking-[0.2em] text-slate-300">
-    //               Arrival
-    //             </p>
-
-    //             <p className="mt-1 text-3xl font-extrabold text-white">
-    //               {flight.arriveCode}
-    //             </p>
-
-    //             <p className="text-xs text-slate-300">
-    //               {flight.arriveCity}
-    //             </p>
-
-    //             <p className="mt-2 text-sm font-bold text-white">
-    //               {flight.arriveTime}
-    //             </p>
-    //           </div>
-    //         </div>
-    //       </div>
-
-    //       {/* Baggage */}
-    //       <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/45 px-4 py-3 backdrop-blur-xl">
-    //         <Luggage size={15} className="text-amber-300" />
-
-    //         <span className="text-[11px] text-slate-200">
-    //           {flight.baggage}
-    //         </span>
-    //       </div>
-    //     </div>
-
-    //     {/* Bottom price */}
-    //     <div className="flex items-end justify-between rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur-xl">
-    //       <div>
-    //         <p className="text-[10px] text-slate-400 line-through">
-    //           {flight.oldPrice}
-    //         </p>
-
-    //         <p className="text-2xl font-extrabold text-white">
-    //           {flight.price}
-    //         </p>
-
-           
-    //       </div>
-
-    //       <button className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-all duration-300 hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/20">
-    //         Book Now
-    //         <ArrowRight size={15} />
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
- <div className="group relative mx-auto h-[560px] w-full max-w-[340px] overflow-visible">
-
-  {/* Window Body */}
-  <div className="absolute inset-0 rounded-[90px] bg-slate-950 shadow-2xl shadow-slate-900/50" />
-
-  {/* Window Image */}
-  <div className="absolute inset-[10px] overflow-hidden rounded-[82px]">
-    <img
-      src={aero}
-      alt={`${flight.airline} flight`}
-      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-    />
-
-    {/* Image Dark Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/15 to-slate-950/90" />
-
-    {/* Blue Atmospheric Glow */}
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(56,189,248,0.18),transparent_48%)]" />
-  </div>
-
-  {/* Outer Aircraft Window Frame */}
-  <div className="pointer-events-none absolute inset-0 rounded-[90px] border-[11px] border-slate-900/95 shadow-[inset_0_0_35px_rgba(255,255,255,0.10),0_0_0_1px_rgba(255,255,255,0.08)]" />
-
-  {/* Metallic Inner Frame */}
-  <div className="pointer-events-none absolute inset-[15px] rounded-[85px] border border-white/10" />
-
-  {/* Glass Reflection */}
-  <div className="pointer-events-none absolute inset-[23px] rounded-[75px] bg-gradient-to-br from-white/10 via-transparent to-transparent" />
-
-  {/* CONTENT */}
-  <div className="relative z-10 flex h-full flex-col px-9 py-10">
-
-    {/* Airline Header */}
-    <div className="flex justify-center">
-
-      <div className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-slate-950/55 px-3 py-2 backdrop-blur-xl">
-
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[10px] font-extrabold text-slate-900 shadow-lg">
-          {flight.logo}
-        </div>
-
-        <div>
-          <p className="text-xs font-bold leading-tight text-white">
-            {flight.airline}
-          </p>
-
-          <p className="mt-0.5 text-[9px] leading-tight text-slate-300">
-            {flight.flightInfo}
-          </p>
-        </div>
-
-      </div>
-
-    </div>
-
-    {/* Route Information */}
-    <div className="mt-auto mb-3">
-
-      <div className="mx-auto max-w-[260px] rounded-3xl border border-white/15 bg-slate-950/45 p-4 backdrop-blur-xl">
-
-        <div className="flex items-center justify-between gap-2">
-
-          {/* Departure */}
-          <div className="min-w-0">
-
-            <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
-              Departure
-            </p>
-
-            <p className="mt-1 text-2xl font-extrabold leading-none text-white">
-              {flight.departCode}
-            </p>
-
-            <p className="mt-1 truncate text-[9px] text-slate-300">
-              {flight.departCity}
-            </p>
-
-            <p className="mt-1 text-xs font-bold text-white">
-              {flight.departTime}
-            </p>
-
-          </div>
-
-          {/* Flight Route */}
-          <div className="flex min-w-[62px] flex-1 flex-col items-center">
-
-            <p className="mb-1 text-[8px] text-slate-300">
-              {flight.duration}
-            </p>
-
-            <div className="flex w-full items-center">
-
-              <span className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-300/70" />
-
-              <div className="mx-1 flex h-6 w-6 shrink-0 rotate-90 items-center justify-center rounded-full border border-amber-300/30 bg-amber-400/15">
-                <Plane size={11} className="text-amber-300" />
-              </div>
-
-              <span className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-300/70" />
-
-            </div>
-
-            <p className="mt-1 text-[8px] font-semibold text-amber-300">
-              {flight.stops}
-            </p>
-
-          </div>
-
-          {/* Arrival */}
-          <div className="min-w-0 text-right">
-
-            <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
-              Arrival
-            </p>
-
-            <p className="mt-1 text-2xl font-extrabold leading-none text-white">
-              {flight.arriveCode}
-            </p>
-
-            <p className="mt-1 truncate text-[9px] text-slate-300">
-              {flight.arriveCity}
-            </p>
-
-            <p className="mt-1 text-xs font-bold text-white">
-              {flight.arriveTime}
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* Baggage */}
-      <div className="mx-auto mt-2 flex max-w-[260px] items-center gap-2 rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 backdrop-blur-xl">
-
-        <Luggage
-          size={13}
-          className="shrink-0 text-amber-300"
+    <div className="group relative mx-auto h-[560px] w-full max-w-[340px] overflow-visible transition-all duration-500 hover:-translate-y-1">
+      <div className="absolute inset-0 rounded-[90px] bg-slate-950 shadow-2xl shadow-slate-900/50 transition-all duration-500 group-hover:shadow-[0_25px_70px_rgba(245,158,11,0.18)]" />
+
+      {/* <div className="absolute inset-[10px] overflow-hidden rounded-[82px]">
+        <img
+          src={aero}
+          alt={`${flight.airline} flight`}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
-        <span className="truncate text-[9px] text-slate-200">
-          {flight.baggage}
-        </span>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/15 to-slate-950/90" />
 
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(56,189,248,0.18),transparent_48%)]" />
+      </div> */}
+      <div className="absolute inset-[10px] overflow-hidden rounded-[82px]">
+  <img
+    src={aero}
+    alt={`${flight.airline} flight`}
+    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+  />
+
+  <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/15 to-slate-950/90" />
+
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(56,189,248,0.18),transparent_48%)]" />
+
+  <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="absolute left-[-20%] top-[45%] animate-[cardPlane_9s_linear_infinite]">
+      <div className="relative">
+        <div className="absolute -inset-4 rounded-full bg-amber-300/20 blur-xl" />
+
+        <div className="relative text-lg text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)]">
+          ✈
+        </div>
       </div>
-
     </div>
-
-    {/* Price & Booking */}
-    <div className="mx-auto flex w-full max-w-[260px] items-end justify-between rounded-2xl border border-white/10 bg-slate-950/65 p-3 backdrop-blur-xl">
-
-      <div>
-
-        <p className="text-[9px] text-slate-400 line-through">
-          {flight.oldPrice}
-        </p>
-
-        <p className="text-xl font-extrabold leading-tight text-white">
-          {flight.price}
-        </p>
-
-        <p className="mt-0.5 text-[8px] font-semibold text-emerald-300">
-          {flight.save}
-        </p>
-
-      </div>
-
-      <button className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-900 transition-all duration-300 hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/20">
-
-        Book
-
-        <ArrowRight size={13} />
-
-      </button>
-
-    </div>
-
   </div>
-
 </div>
+
+      <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-[90px]">
+        <span className="beam-white absolute left-[-25%] top-[-25%] h-[160%] w-[55px] rotate-[18deg] bg-white opacity-0 blur-[30px] group-hover:animate-[orangeSweep_700ms_ease-out]" />
+      </div>
+      
+
+      <div className="pointer-events-none absolute inset-0 rounded-[90px] border-[11px] border-slate-900/95 shadow-[inset_0_0_35px_rgba(255,255,255,0.10),0_0_0_1px_rgba(255,255,255,0.08)]" />
+
+      <div className="pointer-events-none absolute inset-[15px] rounded-[85px] border border-white/10" />
+
+      <div className="pointer-events-none absolute inset-[23px] rounded-[75px] bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+
+      
+
+      <div className="relative z-10 flex h-full flex-col px-9 py-10">
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-slate-950/55 px-3 py-2 backdrop-blur-xl">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[10px] font-extrabold text-slate-900 shadow-lg">
+              {flight.logo}
+            </div>
+
+            <div>
+              <p className="text-xs font-bold leading-tight text-white">
+                {flight.airline}
+              </p>
+
+              <p className="mt-0.5 text-[9px] leading-tight text-slate-300">
+                {flight.flightInfo}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto mb-3">
+          <div className="mx-auto max-w-[260px] rounded-3xl border border-white/15 bg-slate-950/45 p-4 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
+                  Departure
+                </p>
+
+                <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+                  {flight.departCode}
+                </p>
+
+                <p className="mt-1 truncate text-[9px] text-slate-300">
+                  {flight.departCity}
+                </p>
+
+                <p className="mt-1 text-xs font-bold text-white">
+                  {flight.departTime}
+                </p>
+              </div>
+
+              <div className="flex min-w-[62px] flex-1 flex-col items-center">
+                <p className="mb-1 text-[8px] text-slate-300">
+                  {flight.duration}
+                </p>
+
+                <div className="flex w-full items-center">
+                  <span className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-300/70" />
+
+                  <div className="mx-1 flex h-6 w-6 shrink-0 rotate-90 items-center justify-center rounded-full border border-amber-300/30 bg-amber-400/15">
+                    <Plane size={11} className="text-amber-300" />
+                  </div>
+
+                  <span className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-300/70" />
+                </div>
+
+                <p className="mt-1 text-[8px] font-semibold text-amber-300">
+                  {flight.stops}
+                </p>
+              </div>
+
+              <div className="min-w-0 text-right">
+                <p className="text-[8px] uppercase tracking-[0.15em] text-slate-300">
+                  Arrival
+                </p>
+
+                <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+                  {flight.arriveCode}
+                </p>
+
+                <p className="mt-1 truncate text-[9px] text-slate-300">
+                  {flight.arriveCity}
+                </p>
+
+                <p className="mt-1 text-xs font-bold text-white">
+                  {flight.arriveTime}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-2 flex max-w-[260px] items-center gap-2 rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 backdrop-blur-xl">
+            <Luggage size={13} className="shrink-0 text-amber-300" />
+
+            <span className="truncate text-[9px] text-slate-200">
+              {flight.baggage}
+            </span>
+          </div>
+        </div>
+
+        <div className="mx-auto flex w-full max-w-[260px] items-end justify-between rounded-2xl border border-white/10 bg-slate-950/65 p-3 backdrop-blur-xl">
+          <div>
+            <p className="text-[9px] text-slate-400 line-through">
+              {flight.oldPrice}
+            </p>
+
+            <p className="text-xl font-extrabold leading-tight text-white">
+              {flight.price}
+            </p>
+
+           
+          </div>
+
+          <button className="flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-900 transition-all duration-300 hover:bg-amber-300 hover:shadow-lg hover:shadow-amber-400/20">
+            Book
+            <ArrowRight size={13} />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -530,7 +552,7 @@ export default function FlightOffers() {
           ))}
         </div> */}
 
-             <div className="h-full w-full rounded-2xl bg-[#eef1f8] px-4 py-10 sm:px-8">
+             {/* <div className="h-full w-full rounded-2xl bg-[#eef1f8] px-4 py-10 sm:px-8">
             <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
               {flights.map((flight) => (
                 <BorderBeamCard
@@ -539,7 +561,32 @@ export default function FlightOffers() {
                 />
               ))}
             </div>
+          </div> */}
+
+          <div className="h-full w-full rounded-2xl bg-[#eef1f8] px-4 py-10 sm:px-8">
+  <div className="relative mx-auto max-w-6xl">
+    <div className="pointer-events-none absolute inset-0 z-30 hidden md:block">
+      <div className="absolute left-[8%] top-[48%] animate-[flyPlane_7s_linear_infinite]">
+        <div className="relative">
+          <div className="absolute -inset-4 rounded-full bg-amber-300/30 blur-xl" />
+
+          <div className="relative text-xl text-slate-900 drop-shadow-[0_4px_6px_rgba(0,0,0,0.35)]">
+            ✈
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {flights.map((flight) => (
+        <BorderBeamCard
+          key={flight.flightInfo}
+          flight={flight}
+        />
+      ))}
+    </div>
+  </div>
+</div>
 
         <div className="relative mt-10 rounded-2xl overflow-hidden bg-[#0a1628] p-8 sm:p-12">
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628] via-[#0a1628]/70 to-transparent" />
