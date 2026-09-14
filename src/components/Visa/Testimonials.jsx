@@ -33,7 +33,7 @@ const Testimonials = () => {
     <section className="bg-indigo-50/40 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-xs font-bold tracking-wide text-blue-600 mb-2">❞❞ VERIFIED TRAVELER VOICES</p>
-        <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Approved. On Time. Every Time.</h2>
+        <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Approved. On Time. Every Time.</h2>
         <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto mb-10">
           Real feedback from leisure travelers, families, and business executives worldwide.
         </p>

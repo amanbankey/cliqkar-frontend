@@ -40,7 +40,7 @@ const DiscretionDifference = () => {
     <section className="bg-[#0A1628] px-4 sm:px-8 lg:px-16 py-14">
       <div className="max-w-7xl mx-auto text-center mb-10">
         <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 mb-2">THE DISCRETION DIFFERENCE</p>
-        <h2 className="font-serif text-3xl sm:text-4xl text-slate-100 mb-3">
+        <h2 className=" text-3xl sm:text-4xl text-slate-100 mb-3">
           Engineered Exclusively for Luxury Air Travel
         </h2>
         <p className="text-slate-400 text-sm">Zero irrelevant promotions. Solely the finest international corridors.</p>

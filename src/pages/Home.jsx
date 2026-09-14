@@ -19,12 +19,12 @@ const Home = () => {
      <HeroSection />
      <FlightOffers />
      <PopularConnections />
-     <VisaSection />
+     {/* <VisaSection /> */}
      <OTBClearance />
      <TravelExperts />
-     <Testimonials />
+     {/* <Testimonials /> */}
      <PlatformArchitecture />
-     <CTASection />
+     {/* <CTASection /> */}
    
    
    </div>

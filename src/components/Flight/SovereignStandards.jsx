@@ -26,7 +26,7 @@ const SovereignStandards = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 mb-2">THE SOVEREIGN STANDARDS</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-slate-100 leading-tight mb-4">
+          <h2 className=" text-3xl sm:text-4xl text-slate-100 leading-tight mb-4">
             It's Not Just Where You Fly.
             <br />
             It's How You Fly.

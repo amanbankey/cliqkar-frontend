@@ -33,7 +33,7 @@ const DocumentDossier = () => {
             <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
               ⚡ DYNAMIC EMBASSY COMPLIANCE
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight mb-4">
+            <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight mb-4">
               Know Exactly What You Need.
             </h2>
             <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-md">

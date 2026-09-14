@@ -67,7 +67,7 @@ const DestinationsCatalog = () => {
             <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
               <TbPlaneDeparture size={14} /> GLOBAL DESTINATIONS CATALOG
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Where Are You Going?</h2>
+            <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Where Are You Going?</h2>
             <p className="text-gray-500 text-sm">Find your destination and launch your guided application in minutes.</p>
           </div>
           <button className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:underline flex-shrink-0">

@@ -43,7 +43,7 @@ const HowItWorks = () => {
         <p className="flex items-center justify-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
           ⟿ THE REDUCED-FRICTION LIFECYCLE
         </p>
-        <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">How VISAORA Works</h2>
+        <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">How VISAORA Works</h2>
         <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto mb-10">
           From digital onboarding to passport stamped without ever stepping foot inside a chaotic embassy hall.
         </p>

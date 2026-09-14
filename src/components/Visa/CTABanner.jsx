@@ -16,7 +16,7 @@ const CTABanner = () => {
           <span className="inline-flex items-center gap-2 bg-slate-800/80 text-slate-200 text-xs font-bold px-4 py-2 rounded-full mb-6">
             <TbPlaneDeparture size={14} /> READY FOR TAKE-OFF?
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 max-w-3xl mx-auto">
+          <h2 className=" text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 max-w-3xl mx-auto">
             Your Next Destination Is Closer Than You Think.
           </h2>
           <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-8">

@@ -450,7 +450,7 @@ export default function FlightOffers() {
       
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-1">
+        {/* <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-1">
           {filters.map((filter) => (
             <button
               key={filter}
@@ -464,7 +464,7 @@ export default function FlightOffers() {
               {filter}
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {flights.map((flight) => (
@@ -588,28 +588,54 @@ export default function FlightOffers() {
   </div>
 </div>
 
-        <div className="relative mt-10 rounded-2xl overflow-hidden bg-[#0a1628] p-8 sm:p-12">
+      {/* Rotating Border Glow Card */}
+      <div className="relative mt-10 rounded-2xl p-[4px] overflow-hidden">
+
+        {/* Rotating conic-gradient glow element — sits behind card content */}
+        {/* <div
+          style={{
+            position: "absolute",
+            inset: "-100%",
+            background:
+              "conic-gradient(  #f97316 94%, transparent 98%)",
+            filter: "blur(44px)",
+            animation: "spin 10s linear infinite",
+          }}
+        /> */}
+
+        {/* Actual Card — sits on top of the glow */}
+        <div className="relative rounded-2xl overflow-hidden bg-[#0a1628] p-8 sm:p-12">
+
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628] via-[#0a1628]/70 to-transparent" />
+
           <div className="relative max-w-lg">
+
             <p className="text-amber-400 text-xs font-bold tracking-wide mb-3">
               FEATURED GETAWAY
             </p>
+
             <h3 className="text-white text-3xl sm:text-4xl font-extrabold mb-3">
-               Escape Special
+              Escape Special
             </h3>
+
             <p className="text-slate-300 text-sm sm:text-base mb-6">
               Direct flights from Delhi &amp; Mumbai starting at just
               ₹12,499. Save up to 20% on combined flight + 30-day tourist
               visa bundles.
             </p>
+
             <div className="flex flex-wrap items-center gap-4">
-              <button onClick={() => navigate("flight")} className="flex items-center gap-2 bg-white text-slate-900 font-semibold px-5 py-2.5 rounded-lg text-sm">
+              <button
+                onClick={() => navigate("flight")}
+                className="flex items-center gap-2 bg-white text-slate-900 font-semibold px-5 py-2.5 rounded-lg text-sm"
+              >
                 Explore Flights <FiArrowRight />
               </button>
-             
             </div>
+
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

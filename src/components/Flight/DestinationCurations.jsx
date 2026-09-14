@@ -50,7 +50,7 @@ const DestinationCurations = () => {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
           <div>
             <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-500 mb-2">GLOBAL SANCTUARY NETWORK</p>
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#0A1628]">Destination Curations</h2>
+            <h2 className=" text-3xl sm:text-4xl text-[#0A1628]">Destination Curations</h2>
           </div>
           <p className="text-gray-400 text-xs sm:text-right">Real-time benchmarked Business Class departure rates</p>
         </div>
@@ -63,7 +63,7 @@ const DestinationCurations = () => {
               <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
                 <div>
                   <p className="text-[10px] font-semibold tracking-widest text-amber-300 mb-1">{d.label}</p>
-                  <p className="text-lg font-serif text-white mb-1">{d.city}</p>
+                  <p className="text-lg  text-white mb-1">{d.city}</p>
                   <p className="text-xs text-slate-300">{d.info}</p>
                 </div>
                 <div className="text-right">
@@ -82,7 +82,7 @@ const DestinationCurations = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
               <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                 <div>
-                  <p className="text-sm font-serif text-white mb-0.5">{d.city}</p>
+                  <p className="text-sm  text-white mb-0.5">{d.city}</p>
                   <p className="text-[11px] text-slate-300">{d.info}</p>
                 </div>
                 <p className="text-sm font-bold text-amber-300">{d.price}</p>

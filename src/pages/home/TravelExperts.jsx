@@ -72,9 +72,7 @@ export default function TravelExperts() {
               your journey.
             </p>
           </div>
-          <span className="bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0">
-            500+ Verified Agents in Network
-          </span>
+        
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-14">

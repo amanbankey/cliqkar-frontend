@@ -16,7 +16,7 @@ const About = () => {
       <NetworkMapBanner />
       <CityLeadership />
       <WhyCliqkar />
-      <CTABanner />
+      {/* <CTABanner /> */}
     </div>
   );
 };

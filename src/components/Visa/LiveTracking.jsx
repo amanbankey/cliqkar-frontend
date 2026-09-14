@@ -15,7 +15,7 @@ const LiveTracking = () => {
         <p className="flex items-center justify-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
           <FiRadio size={13} /> LIVE CONSULAR TELEMETRY
         </p>
-        <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Your Application. Always Within Reach.</h2>
+        <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Your Application. Always Within Reach.</h2>
         <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto mb-10">
           No more waking up wondering if your passport is stuck in administrative processing. Live tracking with
           minute-by-minute status notifications.

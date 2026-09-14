@@ -73,14 +73,14 @@ const CuratedDeals = () => {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
           <div>
             <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-500 mb-2">CURATED LUXURY DEALS</p>
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#0A1628] leading-tight mb-2">
+            <h2 className=" text-3xl sm:text-4xl text-[#0A1628] leading-tight mb-2">
               Exceptional Fares. Extraordinary
               <br />
               Journeys.
             </h2>
             <p className="text-gray-500 text-sm">Premium cabins engineered for stillness, without the booking complexity.</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          {/* <div className="flex flex-wrap gap-2">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -92,7 +92,7 @@ const CuratedDeals = () => {
                 {filter}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -149,7 +149,7 @@ const CuratedDeals = () => {
                 <div className="flex flex-col items-start lg:items-end gap-1 lg:w-44 flex-shrink-0">
                   <p className="text-xs text-slate-500 line-through">{deal.originalPrice}</p>
                   <p className="text-xl font-bold text-amber-400">{deal.price}</p>
-                  <p className="text-[10px] text-emerald-400">Save {deal.save} · {deal.fareType}</p>
+                  {/* <p className="text-[10px] text-emerald-400">Save {deal.save} · {deal.fareType}</p> */}
                   <button className="mt-1 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">
                     Select Flight <FiArrowRight size={13} />
                   </button>

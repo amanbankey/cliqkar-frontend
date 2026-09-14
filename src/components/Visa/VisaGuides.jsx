@@ -41,7 +41,7 @@ const VisaGuides = () => {
             <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
               <FiBookOpen size={14} /> CONSULAR INTELLIGENCE DISPATCHES
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Visa Guides &amp; Destination Advisories</h2>
+            <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Visa Guides &amp; Destination Advisories</h2>
             <p className="text-gray-500 text-sm">Authoritative insights written by seasoned immigration specialists and consular attorneys.</p>
           </div>
           <button className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:underline flex-shrink-0">

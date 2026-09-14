@@ -33,7 +33,7 @@ const EligibilityChecker = () => {
           <span className="inline-flex items-center gap-2 bg-slate-800 text-slate-300 text-[11px] font-bold tracking-wide px-3 py-1.5 rounded-full mb-5">
             <FiAward className="text-emerald-400" size={13} /> CONSULAR RULES ENGINE 2026
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-white mb-4">Not Sure Which Visa You Need?</h2>
+          <h2 className=" text-3xl sm:text-4xl font-extrabold text-white mb-4">Not Sure Which Visa You Need?</h2>
           <p className="text-slate-400 text-sm sm:text-base max-w-2xl mb-8">
             Answer 3 simple questions and our consular intelligence engine maps your exact visa protocol, document
             prerequisites, and issuance timeline in under 60 seconds.

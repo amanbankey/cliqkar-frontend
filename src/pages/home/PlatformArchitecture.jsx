@@ -86,7 +86,7 @@ export default function PlatformArchitecture() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 sm:p-6 mb-10 overflow-x-auto">
+        {/* <div className="bg-white rounded-2xl shadow-sm p-5 sm:p-6 mb-10 overflow-x-auto">
           <div className="flex items-center justify-between gap-2 min-w-[600px]">
             {flowSteps.map((step, index) => (
               <div key={step.label} className="flex items-center flex-1">
@@ -117,7 +117,7 @@ export default function PlatformArchitecture() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((feature) => (

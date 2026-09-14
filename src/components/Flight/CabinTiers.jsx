@@ -42,7 +42,7 @@ const CabinTiers = () => {
     <section className="bg-white px-4 sm:px-8 lg:px-16 py-14">
       <div className="max-w-7xl mx-auto text-center mb-10">
         <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-500 mb-2">THE FLEET ARCHITECTURE</p>
-        <h2 className="font-serif text-3xl sm:text-4xl text-[#0A1628] mb-3">Explore by Cabin Tier</h2>
+        <h2 className=" text-3xl sm:text-4xl text-[#0A1628] mb-3">Explore by Cabin Tier</h2>
         <p className="text-gray-500 text-sm max-w-xl mx-auto">
           Tailored comfort engineered around privacy, gastronomy, and ergonomic quietude.
         </p>
@@ -57,8 +57,8 @@ const CabinTiers = () => {
                 {tier.badge}
               </span>
             </div>
-            <h3 className="font-serif text-2xl text-white mb-2">{tier.title}</h3>
-            <p className="font-serif italic text-amber-400 text-sm mb-3">{tier.quote}</p>
+            <h3 className=" text-2xl text-white mb-2">{tier.title}</h3>
+            <p className=" italic text-amber-400 text-sm mb-3">{tier.quote}</p>
             <p className="text-slate-400 text-sm leading-relaxed mb-5">{tier.description}</p>
             <div className="flex flex-col gap-2 mb-6">
               {tier.features.map((f) => (

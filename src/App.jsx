@@ -28,8 +28,8 @@ import SignIn from "./pages/Signin"
 import SignUp from "./pages/Signup"
 import Visa from './pages/Visa'
 import Flight from './pages/Flights'
-
-
+import ScrollToTop from "./components/ScrollToTop";
+import Contact from "./pages/Contact"
 function App() {
   const [count, setCount] = useState(0)
   const [activeItem, setActiveItem] = useState("Dashboard");
@@ -37,8 +37,9 @@ function App() {
 
   return (
    <>
+     <ScrollToTop />
   <Routes>
-
+      
     {/* Layout Parent */}
     <Route path="/" element={<Layout />}>
 
@@ -51,6 +52,7 @@ function App() {
    
       {/* Public Pages */}
       <Route path="about" element={<About />} />
+         <Route path="contact" element={<Contact />} />
       <Route path="okay-to-board" element={<OkayToBoard />} />
       <Route path="flight" element={<Flight />} />
       

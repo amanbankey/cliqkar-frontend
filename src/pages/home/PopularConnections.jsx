@@ -9,7 +9,7 @@ import { FiArrowRight } from "react-icons/fi";
 
 const routes = [
   {
-    // image: delhiDubai,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "DEL → DXB",
     frequency: "14+ Daily",
     title: "Delhi to Dubai",
@@ -17,7 +17,7 @@ const routes = [
     price: "₹12,499",
   },
   {
-    // image: mumbaiBangkok,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "BOM → BKK",
     frequency: "8+ Daily",
     title: "Mumbai to Bangkok",
@@ -25,7 +25,7 @@ const routes = [
     price: "₹14,250",
   },
   {
-    // image: delhiSingapore,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "DEL → SIN",
     frequency: "10+ Daily",
     title: "Delhi to Singapore",
@@ -33,7 +33,7 @@ const routes = [
     price: "₹18,999",
   },
   {
-    // image: mumbaiLondon,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "BOM → LHR",
     frequency: "6+ Daily",
     title: "Mumbai to London",
@@ -41,7 +41,7 @@ const routes = [
     price: "₹42,500",
   },
   {
-    // image: delhiGoa,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "DEL → GOI",
     frequency: "18+ Daily",
     title: "Delhi to Goa",
@@ -49,7 +49,7 @@ const routes = [
     price: "₹4,899",
   },
   {
-    // image: bengaluruDubai,
+    image: "https://images.unsplash.com/photo-1587019158091-1a103c5dd17f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZmxpZ2h0JTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D",
     code: "BLR → DXB",
     frequency: "9+ Daily",
     title: "Bengaluru to Dubai",
@@ -81,11 +81,11 @@ export default function PopularConnections() {
               key={route.title}
               className="relative rounded-2xl overflow-hidden h-56 group"
             >
-              {/* <img
+              <img
                 src={route.image}
                 alt={route.title}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              /> */}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" />
 
               <div className="relative h-full flex flex-col justify-between p-4">

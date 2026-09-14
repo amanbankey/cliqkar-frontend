@@ -35,7 +35,7 @@ const SchengenSuite = () => {
             <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
               <FiAward size={14} /> FLAGSHIP EMBASSY SUITE
             </p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Schengen European Visa Suite</h2>
+            <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">Schengen European Visa Suite</h2>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               Travel without borders across France, Switzerland, Germany, Italy, Spain, and 22 other European nations
               on a single streamlined permit. Our consular concierge secures hard-to-find biometric interview slots

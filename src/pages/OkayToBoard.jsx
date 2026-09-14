@@ -18,9 +18,9 @@ const OkayToBoard = () => {
       <ThreeStepWorkflow />
       <RequirementsMatrix />
       <DocumentUploadSimulator />
-      <StatsBar />
+      {/* <StatsBar /> */}
       <DepartureChecklist />
-      <OTBCTABanner />
+      {/* <OTBCTABanner /> */}
     </div>
   );
 };

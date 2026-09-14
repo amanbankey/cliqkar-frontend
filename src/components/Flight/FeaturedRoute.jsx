@@ -20,7 +20,7 @@ const FeaturedRoute = () => {
 
         <div className="relative z-10 w-full lg:w-1/2 lg:ml-auto px-6 sm:px-10 py-10">
           <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-400 mb-2">FEATURED ROUTE EXPERIENCE</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-white leading-tight mb-4">
+          <h2 className=" text-3xl sm:text-4xl text-white leading-tight mb-4">
             Emirates A380 Business Suite Experience
           </h2>
           <p className="text-slate-300 text-sm leading-relaxed mb-6 max-w-md">
