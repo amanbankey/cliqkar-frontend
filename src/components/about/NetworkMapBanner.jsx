@@ -18,12 +18,12 @@ const NetworkMapBanner = () => {
             className="w-full h-64 sm:h-80 md:h-96 object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-          {/*markers.map((m) => (
+          {/* markers.map((m) => (
             <div key={m.label} className={`absolute ${m.position} text-white`}>
               <p className="text-xs sm:text-sm font-bold tracking-wide">{m.label}</p>
               <p className="text-[10px] text-gray-300">{m.sub}</p>
             </div>
-          ))*/}
+          )) */}
         </div>
       </div>
     </section>

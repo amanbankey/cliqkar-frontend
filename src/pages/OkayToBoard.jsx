@@ -19,7 +19,7 @@ const OkayToBoard = () => {
       <RequirementsMatrix />
       <DocumentUploadSimulator />
       {/* <StatsBar /> */}
-      <DepartureChecklist />
+      {/* <DepartureChecklist /> */}
       {/* <OTBCTABanner /> */}
     </div>
   );

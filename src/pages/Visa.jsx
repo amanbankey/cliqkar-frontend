@@ -20,12 +20,12 @@ const Visa = () => {
       <DestinationsCatalog />
       <SchengenSuite />
       <EligibilityChecker />
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <DocumentDossier />
-      <LiveTracking />
+      {/* <LiveTracking /> */}
       <WhyChooseUs />
-      <StatsBanner />
-      <Testimonials />
+      {/* <StatsBanner /> */}
+      {/* <Testimonials /> */}
       <VisaGuides />
       <CTABanner />
     </div>

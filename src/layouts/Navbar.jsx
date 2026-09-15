@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from "../assets/logo.png";
 import { RxCross1 } from "react-icons/rx";
+import cliqkar from "../assets/image/cliqkarLogo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -36,10 +37,10 @@ const Navbar = () => {
       <nav className="w-full bg-white/80 backdrop-blur-xl shadow-md border-b border-white/40">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-3 sm:px-4 md:px-5 lg:px-10 h-[65px] sm:h-[70px] max-w-screen-2xl mx-auto">
           <NavLink to="/" className="flex-shrink-0 text-black duration-200">
-            <img src={logo} className="object-contain w-36" />
+            <img src={cliqkar} className="object-contain w-36" />
           </NavLink>
 
-          <div className="hidden lg:flex justify-center">
+          <div className="hidden xl:flex justify-center">
             <div className="flex items-center bg-[#0A2540]/5 rounded-full p-1 gap-0.5">
               {navItems.map((item, index) => (
                 <NavLink

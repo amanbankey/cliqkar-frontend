@@ -116,3 +116,106 @@
     opacity: 0;
   }
 }
+
+
+@keyframes scan {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(1000%);
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  50% {
+    transform: translateX(250%);
+  }
+
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+
+@keyframes flightDot {
+  0% {
+    transform: translate(-20px, 180px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  45% {
+    transform: translate(-120px, 80px);
+    opacity: 1;
+  }
+
+  75% {
+    transform: translate(-30px, 10px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes radarRing {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes escapeGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scale(1.35);
+    opacity: 0.85;
+  }
+}
+
+@keyframes escapeProgress {
+  0% {
+    transform: translateX(-150%);
+  }
+
+  100% {
+    transform: translateX(500%);
+  }
+}

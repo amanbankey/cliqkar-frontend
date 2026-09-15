@@ -13,8 +13,8 @@ const About = () => {
       <HeroSection />
       <OperationalHubs />
       <DestinationNetwork />
-      <NetworkMapBanner />
-      <CityLeadership />
+      {/* <NetworkMapBanner /> */}
+      {/* <CityLeadership /> */}
       <WhyCliqkar />
       {/* <CTABanner /> */}
     </div>
