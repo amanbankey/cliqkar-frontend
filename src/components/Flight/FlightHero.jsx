@@ -12,7 +12,7 @@ import {
 import { TbPlaneDeparture, TbWallet } from "react-icons/tb";
 import { MdEventSeat } from "react-icons/md";
 import aero from "../../assets/image/aeroplane.jfif";
-import flightHero from "../../assets/image/flightHero.png";
+import FlightImg from "../../assets/image/img2.png";
 import {
   Plus,
   Trash2,
@@ -1638,7 +1638,7 @@ const FlightHero = () => {
       <section className="relative px-4 sm:px-8 lg:px-16 py-14 sm:py-20 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <img
-            src={flightHero}
+            src={FlightImg}
             alt=""
             className="w-full h-full object-cover"
           />
