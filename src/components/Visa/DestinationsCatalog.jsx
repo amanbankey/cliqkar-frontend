@@ -1,150 +1,223 @@
-import React, { useState } from "react";
-import { FiArrowRight, FiCheck } from "react-icons/fi";
-import { TbPlaneDeparture } from "react-icons/tb";
+ 
+import React, { useEffect, useRef } from "react";
+import { FiArrowRight, FiBookOpen } from "react-icons/fi";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const regions = ["All Popular", "Asia", "Europe", "Middle East", "Americas", "Africa", "Oceania"];
+gsap.registerPlugin(ScrollTrigger);
 
-const destinations = [
+const guides = [
   {
-    code: "AE",
-    name: "United Arab Emirates",
-    subtitle: "Tourist / 30-Day Leisure eVisa",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80",
-    price: "₹6,999",
-    priceNote: "Government + visa fees included",
-    processing: "3-5 Days",
-    stay: "30 Days",
-    entry: "Single",
-    features: ["100% Online application", "Document review by ex-consular staff", "24/7 Live application tracking"],
-    mostPopular: true,
+    image:
+      "https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=85",
+    category: "UAE GUIDES",
+    readTime: "5 MIN READ",
+    title: "Dubai Tourist Visa Guide 2026: Rules, Costs &…",
+    excerpt:
+      "Everything you must know regarding 30-day vs 60-day permits, overstay fines, and mandatory health insurance protocols.",
   },
   {
-    code: "TH",
-    name: "Thailand",
-    subtitle: "Tourist Visa / eVisa on Arrival",
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=600&q=80",
-    price: "₹3,499",
-    priceNote: "Pre-verified immigration clearance",
-    processing: "2-3 Days",
-    stay: "60 Days",
-    entry: "Single",
-    features: ["Zero embassy visit needed", "Automated passport photo crop", "Express entry QR voucher"],
+    image:
+      "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=800&q=85",
+    category: "SCHENGEN 90-DAY",
+    readTime: "8 MIN READ",
+    title: "The Complete Schengen 90/180-Day Rule Handbook",
+    excerpt:
+      "How to accurately calculate your legal European stay across multiple trips without triggering an inadvertent Schengen overstay…",
   },
   {
-    code: "SG",
-    name: "Singapore",
-    subtitle: "e-Visa (Authorized Consular Channel)",
-    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80",
-    price: "₹2,850",
-    priceNote: "Direct ICA system linkage",
-    processing: "24-48 Hrs",
-    stay: "30 Days",
-    entry: "Multiple",
-    features: ["Authorized strategic agency", "SG Arrival Card integration", "PDF eVisa sent to WhatsApp"],
+    image:
+      "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=800&q=85",
+    category: "UNITED KINGDOM",
+    readTime: "6 MIN READ",
+    title: "UK Standard Visitor Visa Breakdown: Avoid Refusals",
+    excerpt:
+      "Why 68% of initial UK visa refusals stem from unexplained fund deposits in bank statements and how to document financial ties legally.",
   },
   {
-    code: "MY",
-    name: "Malaysia",
-    subtitle: "MDAC & Tourist eVisa",
-    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&q=80",
-    price: "₹2,499",
-    priceNote: "Digital MDAC processing",
-    processing: "Instant",
-    stay: "30 Days",
-    entry: "Single",
-    features: ["Automated clearance pipeline", "Instant submission verification", "Biometric waiver support"],
+    image:
+      "https://images.unsplash.com/photo-1501466044931-62695aada8e9?w=800&q=85",
+    category: "USA CONSULAR",
+    readTime: "10 MIN READ",
+    title: "US B1/B2 Visa Interview: 15 Questions That Decide Your…",
+    excerpt:
+      "Actionable tips for demonstrating strong domestic ties under Section 214(b) during your 90-second consular officer interview.",
   },
 ];
 
-const DestinationsCatalog = () => {
-  const [activeRegion, setActiveRegion] = useState("All Popular");
+const VisaGuides = () => {
+  const sectionRef = useRef(null);
+  const cardsRef = useRef([]);
+  const headingRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(headingRef.current.children, {
+        y: 35,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      gsap.from(cardsRef.current, {
+        y: 70,
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.9,
+        stagger: 0.14,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          once: true,
+        },
+      });
+
+      cardsRef.current.forEach((card) => {
+        const image = card.querySelector(".guide-image");
+        const content = card.querySelector(".guide-content");
+
+        const enter = () => {
+          gsap.to(card, {
+            y: -8,
+            duration: 0.35,
+            ease: "power2.out",
+          });
+
+          gsap.to(image, {
+            scale: 1.08,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+
+          gsap.to(content, {
+            y: -2,
+            duration: 0.35,
+            ease: "power2.out",
+          });
+        };
+
+        const leave = () => {
+          gsap.to(card, {
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+
+          gsap.to(image, {
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+
+          gsap.to(content, {
+            y: 0,
+            duration: 0.35,
+            ease: "power2.out",
+          });
+        };
+
+        card.addEventListener("mouseenter", enter);
+        card.addEventListener("mouseleave", leave);
+
+        return () => {
+          card.removeEventListener("mouseenter", enter);
+          card.removeEventListener("mouseleave", leave);
+        };
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="bg-white py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-blue-600 mb-2">
-              <TbPlaneDeparture size={14} /> GLOBAL DESTINATIONS CATALOG
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-indigo-50/40 py-12 sm:py-14 md:py-16 lg:py-20"
+    >
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-blue-200/20 blur-3xl" />
+
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div
+          ref={headingRef}
+          className="mb-8 flex flex-col gap-5 sm:mb-10 lg:mb-12 lg:flex-row lg:items-end lg:justify-between"
+        >
+          <div className="max-w-3xl">
+            <p className="mb-2 flex items-center gap-2 text-[10px] font-bold tracking-[0.16em] text-blue-600 sm:text-xs">
+              <FiBookOpen size={14} />
+              CONSULAR INTELLIGENCE DISPATCHES
             </p>
-            <h2 className=" text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Where Are You Going?</h2>
-            <p className="text-gray-500 text-sm">Find your destination and launch your guided application in minutes.</p>
+
+            <h2 className="mb-3 text-2xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-3xl md:text-4xl lg:text-[42px]">
+              Visa Guides & Destination Advisories
+            </h2>
+
+            <p className="max-w-2xl text-xs leading-relaxed text-gray-500 sm:text-sm md:text-[15px]">
+              Authoritative insights written by seasoned immigration
+              specialists and consular attorneys.
+            </p>
           </div>
-          <button className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:underline flex-shrink-0">
-            View All 180+ Countries <FiArrowRight size={14} />
+
+          <button className="group flex w-fit items-center gap-2 text-sm font-semibold text-blue-600 transition-colors duration-300 hover:text-blue-800">
+            <span>Explore All Guides</span>
+            <FiArrowRight
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8">
-          {regions.map((region) => (
-            <button
-              key={region}
-              onClick={() => setActiveRegion(region)}
-              className={`text-sm font-semibold px-4 py-2 rounded-full ${
-                activeRegion === region ? "bg-blue-700 text-white" : "bg-gray-100 text-gray-700"
-              }`}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
+          {guides.map((guide, index) => (
+            <article
+              key={guide.title}
+              ref={(el) => {
+                cardsRef.current[index] = el;
+              }}
+              className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl"
             >
-              {region}
-            </button>
-          ))}
-        </div>
+              <div className="relative h-48 overflow-hidden sm:h-44 md:h-48 lg:h-44 xl:h-48">
+                <img
+                  src={guide.image}
+                  alt={guide.title}
+                  loading="lazy"
+                  className="guide-image h-full w-full object-cover"
+                />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {destinations.map((d) => (
-            <div key={d.code} className="border border-gray-200 rounded-2xl overflow-hidden flex flex-col">
-              <div className="relative h-36">
-                <img src={d.image} alt={d.name} className="w-full h-full object-cover" />
-                {d.mostPopular && (
-                  <span className="absolute top-3 right-3 bg-blue-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-                    MOST POPULAR
-                  </span>
-                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-70" />
+
+                <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold tracking-wide text-gray-700 backdrop-blur-sm">
+                  {guide.category}
+                </div>
               </div>
-              <div className="p-4 flex flex-col flex-1">
-                <p className="flex items-center gap-2 text-base font-bold text-gray-900 mb-1">
-                  <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded">{d.code}</span>
-                  {d.name}
+
+              <div className="guide-content p-4 sm:p-5">
+                <div className="mb-2 flex flex-wrap items-center gap-1.5 text-[9px] font-bold tracking-wide text-gray-400 sm:text-[10px]">
+                  <span>{guide.category}</span>
+                  <span>·</span>
+                  <span>{guide.readTime}</span>
+                </div>
+
+                <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-snug text-gray-900 sm:text-base">
+                  {guide.title}
+                </h3>
+
+                <p className="line-clamp-3 text-[11px] leading-relaxed text-gray-500 sm:text-xs">
+                  {guide.excerpt}
                 </p>
-                <p className="text-xs text-gray-500 mb-3">{d.subtitle}</p>
 
-                <div className="bg-indigo-50 rounded-xl p-3 mb-3">
-                  <p className="text-[10px] font-semibold tracking-wide text-gray-500 mb-0.5">FROM</p>
-                  <p className="text-xl font-extrabold text-gray-900 mb-1">
-                    {d.price} <span className="text-xs font-normal text-gray-500">/applicant</span>
-                  </p>
-                  <p className="flex items-center gap-1 text-[11px] text-emerald-600">
-                    <FiCheck size={11} /> {d.priceNote}
-                  </p>
+                <div className="mt-4 flex items-center gap-1.5 text-[11px] font-semibold text-blue-600 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
+                  Read Guide
+                  <FiArrowRight size={12} />
                 </div>
-
-                <div className="grid grid-cols-3 gap-2 text-center mb-3 pb-3 border-b border-gray-100">
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-wide text-gray-400">PROCESSING</p>
-                    <p className="text-xs font-bold text-gray-800">{d.processing}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-wide text-gray-400">STAY</p>
-                    <p className="text-xs font-bold text-gray-800">{d.stay}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-wide text-gray-400">ENTRY</p>
-                    <p className="text-xs font-bold text-gray-800">{d.entry}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5 mb-4">
-                  {d.features.map((f) => (
-                    <p key={f} className="flex items-center gap-1.5 text-xs text-gray-600">
-                      <FiCheck className="text-emerald-500 flex-shrink-0" size={12} /> {f}
-                    </p>
-                  ))}
-                </div>
-
-                <button className="mt-auto flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold py-2.5 rounded-xl">
-                  Apply Now <FiArrowRight size={14} />
-                </button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
@@ -152,4 +225,5 @@ const DestinationsCatalog = () => {
   );
 };
 
-export default DestinationsCatalog;
+export default VisaGuides;
+ 

@@ -65,8 +65,8 @@ const CuratedDeals = () => {
   const [activeFilter, setActiveFilter] = useState("All Flights");
 
   return (
-    <section className="bg-slate-50 px-4 sm:px-8 lg:px-16 py-14">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-slate-50   py-14 ">
+      <div className="max-w-7xl mx-auto ">
         <div className="w-full lg:w-4/5 mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
           <div>
             <p className="text-[11px] font-semibold tracking-[0.2em] text-amber-600 mb-2">CURATED LUXURY DEALS</p>
@@ -154,7 +154,6 @@ const CuratedDeals = () => {
                   <div className="flex flex-col items-start lg:items-end gap-1">
                     <p className="text-xs text-slate-400 line-through">{deal.originalPrice}</p>
                     <p className="text-2xl font-bold text-slate-900">{deal.price}</p>
-                    <p className="text-[10px] font-semibold text-amber-600">Save {deal.save} · {deal.fareType}</p>
                   </div>
                   <button className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-all duration-300">
                     Select Flight

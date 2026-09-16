@@ -1,3 +1,8 @@
+
+
+
+
+
 import { useState } from "react";
 
 import {
@@ -54,65 +59,105 @@ export default function SignInPage({ onClose }) {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#edf2f9]">
-      {/* =====================================================
-          BACKGROUND DECORATION
-      ===================================================== */}
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#edf2f9] flex items-center justify-center px-4 py-6 sm:px-6 lg:px-10">
 
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[450px] w-[450px] rounded-full bg-blue-300/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -left-40 -top-40 h-[400px] w-[400px] rounded-full bg-blue-300/20 blur-[120px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[450px] w-[450px] rounded-full bg-indigo-300/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-300/20 blur-[120px]" />
 
       {/* =====================================================
           MAIN CONTAINER
       ===================================================== */}
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1500px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
-        <div className="relative flex w-full max-w-[1320px] overflow-hidden rounded-[30px] bg-white shadow-[0_25px_80px_rgba(15,23,42,0.16)]">
-          
-          {/* =====================================================
-              LEFT SIGN IN FORM
-          ===================================================== */}
+      <div className="relative flex w-full max-w-[935px] flex-col lg:flex-row overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] my-auto">
+        
+        {/* =====================================================
+            CLOSE BUTTON (Always visible at top-right of card)
+        ===================================================== */}
+        <button
+          type="button"
+          onClick={() => (onClose ? onClose() : navigate("/"))}
+          aria-label="Close"
+          className="
+            absolute
+            right-4
+            top-4
+            z-40
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-[#dce7f5]
+            bg-white
+            text-[#315789]
+            shadow-sm
+            transition-all
+            duration-200
+            hover:scale-105
+            hover:bg-blue-50
+            active:scale-95
+            sm:right-6
+            sm:top-6
+          "
+        >
+          <X size={17} />
+        </button>
 
-          <div className="relative flex min-h-[700px] flex-1 items-center bg-[#fcfdff] px-6 py-8 sm:px-10 lg:px-12 xl:px-14">
+        {/* =====================================================
+            MOBILE IMAGE (Visible on mobile, top banner)
+        ===================================================== */}
+        <div className="relative h-[200px] sm:h-[220px] w-full overflow-hidden lg:hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/cloud.jpeg')",
+            }}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07182f]/80 via-[#0b2850]/50 to-transparent" />
+
+          <div className="absolute left-6 top-6 z-20 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
+              <Plane size={20} className="-rotate-45" />
+            </div>
+
+            <div>
+              <p className="font-bold text-white">
+                cliqkar
+              </p>
+              <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-blue-200">
+                Travel Beyond
+              </p>
+            </div>
+          </div>
+
+          <div className="absolute bottom-6 left-6 right-6 z-20">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
+              Welcome back to Cliqkar.
+            </h2>
+          </div>
+        </div>
+
+        {/* =====================================================
+            LEFT SIGN IN FORM
+        ===================================================== */}
+
+        <div className="relative flex min-h-[200px] flex-1 items-center bg-[#fcfdff] px-6 py-6 sm:px-9 lg:px-10 xl:px-12">
 
             {/* BACKGROUND GLOW */}
 
-            <div className="pointer-events-none absolute left-0 top-0 h-[320px] w-[320px] rounded-full bg-blue-100/50 blur-[110px]" />
+            <div className="pointer-events-none absolute left-0 top-0 h-[200px] w-[250px] rounded-full bg-blue-100/50 blur-[110px]" />
 
             <div className="pointer-events-none absolute bottom-[-180px] right-[20%] h-[280px] w-[280px] rounded-full bg-indigo-100/30 blur-[100px]" />
 
             {/* CLOSE BUTTON */}
 
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="
-                  absolute
-                  right-7
-                  top-7
-                  z-30
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#dce7f5]
-                  bg-white
-                  text-[#315789]
-                  shadow-sm
-                  transition-all
-                  duration-200
-                  hover:scale-105
-                  hover:bg-blue-50
-                "
-              >
-                <X size={17} />
-              </button>
-            )}
+           
+            
+        
 
             <div className="relative z-10 mx-auto w-full max-w-[580px]">
 
@@ -136,11 +181,11 @@ export default function SignInPage({ onClose }) {
                   TITLE
               ===================================================== */}
 
-              <h1 className="text-[32px] font-bold tracking-tight text-[#17243a] sm:text-[38px]">
+              <h1 className="text-[26px] font-bold tracking-tight text-[#17243a] sm:text-[30px]">
                 Welcome back
               </h1>
 
-              <p className="mt-2 max-w-[520px] text-[13px] leading-relaxed text-slate-500">
+              <p className="mt-1.5 max-w-[480px] text-[13px] leading-relaxed text-slate-500">
                 Sign in to continue your journey and access your
                 personalized travel experience.
               </p>
@@ -149,7 +194,7 @@ export default function SignInPage({ onClose }) {
                   TABS
               ===================================================== */}
 
-              <div className="mt-6 grid grid-cols-2 gap-3">
+              <div className="mt-5 grid grid-cols-2 gap-3">
 
                 <button
                   type="button"
@@ -198,7 +243,7 @@ export default function SignInPage({ onClose }) {
                   DIVIDER
               ===================================================== */}
 
-              <div className="my-6 flex items-center gap-3">
+              <div className="my-5 flex items-center gap-3">
 
                 <span className="h-px flex-1 bg-slate-100" />
 
@@ -214,7 +259,7 @@ export default function SignInPage({ onClose }) {
                   FORM
               ===================================================== */}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3.5">
 
                 {/* EMAIL */}
 
@@ -268,7 +313,7 @@ export default function SignInPage({ onClose }) {
                       group
                       relative
                       flex
-                      h-[56px]
+                      h-[48px]
                       items-center
                       gap-3
                       rounded-[16px]
@@ -417,21 +462,7 @@ export default function SignInPage({ onClose }) {
 
               </form>
 
-              {/* =====================================================
-                  FOOTER
-              ===================================================== */}
-
-              <div className="mt-6 flex items-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
-
-                <CheckCircle2
-                  size={14}
-                  className="text-[#3b72bd]"
-                />
-
-                Your travel information is protected securely.
-
-              </div>
-
+                 
             </div>
 
           </div>
@@ -441,7 +472,7 @@ export default function SignInPage({ onClose }) {
               RIGHT IMAGE SECTION
           ===================================================== */}
 
-          <div className="relative hidden min-h-[700px] w-[46%] overflow-hidden lg:block">
+          <div className="relative hidden min-h-[560px] w-[44%] overflow-hidden lg:block">
 
             {/* BACKGROUND IMAGE */}
 
@@ -456,76 +487,21 @@ export default function SignInPage({ onClose }) {
 
             <div className="absolute inset-0 bg-gradient-to-bl from-[#07182f]/50 via-[#0b2850]/30 to-[#07101f]/60" />
 
-
-            {/* =====================================================
-                BLUE CURVE - OPPOSITE SIDE
-                LEFT SIDE OF IMAGE
-            ===================================================== */}
-
+ 
             <div
               className="
                 pointer-events-none
                 absolute
-                -left-[-410px]
-                
-                top-[-180px]
-                z-10
-                h-[1080px]
-                w-[610px]
-                rounded-[50%]
-                bg-gradient-to-b
-                from-[#4f7df3]
-                via-[#2457d6]
-                to-[#173fba]
-                opacity-95
-              "
-            />
-
-
-            {/* =====================================================
-                WHITE CURVE - OPPOSITE SIDE
-
-                Blue aur white overlap kar rahe hain
-                isliye beech mein white gap nahi aayega.
-            ===================================================== */}
-
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-[-435px]
-                top-[-200px]
+                left-[-350px]
+                top-[-160px]
                 z-20
-                h-[1120px]
-                w-[620px]
+                h-[900px]
+                w-[500px]
                 rounded-[50%]
                 bg-[#fcfdff]
               "
             />
 
-
-            {/* =====================================================
-                LOGO
-            ===================================================== */}
-
-            <div className="absolute right-9 top-9 z-30 flex items-center gap-3">
-
-              <div>
-                <img src={logo} className="object-contain w-36" />
-
-                <p className="text-right text-[9px] font-bold uppercase tracking-[0.18em] text-blue-200">
-                  Travel Beyond
-                </p>
-              </div>
-
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-900/30">
-                <Plane
-                  size={21}
-                  className="-rotate-45"
-                />
-              </div>
-
-            </div>
 
 
             {/* =====================================================
@@ -538,10 +514,10 @@ export default function SignInPage({ onClose }) {
               className="
                 pointer-events-none
                 absolute
-                -left-[70px]
-                top-[100px]
+                -left-[55px]
+                top-[75px]
                 z-30
-                w-[600px]
+                w-[470px]
                 max-w-none
                 object-contain
                 drop-shadow-[0_28px_32px_rgba(0,0,0,0.32)]
@@ -569,7 +545,7 @@ export default function SignInPage({ onClose }) {
               </div>
 
 
-              <h2 className="ml-auto max-w-md text-[38px] font-bold leading-[1.08] text-white xl:text-[46px]">
+              <h2 className="ml-auto max-w-md text-[30px] font-bold leading-[1.08] text-white xl:text-[36px]">
 
                 Your journey
 
@@ -589,60 +565,7 @@ export default function SignInPage({ onClose }) {
 
           </div>
 
-
-          {/* =====================================================
-              MOBILE IMAGE
-          ===================================================== */}
-
-          <div className="relative h-[240px] overflow-hidden lg:hidden">
-
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: "url('/cloud.jpeg')",
-              }}
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07182f]/80 via-[#0b2850]/50 to-transparent" />
-
-            <div className="absolute left-6 top-6 z-20 flex items-center gap-3">
-
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white">
-
-                <Plane
-                  size={20}
-                  className="-rotate-45"
-                />
-
-              </div>
-
-              <div>
-
-                <p className="font-bold text-white">
-                  cliqkar
-                </p>
-
-                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-blue-200">
-                  Travel Beyond
-                </p>
-
-              </div>
-
-            </div>
-
-
-            <div className="absolute bottom-7 left-6 right-6 z-20">
-
-              <h2 className="text-3xl font-bold text-white">
-                Welcome back to Cliqkar.
-              </h2>
-
-            </div>
-
-          </div>
-
         </div>
-      </div>
 
 
       {/* =====================================================
@@ -724,7 +647,7 @@ function PremiumField({
           group
           relative
           flex
-          h-[56px]
+          h-[48px]
           items-center
           gap-3
           rounded-[16px]

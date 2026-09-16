@@ -26,7 +26,7 @@ const Visa = () => {
       <WhyChooseUs />
       {/* <StatsBanner /> */}
       {/* <Testimonials /> */}
-      <VisaGuides />
+      {/* <VisaGuides /> */}
       <CTABanner />
     </div>
 

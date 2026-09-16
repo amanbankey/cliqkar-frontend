@@ -59,7 +59,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start justify-around gap-8 mb-10 px-5 sm:px-2">
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-           <NavLink to="/" className="flex-shrink-0 text-black duration-200">
+           <NavLink to="/" className="flex-shrink-0 text-white duration-200">
             <img src={logo} className="object-contain w-36" />
           </NavLink>
             

@@ -1,11 +1,14 @@
-import { useState } from "react";
 
+
+
+import { useState } from "react";
+ import { TbSend } from "react-icons/tb";
 import {
   User,
   Mail,
   Users,
   Lock,
-  Globe,
+  Globe, X,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -16,8 +19,10 @@ import {
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-export default function SignUpPage() {
+export default function SignUpPage({ onClose }) {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
@@ -72,16 +77,51 @@ export default function SignUpPage() {
 
       {/* MAIN CONTAINER */}
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1500px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
+      <div className="relative mx-auto flex min-h-screen max-w-[1220px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
 
-        <div className="relative flex w-full max-w-[1320px] overflow-hidden rounded-[30px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)]">
+        <div className="relative flex w-full max-w-[1080px] flex-col lg:flex-row overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] my-auto">
+
+          {/* =====================================================
+              CLOSE BUTTON (Always visible at top-right of card)
+          ===================================================== */}
+          <button
+            type="button"
+            onClick={() => (onClose ? onClose() : navigate("/"))}
+            aria-label="Close"
+            className="
+              absolute
+              right-4
+              top-4
+              z-40
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[#dce7f5]
+              bg-white
+              text-[#315789]
+              shadow-sm
+              transition-all
+              duration-200
+              hover:scale-105
+              hover:bg-blue-50
+              active:scale-95
+              sm:right-6
+              sm:top-6
+            "
+          >
+            <X size={17} />
+          </button>
 
 
           {/* =====================================================
               LEFT IMAGE SECTION
           ===================================================== */}
 
-          <div className="relative hidden min-h-[700px] w-[46%] overflow-hidden lg:block">
+          <div className="relative hidden min-h-[560px] w-[44%] overflow-hidden lg:block">
 
             {/* BACKGROUND IMAGE */}
 
@@ -96,52 +136,7 @@ export default function SignUpPage() {
             {/* DARK OVERLAY */}
 
             <div className="absolute inset-0 bg-gradient-to-br from-[#07182f]/50 via-[#0b2850]/30 to-[#07101f]/60" />
-
-
-            {/* =====================================================
-                BLUE CURVE ACCENT
-                Curve opens toward LEFT
-            ===================================================== */}
-
-          {/* =====================================================
-    BLUE CURVE ACCENT
-===================================================== */}
-
-<div
-  className="
-    pointer-events-none
-    absolute
-    -right-[145px]
-    top-[-80px]
-    z-10
-    h-[860px]
-    w-[300px]
-    rounded-full
-    bg-gradient-to-b
-    from-[#4f7df3]
-    via-[#2457d6]
-    to-[#173fba]
-  "
-/>
-
-
-{/* =====================================================
-    MAIN WHITE CURVE
-===================================================== */}
-
-<div
-  className="
-    pointer-events-none
-    absolute
-    -right-[205px]
-    top-[-100px]
-    z-20
-    h-[900px]
-    w-[330px]
-    rounded-full
-    bg-[#fcfdff]
-  "
-/>
+ 
 
 
             {/* LOGO */}
@@ -159,7 +154,7 @@ export default function SignUpPage() {
 
               <div>
 
-                <img src={logo} className="object-contain w-36" />
+                {/* <img src={logo} className="object-contain w-36" /> */}
 
                 <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-200">
                   Travel Beyond
@@ -178,10 +173,10 @@ export default function SignUpPage() {
               className="
                 pointer-events-none
                 absolute
-                -right-[30px]
-                top-[100px]
+                -right-[20px]
+                top-[75px]
                 z-30
-                w-[600px]
+                w-[470px]
                 max-w-none
                 object-contain
                 drop-shadow-[0_28px_32px_rgba(0,0,0,0.32)]
@@ -207,7 +202,7 @@ export default function SignUpPage() {
               </div>
 
 
-              <h2 className="max-w-md text-[38px] font-bold leading-[1.08] text-white xl:text-[46px]">
+              <h2 className="max-w-md text-[30px] font-bold leading-[1.08] text-white xl:text-[36px]">
 
                 Your journey starts
 
@@ -234,7 +229,7 @@ export default function SignUpPage() {
               MOBILE IMAGE
           ===================================================== */}
 
-          <div className="relative h-[240px] overflow-hidden lg:hidden">
+          <div className="relative h-[200px] sm:h-[220px] w-full overflow-hidden lg:hidden">
 
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -288,45 +283,26 @@ export default function SignUpPage() {
               RIGHT FORM SECTION
           ===================================================== */}
 
-          <div className="relative flex flex-1 items-center bg-[#fcfdff] px-6 py-8 sm:px-10 lg:px-12 xl:px-14">
+          <div className="relative top-0 flex flex-1 items-center bg-[#fcfdff] px-6 py-6 sm:px-9 lg:px-10 xl:px-12">
 
 
             {/* BACKGROUND GLOW */}
 
-            <div className="pointer-events-none absolute right-0 top-0 h-[320px] w-[320px] rounded-full bg-blue-100/50 blur-[110px]" />
+            <div className="pointer-events-none absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-blue-100/50 blur-[110px]" />
 
             <div className="pointer-events-none absolute bottom-[-180px] left-[20%] h-[280px] w-[280px] rounded-full bg-indigo-100/30 blur-[100px]" />
 
 
-            <div className="relative z-10 mx-auto w-full max-w-[650px]">
-
-
-              {/* BADGE */}
-
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dce7f5] bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-md">
-
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#173d6c] to-[#3269aa] text-white shadow-sm">
-
-                  <ShieldCheck size={13} />
-
-                </span>
-
-
-                <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#315789]">
-                  Private Member Access
-                </span>
-
-              </div>
-
+            <div className="relative z-10 mx-auto w-full">
 
               {/* TITLE */}
 
-              <h1 className="text-[32px] font-bold tracking-tight text-[#17243a] sm:text-[38px]">
+              <h1 className="pr-10 text-[26px] font-bold tracking-tight text-[#17243a] sm:text-[30px]">
                 Create your account
               </h1>
 
 
-              <p className="mt-2 max-w-[580px] text-[13px] leading-relaxed text-slate-500">
+              <p className="mt-1.5 max-w-[520px] text-[13px] leading-relaxed text-slate-500">
 
                 Join Cliqkar and unlock a smarter, seamless
                 and more personalized travel experience.
@@ -338,10 +314,10 @@ export default function SignUpPage() {
 
               <form
                 onSubmit={handleSubmit}
-                className="mt-6"
+                className="mt-5"
               >
 
-                <div className="grid grid-cols-1 gap-x-5 gap-y-3.5 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
 
 
                   {/* FULL NAME */}
@@ -450,51 +426,7 @@ export default function SignUpPage() {
                   </PremiumField>
 
 
-                  {/* GENDER */}
-
-                  <PremiumField
-                    label="Gender"
-                    required
-                    icon={<Users size={16} />}
-                  >
-
-                    <select
-                      value={signUpForm.gender}
-                      onChange={(e) =>
-                        handleChange(
-                          "gender",
-                          e.target.value
-                        )
-                      }
-                      className="premium-select"
-                    >
-
-                      <option value="">
-                        Select gender
-                      </option>
-
-                      <option value="female">
-                        Female
-                      </option>
-
-                      <option value="male">
-                        Male
-                      </option>
-
-                      <option value="other">
-                        Other
-                      </option>
-
-                    </select>
-
-
-                    <ChevronDown
-                      size={16}
-                      className="pointer-events-none absolute right-4 text-[#5c7da5]"
-                    />
-
-                  </PremiumField>
-
+                
 
                   {/* PASSWORD */}
 
@@ -681,19 +613,7 @@ export default function SignUpPage() {
                   </button>
 
 
-                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
-
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-blue-100 bg-white text-[#2c619f] shadow-sm">
-
-                      <ShieldCheck size={14} />
-
-                    </span>
-
-                    <span>
-                      Secure & encrypted registration
-                    </span>
-
-                  </div>
+                  
 
                 </div>
 
@@ -702,16 +622,7 @@ export default function SignUpPage() {
 
               {/* FOOTER */}
 
-              <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
-
-                <CheckCircle2
-                  size={14}
-                  className="text-[#3b72bd]"
-                />
-
-                Your travel information is protected securely.
-
-              </div>
+              
 
             </div>
 
@@ -840,7 +751,7 @@ function PremiumField({
           group
           relative
           flex
-          h-[56px]
+          h-[48px]
           items-center
           gap-3
           rounded-[16px]
