@@ -1,89 +1,193 @@
-
-
-
 import { useState } from "react";
- import { TbSend } from "react-icons/tb";
 import {
   User,
   Mail,
-  Users,
   Lock,
-  Globe, X,
+  Globe,
+  X,
   Eye,
   EyeOff,
   ShieldCheck,
   ArrowRight,
-  Phone,
-  ChevronDown,
   Plane,
   Sparkles,
   CheckCircle2,
+  Loader2,
+  AlertCircle,
+  Check,
 } from "lucide-react";
+import { signupUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+
+const countries = [
+  "India",
+  "United States",
+  "United Kingdom",
+  "United Arab Emirates",
+  "Canada",
+  "Australia",
+  "Singapore",
+  "Germany",
+];
+
 export default function SignUpPage({ onClose }) {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
 
-  const [signUpForm, setSignUpForm] = useState({
-    firstName: "",
-    countryCode: "+91",
-    phoneNumber: "",
-    email: "",
-    gender: "",
-    password: "",
-    confirmPassword: "",
-    country: "",
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+
+  const [message, setMessage] = useState({
+    type: "",
+    text: "",
   });
 
-  const handleChange = (field, value) => {
+  const [signUpForm, setSignUpForm] = useState({
+    fullName: "",
+    identifier: "",
+    country: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setSignUpForm((prev) => ({
       ...prev,
-      [field]: value,
+      [name]: value,
     }));
+
+    if (message.text) {
+      setMessage({
+        type: "",
+        text: "",
+      });
+    }
+  };
+
+  const handleCountrySelect = (country) => {
+    setSignUpForm((prev) => ({
+      ...prev,
+      country,
+    }));
+
+    setCountryDropdownOpen(false);
+
+    if (message.text) {
+      setMessage({
+        type: "",
+        text: "",
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!signUpForm.fullName.trim()) {
+      setMessage({
+        type: "error",
+        text: "Please enter your full name.",
+      });
+      return;
+    }
+
+    if (!signUpForm.identifier.trim()) {
+      setMessage({
+        type: "error",
+        text: "Please enter your email or mobile number.",
+      });
+      return;
+    }
+
+    if (!signUpForm.country) {
+      setMessage({
+        type: "error",
+        text: "Please select your country.",
+      });
+      return;
+    }
+
+    if (!signUpForm.password) {
+      setMessage({
+        type: "error",
+        text: "Please enter your password.",
+      });
+      return;
+    }
+
+    if (signUpForm.password !== signUpForm.confirmPassword) {
+      setMessage({
+        type: "error",
+        text: "Passwords do not match.",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    setMessage({
+      type: "",
+      text: "",
+    });
+
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signUpForm),
+      const data = await signupUser({
+        fullName: signUpForm.fullName.trim(),
+        identifier: signUpForm.identifier.trim(),
+        country: signUpForm.country,
+        password: signUpForm.password,
+        confirmPassword: signUpForm.confirmPassword,
       });
 
-      const data = await response.json();
+      if (data?.success === false) {
+        setMessage({
+          type: "error",
+          text: data?.message || "Unable to create your account.",
+        });
+        return;
+      }
 
-      console.log("signup response", data);
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      if (data?.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      setMessage({
+        type: "success",
+        text: data?.message || "Account created successfully!",
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
-      console.log("signup error", error);
+      setMessage({
+        type: "error",
+        text:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong while creating your account.",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#edf2f9]">
-
-      {/* BACKGROUND DECORATION */}
-
       <div className="pointer-events-none absolute -left-40 -top-40 h-[450px] w-[450px] rounded-full bg-blue-300/20 blur-[120px]" />
 
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-[450px] w-[450px] rounded-full bg-indigo-300/20 blur-[120px]" />
 
-
-      {/* MAIN CONTAINER */}
-
       <div className="relative mx-auto flex min-h-screen max-w-[1220px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
+        <div className="relative my-auto flex w-full max-w-[1080px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
 
-        <div className="relative flex w-full max-w-[1080px] flex-col lg:flex-row overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] my-auto">
-
-          {/* =====================================================
-              CLOSE BUTTON (Always visible at top-right of card)
-          ===================================================== */}
           <button
             type="button"
             onClick={() => (onClose ? onClose() : navigate("/"))}
@@ -116,14 +220,7 @@ export default function SignUpPage({ onClose }) {
             <X size={17} />
           </button>
 
-
-          {/* =====================================================
-              LEFT IMAGE SECTION
-          ===================================================== */}
-
           <div className="relative hidden min-h-[560px] w-[44%] overflow-hidden lg:block">
-
-            {/* BACKGROUND IMAGE */}
 
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -132,40 +229,22 @@ export default function SignUpPage({ onClose }) {
               }}
             />
 
-
-            {/* DARK OVERLAY */}
-
             <div className="absolute inset-0 bg-gradient-to-br from-[#07182f]/50 via-[#0b2850]/30 to-[#07101f]/60" />
- 
-
-
-            {/* LOGO */}
 
             <div className="absolute left-9 top-9 z-30 flex items-center gap-3">
-
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-900/30">
-
                 <Plane
                   size={21}
                   className="-rotate-45"
                 />
-
               </div>
 
               <div>
-
-                {/* <img src={logo} className="object-contain w-36" /> */}
-
                 <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-200">
                   Travel Beyond
                 </p>
-
               </div>
-
             </div>
-
-
-            {/* FOREGROUND PLANE IMAGE */}
 
             <img
               src="/planebg2.png"
@@ -183,13 +262,8 @@ export default function SignUpPage({ onClose }) {
               "
             />
 
-
-            {/* FLOATING TEXT */}
-
             <div className="absolute bottom-9 left-9 right-16 z-30">
-
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-xl">
-
                 <Sparkles
                   size={13}
                   className="text-blue-200"
@@ -198,39 +272,24 @@ export default function SignUpPage({ onClose }) {
                 <span className="text-[11px] font-semibold text-white">
                   Travel without limits
                 </span>
-
               </div>
 
-
               <h2 className="max-w-md text-[30px] font-bold leading-[1.08] text-white xl:text-[36px]">
-
                 Your journey starts
 
                 <span className="block bg-gradient-to-r from-blue-200 to-cyan-100 bg-clip-text text-transparent">
                   with Cliqkar.
                 </span>
-
               </h2>
 
-
               <p className="mt-3 max-w-md text-[13px] leading-relaxed text-blue-100/80">
-
                 Create your account and unlock a seamless
                 travel experience designed around you.
-
               </p>
-
             </div>
-
           </div>
 
-
-          {/* =====================================================
-              MOBILE IMAGE
-          ===================================================== */}
-
-          <div className="relative h-[200px] sm:h-[220px] w-full overflow-hidden lg:hidden">
-
+          <div className="relative h-[200px] w-full overflow-hidden sm:h-[220px] lg:hidden">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
@@ -240,219 +299,128 @@ export default function SignUpPage({ onClose }) {
 
             <div className="absolute inset-0 bg-gradient-to-r from-[#07182f]/80 via-[#0b2850]/50 to-transparent" />
 
-
-            <div className="absolute left-6 top-6 z-20 flex items-center gap-3">
-
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white">
-
-                <Plane
-                  size={20}
-                  className="-rotate-45"
-                />
-
-              </div>
-
-
-              <div>
-
-                <p className="font-bold text-white">
-                  cliqkar
-                </p>
-
-                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-blue-200">
-                  Travel Beyond
-                </p>
-
-              </div>
-
-            </div>
-
-
             <div className="absolute bottom-7 left-6 right-6 z-20">
-
               <h2 className="text-3xl font-bold text-white">
                 Your journey starts here.
               </h2>
-
             </div>
-
           </div>
 
-
-          {/* =====================================================
-              RIGHT FORM SECTION
-          ===================================================== */}
-
           <div className="relative top-0 flex flex-1 items-center bg-[#fcfdff] px-6 py-6 sm:px-9 lg:px-10 xl:px-12">
-
-
-            {/* BACKGROUND GLOW */}
 
             <div className="pointer-events-none absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-blue-100/50 blur-[110px]" />
 
             <div className="pointer-events-none absolute bottom-[-180px] left-[20%] h-[280px] w-[280px] rounded-full bg-indigo-100/30 blur-[100px]" />
 
-
             <div className="relative z-10 mx-auto w-full">
 
-              {/* TITLE */}
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#3b72bd]/15 bg-[#3b72bd]/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#3b72bd]">
+                <ShieldCheck size={13} />
+                Private Member Access
+              </div>
 
               <h1 className="pr-10 text-[26px] font-bold tracking-tight text-[#17243a] sm:text-[30px]">
                 Create your account
               </h1>
 
-
               <p className="mt-1.5 max-w-[520px] text-[13px] leading-relaxed text-slate-500">
-
                 Join Cliqkar and unlock a smarter, seamless
                 and more personalized travel experience.
-
               </p>
 
+              <div className="mb-4 mt-4 flex w-full rounded-xl bg-slate-100 p-1">
+                <button
+                  type="button"
+                  onClick={() => navigate("/signin")}
+                  className="flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold text-slate-500 transition hover:text-slate-800"
+                >
+                  Sign In
+                </button>
 
-              {/* FORM */}
+                <button
+                  type="button"
+                  className="flex-1 rounded-lg bg-white px-4 py-2.5 text-xs font-bold text-[#2457d6] shadow-sm"
+                >
+                  Create Account
+                </button>
+              </div>
+
+              {message.text && (
+                <div
+                  className={`mb-4 flex items-start gap-2 rounded-xl border px-4 py-3 text-[12px] font-medium ${
+                    message.type === "success"
+                      ? "border-green-100 bg-green-50 text-green-600"
+                      : "border-red-100 bg-red-50 text-red-600"
+                  }`}
+                >
+                  {message.type === "success" ? (
+                    <CheckCircle2
+                      size={15}
+                      className="mt-0.5 shrink-0"
+                    />
+                  ) : (
+                    <AlertCircle
+                      size={15}
+                      className="mt-0.5 shrink-0"
+                    />
+                  )}
+
+                  <span>{message.text}</span>
+                </div>
+              )}
 
               <form
                 onSubmit={handleSubmit}
                 className="mt-5"
               >
-
                 <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
-
-
-                  {/* FULL NAME */}
 
                   <PremiumField
                     label="Full Name"
                     required
                     icon={<User size={16} />}
                   >
-
                     <input
-                      value={signUpForm.firstName}
-                      onChange={(e) =>
-                        handleChange(
-                          "firstName",
-                          e.target.value
-                        )
-                      }
+                      type="text"
+                      name="fullName"
+                      value={signUpForm.fullName}
+                      onChange={handleChange}
                       placeholder="Enter your full name"
+                      autoComplete="name"
                       className="premium-input"
                     />
-
                   </PremiumField>
-
-
-                  {/* PHONE */}
-
-                  <PremiumField
-                    label="Phone Number"
-                    required
-                    icon={<Phone size={16} />}
-                  >
-
-                    <div className="flex w-full items-center">
-
-                      <div className="relative">
-
-                        <select
-                          value={signUpForm.countryCode}
-                          onChange={(e) =>
-                            handleChange(
-                              "countryCode",
-                              e.target.value
-                            )
-                          }
-                          className="phone-select"
-                        >
-
-                          <option value="+91">+91</option>
-                          <option value="+1">+1</option>
-                          <option value="+44">+44</option>
-                          <option value="+971">+971</option>
-
-                        </select>
-
-
-                        <ChevronDown
-                          size={13}
-                          className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-slate-400"
-                        />
-
-                      </div>
-
-
-                      <div className="mx-3 h-6 w-px bg-slate-200" />
-
-
-                      <input
-                        value={signUpForm.phoneNumber}
-                        onChange={(e) =>
-                          handleChange(
-                            "phoneNumber",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Phone number"
-                        className="premium-input"
-                      />
-
-                    </div>
-
-                  </PremiumField>
-
-
-                  {/* EMAIL */}
 
                   <PremiumField
                     label="Email Address"
                     required
                     icon={<Mail size={16} />}
                   >
-
                     <input
-                      type="email"
-                      value={signUpForm.email}
-                      onChange={(e) =>
-                        handleChange(
-                          "email",
-                          e.target.value
-                        )
-                      }
+                      type="text"
+                      name="identifier"
+                      value={signUpForm.identifier}
+                      onChange={handleChange}
                       placeholder="Enter your email"
+                      autoComplete="username"
                       className="premium-input"
                     />
-
                   </PremiumField>
-
-
-                
-
-                  {/* PASSWORD */}
 
                   <PremiumField
                     label="Password"
                     required
                     icon={<Lock size={16} />}
                   >
-
                     <input
-                      type={
-                        showPassword
-                          ? "text"
-                          : "password"
-                      }
+                      type={showPassword ? "text" : "password"}
+                      name="password"
                       value={signUpForm.password}
-                      onChange={(e) =>
-                        handleChange(
-                          "password",
-                          e.target.value
-                        )
-                      }
+                      onChange={handleChange}
                       placeholder="Create password"
+                      autoComplete="new-password"
                       className="premium-input pr-10"
                     />
-
 
                     <button
                       type="button"
@@ -460,44 +428,38 @@ export default function SignUpPage({ onClose }) {
                         setShowPassword((prev) => !prev)
                       }
                       className="premium-eye"
+                      aria-label={
+                        showPassword
+                          ? "Hide password"
+                          : "Show password"
+                      }
                     >
-
                       {showPassword ? (
                         <EyeOff size={16} />
                       ) : (
                         <Eye size={16} />
                       )}
-
                     </button>
-
                   </PremiumField>
-
-
-                  {/* CONFIRM PASSWORD */}
 
                   <PremiumField
                     label="Confirm Password"
                     required
                     icon={<Lock size={16} />}
                   >
-
                     <input
                       type={
                         showConfirmPassword
                           ? "text"
                           : "password"
                       }
+                      name="confirmPassword"
                       value={signUpForm.confirmPassword}
-                      onChange={(e) =>
-                        handleChange(
-                          "confirmPassword",
-                          e.target.value
-                        )
-                      }
+                      onChange={handleChange}
                       placeholder="Confirm password"
+                      autoComplete="new-password"
                       className="premium-input pr-10"
                     />
-
 
                     <button
                       type="button"
@@ -507,77 +469,90 @@ export default function SignUpPage({ onClose }) {
                         )
                       }
                       className="premium-eye"
+                      aria-label={
+                        showConfirmPassword
+                          ? "Hide password"
+                          : "Show password"
+                      }
                     >
-
                       {showConfirmPassword ? (
                         <EyeOff size={16} />
                       ) : (
                         <Eye size={16} />
                       )}
-
                     </button>
-
                   </PremiumField>
 
-
-                  {/* COUNTRY */}
-
-                  <PremiumField
-                    label="Country"
-                    required
-                    icon={<Globe size={16} />}
-                  >
-
-                    <select
-                      value={signUpForm.country}
-                      onChange={(e) =>
-                        handleChange(
-                          "country",
-                          e.target.value
-                        )
-                      }
-                      className="premium-select"
+                  <div className="sm:col-span-2">
+                    <PremiumField
+                      label="Country"
+                      required
+                      icon={<Globe size={16} />}
                     >
+                      <div className="relative w-full">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCountryDropdownOpen(
+                              (prev) => !prev
+                            )
+                          }
+                          className="flex w-full items-center justify-between bg-transparent text-left outline-none"
+                        >
+                          <span
+                            className={
+                              signUpForm.country
+                                ? "text-[13px] font-medium text-slate-600"
+                                : "text-[13px] font-medium text-slate-400"
+                            }
+                          >
+                            {signUpForm.country ||
+                              "Select country"}
+                          </span>
 
-                      <option value="">
-                        Select country
-                      </option>
+                          <Globe
+                            size={15}
+                            className="mr-1 text-[#5c7da5]"
+                          />
+                        </button>
 
-                      <option value="IN">
-                        India
-                      </option>
+                        {countryDropdownOpen && (
+                          <div className="absolute left-0 top-[42px] z-[150] w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-[0_15px_40px_rgba(15,23,42,0.14)]">
+                            <div className="premium-country-scroll max-h-48 overflow-y-auto">
+                              {countries.map((country) => (
+                                <button
+                                  type="button"
+                                  key={country}
+                                  onClick={() =>
+                                    handleCountrySelect(
+                                      country
+                                    )
+                                  }
+                                  className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-slate-600 transition hover:bg-[#3b72bd]/5 hover:text-[#2457d6]"
+                                >
+                                  <span>{country}</span>
 
-                      <option value="US">
-                        United States
-                      </option>
-
-                      <option value="AE">
-                        United Arab Emirates
-                      </option>
-
-                      <option value="UK">
-                        United Kingdom
-                      </option>
-
-                    </select>
-
-
-                    <ChevronDown
-                      size={16}
-                      className="pointer-events-none absolute right-4 text-[#5c7da5]"
-                    />
-
-                  </PremiumField>
-
+                                  {signUpForm.country ===
+                                    country && (
+                                    <Check
+                                      size={15}
+                                      className="text-[#3b72bd]"
+                                    />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </PremiumField>
+                  </div>
                 </div>
 
-
-                {/* SUBMIT */}
-
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
                   <button
                     type="submit"
+                    disabled={loading}
                     className="
                       group
                       flex
@@ -600,45 +575,75 @@ export default function SignUpPage({ onClose }) {
                       duration-300
                       hover:-translate-y-1
                       hover:shadow-[0_20px_35px_rgba(23,61,108,0.30)]
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
                     "
                   >
+                    {loading ? (
+                      <>
+                        <Loader2
+                          size={16}
+                          className="animate-spin"
+                        />
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        Create Account
 
-                    Create Account
-
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    />
-
+                        <ArrowRight
+                          size={16}
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
+                      </>
+                    )}
                   </button>
-
-
-                  
-
                 </div>
-
               </form>
 
+              <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
+                <CheckCircle2
+                  size={14}
+                  className="text-[#3b72bd]"
+                />
 
-              {/* FOOTER */}
-
-              
-
+                Your travel information is protected securely.
+              </div>
             </div>
-
           </div>
 
-        </div>
+          <div className="relative block min-h-[360px] w-full overflow-hidden lg:hidden">
+            <img
+              src="/cloud.jpeg"
+              alt="Travel clouds"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
 
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0c1f4a]/10 via-[#173fba]/10 to-[#07142f]/55" />
+
+            <img
+              src="/planebg2.png"
+              alt="Airplane"
+              className="absolute -left-[30px] top-[45px] z-10 w-[430px] max-w-none object-contain"
+            />
+
+            <div className="absolute bottom-7 left-7 z-20 text-white">
+              <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-white/75">
+                <Sparkles size={12} />
+                Start your journey
+              </div>
+
+              <h2 className="text-2xl font-bold leading-tight">
+                Travel smarter.
+                <br />
+                Travel better.
+              </h2>
+            </div>
+          </div>
+        </div>
       </div>
 
-
-      {/* =====================================================
-          CUSTOM CSS
-      ===================================================== */}
-
       <style>{`
-
         .premium-input {
           width: 100%;
           min-width: 0;
@@ -655,45 +660,6 @@ export default function SignUpPage({ onClose }) {
           font-weight: 400;
         }
 
-
-        .premium-select {
-          width: 100%;
-          appearance: none;
-          -webkit-appearance: none;
-          border: none;
-          outline: none;
-          background: transparent;
-          color: #475569;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
-          padding-right: 30px;
-        }
-
-
-        .premium-select option {
-          background: white;
-          color: #334155;
-          padding: 12px;
-        }
-
-
-        .phone-select {
-          width: 56px;
-          appearance: none;
-          -webkit-appearance: none;
-          border: none;
-          outline: none;
-          background: #f1f6fc;
-          border-radius: 8px;
-          padding: 7px 18px 7px 8px;
-          color: #315789;
-          font-size: 12px;
-          font-weight: 700;
-          cursor: pointer;
-        }
-
-
         .premium-eye {
           position: absolute;
           right: 11px;
@@ -707,22 +673,27 @@ export default function SignUpPage({ onClose }) {
           transition: all 0.2s ease;
         }
 
-
         .premium-eye:hover {
           background: #eff6ff;
           color: #2563eb;
         }
 
-      `}</style>
+        .premium-country-scroll::-webkit-scrollbar {
+          width: 5px;
+        }
 
+        .premium-country-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .premium-country-scroll::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 999px;
+        }
+      `}</style>
     </div>
   );
 }
-
-
-/* =========================================================
-    PREMIUM FORM FIELD
-========================================================= */
 
 function PremiumField({
   label,
@@ -732,9 +703,7 @@ function PremiumField({
 }) {
   return (
     <div>
-
       <label className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold tracking-[0.01em] text-[#526176]">
-
         {label}
 
         {required && (
@@ -742,9 +711,7 @@ function PremiumField({
             *
           </span>
         )}
-
       </label>
-
 
       <div
         className="
@@ -769,9 +736,6 @@ function PremiumField({
           focus-within:shadow-[0_0_0_4px_rgba(59,114,189,0.08)]
         "
       >
-
-        {/* ICON */}
-
         <span
           className="
             flex
@@ -797,15 +761,10 @@ function PremiumField({
           {icon}
         </span>
 
-
-        {/* FIELD */}
-
         <div className="flex min-w-0 flex-1 items-center">
           {children}
         </div>
-
       </div>
-
     </div>
   );
 }

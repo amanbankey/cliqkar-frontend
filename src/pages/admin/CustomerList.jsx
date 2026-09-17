@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiUsers,
-  FiShield,
-  FiSlash,
   FiUser,
   FiMail,
   FiPhone,
@@ -10,155 +8,306 @@ import {
   FiMoreVertical,
   FiEye,
   FiTrash2,
-  FiTrendingUp,
 } from "react-icons/fi";
 
-const initialCustomers = [
-  {
-    id: "CLQ-8801",
-    name: "Deepak Kumawat",
-    initials: "DK",
-    email: "deepakkumawat44711@gmail.com",
-    phone: "+91 90012 91792",
-    region: "India",
-    language: "EN",
-    status: "Active",
-  },
-  {
-    id: "CLQ-8802",
-    name: "Nikhlesh Hirani",
-    initials: "NH",
-    email: "yashhirani2929@gmail.com",
-    phone: "+91 63775 24508",
-    region: "India",
-    language: "EN",
-    status: "Blocked",
-  },
-  {
-    id: "CLQ-8803",
-    name: "Naveen",
-    initials: "N",
-    email: "info.vivantravels@gmail.com",
-    phone: "+91 87642 32996",
-    region: "India",
-    language: "EN",
-    status: "Active",
-  },
-  {
-    id: "CLQ-8804",
-    name: "Srinivas Kiran V",
-    initials: "SK",
-    email: "vadlamudisrinivaskiran967...",
-    phone: "+91 91333 22713",
-    region: "India",
-    language: "EN",
-    status: "Active",
-  },
-  {
-    id: "CLQ-8805",
-    name: "Hitesh Jangir",
-    initials: "HJ",
-    email: "hiteshjangir542@gmail.com",
-    phone: "+91 76658 90598",
-    region: "India",
-    language: "EN",
-    status: "Active",
-  },
-  {
-    id: "CLQ-8806",
-    name: "Jayesh",
-    initials: "J",
-    email: "jayesh@gmail.com",
-    phone: "+91 96020 84730",
-    region: "India",
-    language: "EN",
-    status: "Active",
-  },
-];
-
-const statCards = [
-  { icon: FiUsers, iconBg: "bg-indigo-50", iconColor: "text-indigo-500", label: "Total Registered", value: "23", growth: "4.2%" },
-  { icon: FiShield, iconBg: "bg-emerald-50", iconColor: "text-emerald-500", label: "Active Users", value: "22", dot: "bg-emerald-500" },
-  { icon: FiSlash, iconBg: "bg-red-50", iconColor: "text-red-500", label: "Suspended / Blocked", value: "1", dot: "bg-red-500" },
-];
+import api from "../../api/axios";
 
 const CustomerList = () => {
-  const [searchForm, setSearchForm] = useState({ name: "", email: "", number: "" });
-  const [customers, setCustomers] = useState(initialCustomers);
+  const [searchForm, setSearchForm] = useState({
+    name: "",
+    email: "",
+    number: "",
+  });
+
+  const [customers, setCustomers] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+
   const [openMenu, setOpenMenu] = useState(null);
 
-  const handleChange = (e) => {
-    setSearchForm({ ...searchForm, [e.target.name]: e.target.value });
-  };
+  const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const [error, setError] = useState("");
+
+  // =========================
+  // GET ALL USERS
+  // =========================
+  const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/customers/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(searchForm),
-      });
-      const data = await response.json();
-      if (data?.customers) setCustomers(data.customers);
+      setLoading(true);
+      setError("");
+
+      const response = await api.get("/users");
+
+      const data = response.data;
+
+      if (data?.success) {
+        setCustomers(data?.users || []);
+        setTotalUsers(data?.total || 0);
+      } else {
+        setCustomers([]);
+        setTotalUsers(0);
+
+        setError(data?.message || "Failed to fetch users");
+      }
     } catch (error) {
-      console.error("Search failed", error);
+      console.error("Fetch users failed:", error);
+
+      setCustomers([]);
+      setTotalUsers(0);
+
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to fetch users"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleReset = () => {
-    setSearchForm({ name: "", email: "", number: "" });
-    setCustomers(initialCustomers);
+  // =========================
+  // GET USER STATS
+  // =========================
+  const fetchUserStats = async () => {
+    try {
+      const response = await api.get("/users/stats");
+
+      const data = response.data;
+
+      if (data?.success) {
+        setTotalUsers(data?.data?.stats?.totalRegistered || 0);
+      }
+    } catch (error) {
+      console.error("Fetch user stats failed:", error);
+    }
   };
 
-  const handleDelete = (id) => {
-    setCustomers(customers.filter((c) => c.id !== id));
-    setOpenMenu(null);
+  // =========================
+  // INITIAL LOAD
+  // =========================
+  useEffect(() => {
+    fetchUsers();
+    //fetchUserStats();
+  }, []);
+
+  // =========================
+  // SEARCH INPUT
+  // =========================
+  const handleChange = (e) => {
+    setSearchForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // =========================
+  // SEARCH USERS
+  // =========================
+  const handleSearch = async (e) => {
+    e.preventDefault();
+
+    try {
+      setSearching(true);
+      setError("");
+      setOpenMenu(null);
+
+      const response = await api.post("/users/search", searchForm);
+
+      const data = response.data;
+
+      if (data?.success) {
+        setCustomers(data?.users || []);
+      } else {
+        setCustomers([]);
+        setError(data?.message || "Search failed");
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+
+      setCustomers([]);
+
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Search failed"
+      );
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  // =========================
+  // RESET SEARCH
+  // =========================
+  const handleReset = async () => {
+    setSearchForm({
+      name: "",
+      email: "",
+      number: "",
+    });
+
+    await fetchUsers();
+  };
+
+  // =========================
+  // DELETE USER
+  // =========================
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingId(id);
+      setError("");
+
+      const response = await api.delete(`/users/${id}`);
+
+      const data = response.data;
+
+      if (data?.success) {
+        setCustomers((prev) =>
+          prev.filter((customer) => customer._id !== id)
+        );
+
+        setTotalUsers((prev) => Math.max(prev - 1, 0));
+
+        setOpenMenu(null);
+      } else {
+        setError(data?.message || "Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Delete user failed:", error);
+
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to delete user"
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // =========================
+  // INITIALS
+  // =========================
+  const getInitials = (name = "") => {
+    const words = name.trim().split(" ").filter(Boolean);
+
+    if (words.length === 0) {
+      return "U";
+    }
+
+    if (words.length === 1) {
+      return words[0].charAt(0).toUpperCase();
+    }
+
+    return (
+      words[0].charAt(0) +
+      words[words.length - 1].charAt(0)
+    ).toUpperCase();
   };
 
   return (
     <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+
+      {/* ================= HEADER ================= */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
         <div>
           <p className="text-xs text-gray-500 mb-1">
-            Operations <span className="mx-1">›</span>
-            <span className="text-blue-600 font-medium">Customer List</span>
+            Operations{" "}
+            <span className="mx-1">›</span>
+
+            <span className="text-blue-600 font-medium">
+              Customer List
+            </span>
           </p>
-          <h1 className="text-2xl font-bold text-gray-900">Customer List</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage client accounts, verification states, and direct actions.</p>
+
+          <h1 className="text-2xl font-bold text-gray-900">
+            Customer List
+          </h1>
+
+          <p className="text-sm text-gray-500 mt-1">
+            Manage client accounts and direct actions.
+          </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#0B1120] text-white text-sm font-semibold px-4 py-2.5 rounded-xl h-fit">
-          <FiPlus size={16} /> Add New Customer
+
+        <button
+          type="button"
+          className="flex items-center gap-2 bg-[#0B1120] text-white text-sm font-semibold px-4 py-2.5 rounded-xl h-fit"
+        >
+          <FiPlus size={16} />
+
+          Add New Customer
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        {statCards.map(({ icon: Icon, iconBg, iconColor, label, value, growth, dot }) => (
-          <div key={label} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
-            <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}>
-              <Icon className={`${iconColor} text-lg`} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">{label}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-gray-900">{value}</span>
-                {growth && (
-                  <span className="flex items-center gap-1 bg-emerald-50 text-emerald-600 text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
-                    <FiTrendingUp size={9} />
-                    {growth}
-                  </span>
-                )}
-                {dot && <span className={`w-2 h-2 rounded-full ${dot}`} />}
-              </div>
-            </div>
+      {/* ================= ERROR ================= */}
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
+          {error}
+        </div>
+      )}
+
+      {/* ================= STAT CARD ================= */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
+            <FiUsers className="text-indigo-500 text-lg" />
           </div>
-        ))}
+
+          <div>
+            <p className="text-sm text-gray-600 mb-1">
+              Total Registered
+            </p>
+
+            <span className="text-xl font-bold text-gray-900">
+              {totalUsers}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+            <FiUser className="text-emerald-500 text-lg" />
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-600 mb-1">
+              Users
+            </p>
+
+            <span className="text-xl font-bold text-gray-900">
+              {customers.length}
+            </span>
+          </div>
+        </div>
+
       </div>
 
-      <form onSubmit={handleSearch} className="bg-white rounded-2xl border border-gray-200 p-4 mb-4">
+      {/* ================= SEARCH ================= */}
+      <form
+        onSubmit={handleSearch}
+        className="bg-white rounded-2xl border border-gray-200 p-4 mb-4"
+      >
         <div className="flex flex-col lg:flex-row gap-3">
+
+          {/* NAME */}
           <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-            <FiUser className="text-gray-400 flex-shrink-0" size={16} />
+
+            <FiUser
+              className="text-gray-400 flex-shrink-0"
+              size={16}
+            />
+
             <input
               type="text"
               name="name"
@@ -168,8 +317,15 @@ const CustomerList = () => {
               className="w-full text-sm text-gray-700 focus:outline-none"
             />
           </div>
+
+          {/* EMAIL */}
           <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-            <FiMail className="text-gray-400 flex-shrink-0" size={16} />
+
+            <FiMail
+              className="text-gray-400 flex-shrink-0"
+              size={16}
+            />
+
             <input
               type="text"
               name="email"
@@ -179,8 +335,15 @@ const CustomerList = () => {
               className="w-full text-sm text-gray-700 focus:outline-none"
             />
           </div>
+
+          {/* NUMBER */}
           <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-            <FiPhone className="text-gray-400 flex-shrink-0" size={16} />
+
+            <FiPhone
+              className="text-gray-400 flex-shrink-0"
+              size={16}
+            />
+
             <input
               type="text"
               name="number"
@@ -190,123 +353,286 @@ const CustomerList = () => {
               className="w-full text-sm text-gray-700 focus:outline-none"
             />
           </div>
+
+          {/* BUTTONS */}
           <div className="flex gap-2">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg">
-              Search
+
+            <button
+              type="submit"
+              disabled={searching}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-sm font-semibold px-6 py-2.5 rounded-lg"
+            >
+              {searching ? "Searching..." : "Search"}
             </button>
-            <button type="button" onClick={handleReset} className="border border-gray-200 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-lg">
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="border border-gray-200 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-50"
+            >
               Reset
             </button>
+
           </div>
         </div>
       </form>
 
+      {/* ================= USER TABLE ================= */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+
+          <table className="w-full min-w-[850px]">
+
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">SL</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">CUSTOMER NAME</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">CONTACT DETAILS</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">REGION</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">LANGUAGE</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">ACCOUNT STATUS</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">ACTION</th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  SL
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  FULL NAME
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  EMAIL
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  NUMBER
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  COUNTRY
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  ROLE
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">
+                  ACTION
+                </th>
+
               </tr>
             </thead>
+
             <tbody>
-              {customers.map((customer, i) => (
-                <tr key={customer.id} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-4 text-sm text-gray-600">{i + 1}</td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      <span className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold flex items-center justify-center flex-shrink-0">
-                        {customer.initials}
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{customer.name}</p>
-                        <p className="text-xs text-gray-400">ID: {customer.id}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
-                      <FiMail size={12} className="text-gray-400" />
-                      {customer.email}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                      <FiPhone size={12} className="text-gray-400" />
-                      {customer.phone}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="flex items-center gap-1.5 text-sm text-gray-700">🇮🇳 {customer.region}</span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-1 rounded">{customer.language}</span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span
-                      className={`flex items-center gap-1.5 w-fit text-xs font-semibold px-2.5 py-1 rounded-full ${
-                        customer.status === "Active" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
-                      }`}
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full ${customer.status === "Active" ? "bg-emerald-500" : "bg-red-500"}`} />
-                      {customer.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 relative">
-                    <button
-                      onClick={() => setOpenMenu(openMenu === customer.id ? null : customer.id)}
-                      className="text-gray-400 hover:text-gray-700"
-                    >
-                      <FiMoreVertical size={18} />
-                    </button>
-                    {openMenu === customer.id && (
-                      <div className="absolute right-4 top-10 z-10 w-32 bg-white border border-gray-200 rounded-lg shadow-lg py-1">
-                        <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50">
-                          <FiEye size={13} /> View
-                        </button>
-                        <button
-                          onClick={() => handleDelete(customer.id)}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50"
-                        >
-                          <FiTrash2 size={13} /> Delete
-                        </button>
-                         <button
-                        
-                          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50"
-                        >
-                         Suspend
-                        </button>
-                      </div>
-                    )}
+
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="px-4 py-10 text-center text-sm text-gray-500"
+                  >
+                    Loading users...
                   </td>
                 </tr>
-              ))}
+              ) : customers.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="px-4 py-10 text-center text-sm text-gray-500"
+                  >
+                    No users found.
+                  </td>
+                </tr>
+              ) : (
+                customers.map((customer, i) => (
+
+                  <tr
+                    key={customer._id}
+                    className="border-b border-gray-100 last:border-0"
+                  >
+
+                    {/* SL */}
+                    <td className="px-4 py-4 text-sm text-gray-600">
+                      {i + 1}
+                    </td>
+
+                    {/* FULL NAME */}
+                    <td className="px-4 py-4">
+
+                      <div className="flex items-center gap-3">
+
+                        <span className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                          {getInitials(customer.fullName)}
+                        </span>
+
+                        <p className="text-sm font-semibold text-gray-900">
+                          {customer.fullName || "N/A"}
+                        </p>
+
+                      </div>
+
+                    </td>
+
+                    {/* EMAIL */}
+                    <td className="px-4 py-4">
+
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+
+                        <FiMail
+                          size={14}
+                          className="text-gray-400 flex-shrink-0"
+                        />
+
+                        <span>
+                          {customer.email || "N/A"}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    {/* NUMBER */}
+                    <td className="px-4 py-4">
+
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+
+                        <FiPhone
+                          size={14}
+                          className="text-gray-400 flex-shrink-0"
+                        />
+
+                        <span>
+                          {customer.phoneNumber || "N/A"}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    {/* COUNTRY */}
+                    <td className="px-4 py-4">
+
+                      <span className="text-sm text-gray-700">
+                        {customer.country || "N/A"}
+                      </span>
+
+                    </td>
+
+                    {/* ROLE */}
+                    <td className="px-4 py-4">
+
+                      <span className="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-full capitalize">
+                        {customer.role || "N/A"}
+                      </span>
+
+                    </td>
+
+                    {/* ACTION */}
+                    <td className="px-4 py-4 relative">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenMenu(
+                            openMenu === customer._id
+                              ? null
+                              : customer._id
+                          )
+                        }
+                        className="text-gray-400 hover:text-gray-700"
+                      >
+                        <FiMoreVertical size={18} />
+                      </button>
+
+                      {openMenu === customer._id && (
+
+                        <div className="absolute right-4 top-10 z-10 w-32 bg-white border border-gray-200 rounded-lg shadow-lg py-1">
+
+                          {/* VIEW */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              console.log(
+                                "View user:",
+                                customer._id
+                              );
+
+                              setOpenMenu(null);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                          >
+                            <FiEye size={13} />
+                            View
+                          </button>
+
+                          {/* DELETE */}
+                          <button
+                            type="button"
+                            disabled={
+                              deletingId === customer._id
+                            }
+                            onClick={() =>
+                              handleDelete(customer._id)
+                            }
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            <FiTrash2 size={13} />
+
+                            {deletingId === customer._id
+                              ? "Deleting..."
+                              : "Delete"}
+                          </button>
+
+                        </div>
+
+                      )}
+
+                    </td>
+
+                  </tr>
+
+                ))
+              )}
+
             </tbody>
+
           </table>
+
         </div>
 
+        {/* ================= FOOTER ================= */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-gray-100">
-          <p className="text-sm text-gray-500">Showing 1-6 of 23 customers</p>
+
+          <p className="text-sm text-gray-500">
+            Showing {customers.length} of {totalUsers} users
+          </p>
+
           <div className="flex items-center gap-2">
-            <button className="border border-gray-200 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-lg">Previous</button>
-            {[1, 2, 3, 4].map((page) => (
-              <button
-                key={page}
-                className={`w-8 h-8 text-xs font-semibold rounded-lg ${
-                  page === 1 ? "bg-[#0B1120] text-white" : "border border-gray-200 text-gray-600"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-            <button className="border border-gray-200 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-lg">Next</button>
+
+            <button
+              type="button"
+              disabled
+              className="border border-gray-200 text-gray-400 text-xs font-medium px-3 py-1.5 rounded-lg cursor-not-allowed"
+            >
+              Previous
+            </button>
+
+            <button
+              type="button"
+              className="w-8 h-8 text-xs font-semibold rounded-lg bg-[#0B1120] text-white"
+            >
+              1
+            </button>
+
+            <button
+              type="button"
+              disabled
+              className="border border-gray-200 text-gray-400 text-xs font-medium px-3 py-1.5 rounded-lg cursor-not-allowed"
+            >
+              Next
+            </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 };

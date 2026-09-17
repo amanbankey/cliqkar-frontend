@@ -30,6 +30,8 @@ import Visa from './pages/Visa'
 import Flight from './pages/Flights'
 import ScrollToTop from "./components/ScrollToTop";
 import Contact from "./pages/Contact"
+import AdminLogin from "./pages/admin/AdminLogin";
+import ProtectedRoute from "./components/protectedRoute";
 function App() {
   const [count, setCount] = useState(0)
   const [activeItem, setActiveItem] = useState("Dashboard");
@@ -124,6 +126,23 @@ function App() {
       path="/admin/airport"
       element={<AirportDirectory />}
     />
+    {/* =================================================
+          ADMIN AUTH
+      ================================================= */}
+
+      <Route
+        path="/admin/login"
+        element={<AdminLogin />}
+      />
+      {/* =================================================
+          PROTECTED ADMIN ROUTES
+      ================================================= */}
+
+      <Route
+        element={
+          <ProtectedRoute />
+        }
+      ></Route>
  <Route path="/user-dashboard" element={<MyBookings />}>
   <Route index element={<MyBookingsContent />} />
   <Route path="wallet-history" element={<WalletHistory />} />

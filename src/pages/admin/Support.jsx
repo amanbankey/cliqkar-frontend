@@ -1,198 +1,210 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiSearch,
-  FiFilter,
   FiChevronDown,
-  FiPlus,
-  FiX,
   FiEye,
   FiCheckCircle,
   FiClock,
-  FiAlertTriangle,
+  FiX,
 } from "react-icons/fi";
+import api from "../../api/axios";
 
-const initialTickets = [
-  {
-    id: "#33902271",
-    time: "Today - 10:45 AM",
-    initials: "NB",
-    avatarBg: "bg-blue-700",
-    name: "Nathaniel Brooks",
-    email: "n.brooks@example.com",
-    category: "Visa Inquiry",
-    description: "Awaiting administrative review for expedited p...",
-    status: "Pending",
-    priority: "High",
-    priorityColor: "text-red-500",
-  },
-  {
-    id: "#33902270",
-    time: "Today - 10:12 AM",
-    initials: "MA",
-    avatarBg: "bg-slate-700",
-    name: "Marcus Abbott",
-    email: "m.abbott@partner.net",
-    category: "Wallet Dispute",
-    description: "Discrepancy in ledger balance after transacto...",
-    status: "Pending",
-    priority: "Critical",
-    priorityColor: "text-red-600",
-  },
-  {
-    id: "#33902265",
-    time: "Today - 09:20 AM",
-    initials: "SM",
-    avatarBg: "bg-blue-500",
-    name: "Sarah Morrison",
-    email: "s.morrison@example.com",
-    category: "Itinerary Change",
-    description: "Requesting flight modification for upcoming s...",
-    status: "Pending",
-    priority: "Medium",
-    priorityColor: "text-amber-500",
-  },
+const statusOptions = [
+  "Pending",
+  "In Progress",
+  "Resolved",
+  "Escalated",
 ];
 
-const lifecycleStages = [
-  { key: "Pending", label: "Pending", dot: "bg-amber-500" },
-  { key: "In Progress", label: "In Progress", dot: "bg-blue-500" },
-  { key: "Resolved", label: "Resolved", dot: "bg-emerald-500" },
-  { key: "Escalated", label: "Escalated", dot: "bg-red-500" },
-];
+const getInitials = (name = "") => {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+};
 
-const summaryCards = [
-  { label: "TOTAL OPEN TICKETS", value: "10" },
-  { label: "AVG. FIRST RESPONSE", value: "14", suffix: "mins" },
-  { label: "PENDING INQUIRIES", value: "10", accent: true },
-  { label: "SLA ADHERENCE", value: "98.4%", green: true },
-];
+const getStatusClass = (status) => {
+  switch (status) {
+    case "Resolved":
+      return "bg-emerald-50 text-emerald-600";
 
-const UpdateTicketModal = ({ ticket, onClose, onSave }) => {
-  const [status, setStatus] = useState(ticket.status === "Pending" ? "Pending" : ticket.status);
-  const [remarks, setRemarks] = useState("");
-  const [notifyUser, setNotifyUser] = useState(false);
+    case "In Progress":
+      return "bg-blue-50 text-blue-600";
+
+    case "Escalated":
+      return "bg-red-50 text-red-600";
+
+    default:
+      return "bg-amber-50 text-amber-600";
+  }
+};
+
+const UpdateTicketModal = ({ ticket, onClose, onUpdated }) => {
+  const [status, setStatus] = useState(ticket.status);
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSave = async () => {
     setIsSaving(true);
+    setError("");
+
     try {
-      const response = await fetch(`/api/admin/support-tickets/${ticket.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, remarks, notifyUser }),
-      });
-      if (!response.ok) throw new Error("Failed to update ticket");
-      onSave({ ...ticket, status });
+      const response = await api.patch(
+        `/admin/support-tickets/${ticket.id}`,
+        {
+          status,
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Failed to update ticket"
+        );
+      }
+
+      onUpdated(response.data.data);
+      onClose();
     } catch (err) {
-      console.error(err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to update ticket"
+      );
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-500/60 p-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
           <div>
-            <h2 className="text-base font-bold text-blue-700">Update Support Ticket Status</h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Assign status, log internal resolution notes, and notify the user/agent.
+            <h2 className="text-base font-bold text-blue-700">
+              Support Ticket
+            </h2>
+
+            <p className="mt-1 text-xs text-gray-500">
+              View and update support request status.
             </p>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="bg-amber-50 text-amber-600 text-[10px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap">
-              {ticket.id}
-            </span>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-              <FiX size={18} />
-            </button>
-          </div>
+
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+          >
+            <FiX size={18} />
+          </button>
         </div>
 
-        <div className="px-6 py-5 space-y-5">
-          <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <p className="text-[10px] font-bold tracking-wide text-gray-400">REQUESTER</p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <div className={`w-8 h-8 rounded-full ${ticket.avatarBg} text-white text-xs font-bold flex items-center justify-center`}>
-                  {ticket.initials}
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{ticket.name}</p>
-                  <p className="text-xs text-gray-500">{ticket.email}</p>
-                </div>
+        {/* Body */}
+        <div className="space-y-5 px-6 py-5">
+          {/* User */}
+          <div className="rounded-xl bg-gray-50 p-4">
+            <p className="text-[10px] font-bold tracking-wide text-gray-400">
+              SUPPORT ID
+            </p>
+
+            <p className="mt-1 text-sm font-bold text-blue-600">
+              {ticket.supportId}
+            </p>
+
+            <div className="mt-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-700 text-xs font-bold text-white">
+                {getInitials(ticket.name)}
               </div>
-              <p className="text-[10px] font-bold tracking-wide text-gray-400 mt-3">CREATED</p>
-              <p className="text-xs text-gray-600 mt-1">{ticket.time.replace("Today", "Sep 01, 2026")}</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-bold tracking-wide text-gray-400">CATEGORY</p>
-              <p className="flex items-center gap-1.5 text-sm font-semibold text-blue-600 mt-1.5">
-                <FiAlertTriangle size={13} />
-                {ticket.category === "Visa Inquiry" ? "Visa Application Status Inquiry" : ticket.category}
-              </p>
+
+              <div>
+                <p className="text-sm font-bold text-gray-900">
+                  {ticket.name}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  {ticket.email}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  {ticket.mobileNumber}
+                </p>
+              </div>
             </div>
           </div>
 
+          {/* Subject */}
           <div>
-            <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">TICKET LIFECYCLE STATUS</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {lifecycleStages.map((stage) => (
+            <p className="mb-1.5 text-[10px] font-bold tracking-wide text-gray-400">
+              SUBJECT
+            </p>
+
+            <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm font-semibold text-gray-800">
+              {ticket.subject}
+            </p>
+          </div>
+
+          {/* Description */}
+          <div>
+            <p className="mb-1.5 text-[10px] font-bold tracking-wide text-gray-400">
+              DESCRIPTION
+            </p>
+
+            <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-sm leading-6 text-gray-600">
+              {ticket.description}
+            </div>
+          </div>
+
+          {/* Status */}
+          <div>
+            <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-400">
+              STATUS
+            </p>
+
+            <div className="grid grid-cols-2 gap-2">
+              {statusOptions.map((item) => (
                 <button
-                  key={stage.key}
+                  key={item}
                   type="button"
-                  onClick={() => setStatus(stage.key)}
-                  className={`flex items-center justify-center gap-1.5 border rounded-lg py-2 text-xs font-semibold transition-colors
-                  ${status === stage.key ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-500 hover:bg-gray-50"}`}
+                  onClick={() => setStatus(item)}
+                  className={`rounded-lg border px-3 py-2.5 text-xs font-semibold transition ${
+                    status === item
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                  }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${stage.dot}`} />
-                  {stage.label}
+                  {item}
                 </button>
               ))}
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <p className="text-[11px] font-bold tracking-wide text-gray-500">INTERNAL RESOLUTION REMARKS</p>
-              <p className="text-[10px] text-gray-400">Notes will be logged into the ticket audit trail</p>
-            </div>
-            <textarea
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-              rows={3}
-              placeholder="Document the actions taken, relevant policy clauses, and next steps..."
-              className="w-full resize-none border border-gray-200 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
-            />
-          </div>
-
-          <label className="flex items-center gap-2 text-xs text-gray-600">
-            <input
-              type="checkbox"
-              checked={notifyUser}
-              onChange={(e) => setNotifyUser(e.target.checked)}
-              className="rounded border-gray-300"
-            />
-            Send automated status update email to applicant
-          </label>
+          {error && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">
+              {error}
+            </p>
+          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-6 py-4 border-t border-gray-100">
-          <p className="text-xs text-gray-400">Assigned Agent: Operations Desk (Super Admin)</p>
-          <div className="flex items-center gap-4">
-            <button onClick={onClose} className="text-sm font-semibold text-blue-600 hover:text-blue-700">
-              Clear / Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl disabled:opacity-60"
-            >
-              <FiCheckCircle size={15} />
-              {isSaving ? "Saving..." : "Save & Update Status"}
-            </button>
-          </div>
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-3 border-t border-gray-100 px-6 py-4">
+          <button
+            onClick={onClose}
+            className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <FiCheckCircle size={15} />
+
+            {isSaving ? "Updating..." : "Update Status"}
+          </button>
         </div>
       </div>
     </div>
@@ -200,138 +212,338 @@ const UpdateTicketModal = ({ ticket, onClose, onSave }) => {
 };
 
 const SupportHelpdeskQueue = () => {
-  const [tickets, setTickets] = useState(initialTickets);
+  const [tickets, setTickets] = useState([]);
+
   const [search, setSearch] = useState("");
+
+  const [status, setStatus] = useState("All");
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState("");
+
   const [activeTicket, setActiveTicket] = useState(null);
 
-  const handleSaveTicket = (updated) => {
-    setTickets((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
-    setActiveTicket(null);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  const [total, setTotal] = useState(0);
+
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const params = new URLSearchParams();
+
+      if (search.trim()) {
+        params.append("search", search.trim());
+      }
+
+      if (status !== "All") {
+        params.append("status", status);
+      }
+
+      params.append("page", "1");
+      params.append("limit", "50");
+
+      const response = await api.get(
+        `/admin/support-tickets?${params.toString()}`
+      );
+
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Failed to fetch tickets"
+        );
+      }
+
+      setTickets(response.data.data?.tickets || []);
+setTotal(response.data.data?.total || 0);
+setPendingCount(response.data.data?.pendingCount || 0);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to load support tickets"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTickets();
+  }, [status]);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleUpdatedTicket = (updatedTicket) => {
+    setTickets((prev) =>
+      prev.map((ticket) =>
+        ticket.id === updatedTicket.id
+          ? updatedTicket
+          : ticket
+      )
+    );
+
+    fetchTickets();
   };
 
   return (
-    <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+    <div className="min-h-screen flex-1 min-w-0 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs text-gray-500 mb-1">
-            Operations <span className="mx-1">›</span> Support <span className="mx-1">›</span>
-            <span className="text-blue-600 font-medium">Helpdesk Tickets</span>
+          <p className="mb-1 text-xs text-gray-500">
+            Operations
+            <span className="mx-1">›</span>
+            Support
+            <span className="mx-1">›</span>
+            <span className="font-medium text-blue-600">
+              Contact Requests
+            </span>
           </p>
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-bold text-blue-900">Support & Helpdesk Queue</h1>
-            <span className="bg-amber-50 text-amber-600 text-[11px] font-bold px-3 py-1 rounded-full">
-              10 Pending Tickets
+
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-xl font-bold text-blue-900 sm:text-2xl">
+              Support & Helpdesk
+            </h1>
+
+            <span className="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-bold text-amber-600">
+              {pendingCount} Pending
             </span>
           </div>
-          <p className="text-sm text-gray-500 mt-1 max-w-xl">
-            Manage incoming partner inquiries, ticket escalations, dispute claims, and operational
-            resolutions.
+
+          <p className="mt-1 max-w-xl text-sm text-gray-500">
+            Manage contact requests submitted from the website.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white text-sm font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap">
-          <FiPlus size={16} />
-          Create Ticket
-        </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-        {summaryCards.map(({ label, value, suffix, accent, green }) => (
-          <div key={label} className={`bg-white rounded-xl border border-gray-200 p-4 ${accent ? "border-l-4 border-l-amber-400" : ""}`}>
-            <p className="text-[10px] font-bold tracking-wide text-gray-400">{label}</p>
-            <p className={`text-xl font-bold mt-1 ${green ? "text-emerald-600" : "text-gray-900"}`}>
-              {value} {suffix && <span className="text-xs font-medium text-gray-400">{suffix}</span>}
-            </p>
-          </div>
-        ))}
+      {/* Summary */}
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-bold tracking-wide text-gray-400">
+            TOTAL SUPPORT REQUESTS
+          </p>
+
+          <p className="mt-1 text-xl font-bold text-gray-900">
+            {total}
+          </p>
+        </div>
+
+        <div className="rounded-xl border-l-4 border-l-amber-400 border-y border-r border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-bold tracking-wide text-gray-400">
+            PENDING REQUESTS
+          </p>
+
+          <p className="mt-1 text-xl font-bold text-amber-600">
+            {pendingCount}
+          </p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="flex flex-col sm:flex-row items-center gap-3 p-4 border-b border-gray-100">
-          <div className="relative flex-1 w-full">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+      {/* Table Card */}
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+        {/* Filters */}
+        <div className="flex flex-col items-center gap-3 border-b border-gray-100 p-4 sm:flex-row">
+          <div className="relative w-full flex-1">
+            <FiSearch
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={15}
+            />
+
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by User Name, Email, or Ticket ID..."
-              className="w-full border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+              onChange={handleSearch}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  fetchTickets();
+                }
+              }}
+              placeholder="Search by Name, Email, Mobile or Support ID..."
+              className="w-full rounded-lg border border-gray-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-blue-200"
             />
           </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-semibold text-gray-600">
-              Priority: All <FiChevronDown size={13} />
-            </button>
-            <button className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-semibold text-gray-600">
-              Status: Pending <FiChevronDown size={13} />
-            </button>
-            <button className="border border-gray-200 rounded-lg p-2.5 text-gray-500">
-              <FiFilter size={15} />
-            </button>
-          </div>
+
+          <button
+            onClick={fetchTickets}
+            className="w-full rounded-lg bg-blue-700 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-800 sm:w-auto"
+          >
+            Search
+          </button>
+
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-xs font-semibold text-gray-600 outline-none sm:w-auto"
+          >
+            <option value="All">Status: All</option>
+
+            {statusOptions.map((item) => (
+              <option key={item} value={item}>
+                Status: {item}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Error */}
+        {error && (
+          <div className="m-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+            {error}
+          </div>
+        )}
+
+        {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[760px]">
+          <table className="w-full min-w-[800px] text-left">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">TICKET ID & TIME</th>
-                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">USER DETAILS</th>
-                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">CATEGORY & DESCRIPTION</th>
-                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">STATUS & PRIORITY</th>
-                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400 text-right">ACTIONS</th>
+                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">
+                  SUPPORT ID
+                </th>
+
+                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">
+                  NAME
+                </th>
+
+                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">
+                  MOBILE NO
+                </th>
+
+                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">
+                  DESCRIPTION
+                </th>
+
+                <th className="px-5 py-3 text-[10px] font-bold tracking-wide text-gray-400">
+                  STATUS
+                </th>
+
+                <th className="px-5 py-3 text-right text-[10px] font-bold tracking-wide text-gray-400">
+                  ACTION
+                </th>
               </tr>
             </thead>
+
             <tbody>
-              {tickets.map((ticket) => (
-                <tr key={ticket.id} className="border-b border-gray-50 last:border-0">
-                  <td className="px-5 py-4">
-                    <span className="inline-block bg-blue-50 text-blue-600 text-[11px] font-bold px-2 py-0.5 rounded">
-                      {ticket.id}
-                    </span>
-                    <p className="text-[11px] text-gray-400 mt-1.5">{ticket.time}</p>
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`w-8 h-8 rounded-full ${ticket.avatarBg} text-white text-xs font-bold flex items-center justify-center flex-shrink-0`}>
-                        {ticket.initials}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">{ticket.name}</p>
-                        <p className="text-xs text-gray-400">{ticket.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 max-w-xs">
-                    <p className="text-xs font-semibold text-blue-600 uppercase">{ticket.category}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{ticket.description}</p>
-                  </td>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 text-[11px] font-semibold px-2 py-0.5 rounded-full">
-                      <FiClock size={10} />
-                      {ticket.status}
-                    </span>
-                    <p className={`text-[11px] font-semibold mt-1 ${ticket.priorityColor}`}>{ticket.priority}</p>
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <button
-                      onClick={() => setActiveTicket(ticket)}
-                      className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1.5 rounded-lg"
-                    >
-                      <FiEye size={15} />
-                    </button>
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="px-5 py-12 text-center text-sm text-gray-500"
+                  >
+                    Loading support requests...
                   </td>
                 </tr>
-              ))}
+              ) : tickets.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="px-5 py-12 text-center text-sm text-gray-500"
+                  >
+                    No support requests found.
+                  </td>
+                </tr>
+              ) : (
+                tickets.map((ticket) => (
+                  <tr
+                    key={ticket.id}
+                    className="border-b border-gray-50 transition hover:bg-gray-50"
+                  >
+                    {/* Support ID */}
+                    <td className="px-5 py-4">
+                      <span className="inline-block rounded bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-blue-600">
+                        {ticket.supportId}
+                      </span>
+
+                      <p className="mt-1.5 text-[10px] text-gray-400">
+                        {ticket.createdAt
+                          ? new Date(
+                              ticket.createdAt
+                            ).toLocaleString()
+                          : "-"}
+                      </p>
+                    </td>
+
+                    {/* Name */}
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-700 text-xs font-bold text-white">
+                          {getInitials(ticket.name)}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">
+                            {ticket.name}
+                          </p>
+
+                          <p className="text-xs text-gray-400">
+                            {ticket.email}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Mobile */}
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <p className="text-sm font-semibold text-gray-700">
+                        {ticket.mobileNumber}
+                      </p>
+                    </td>
+
+                    {/* Description */}
+                    <td className="max-w-sm px-5 py-4">
+                      <p className="text-xs font-semibold uppercase text-blue-600">
+                        {ticket.subject}
+                      </p>
+
+                      <p className="mt-1 line-clamp-2 text-xs text-gray-500">
+                        {ticket.description}
+                      </p>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${getStatusClass(
+                          ticket.status
+                        )}`}
+                      >
+                        <FiClock size={10} />
+
+                        {ticket.status}
+                      </span>
+                    </td>
+
+                    {/* Action */}
+                    <td className="px-5 py-4 text-right">
+                      <button
+                        onClick={() =>
+                          setActiveTicket(ticket)
+                        }
+                        className="rounded-lg p-1.5 text-blue-500 transition hover:bg-blue-50 hover:text-blue-700"
+                        title="View / Update"
+                      >
+                        <FiEye size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* Modal */}
       {activeTicket && (
         <UpdateTicketModal
           ticket={activeTicket}
           onClose={() => setActiveTicket(null)}
-          onSave={handleSaveTicket}
+          onUpdated={handleUpdatedTicket}
         />
       )}
     </div>
