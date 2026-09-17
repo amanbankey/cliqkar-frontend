@@ -30,6 +30,7 @@ import Visa from './pages/Visa'
 import Flight from './pages/Flights'
 import ScrollToTop from "./components/ScrollToTop";
 import Contact from "./pages/Contact"
+import TravelerDetails from './components/Visa/TravelerDetails'
 function App() {
   const [count, setCount] = useState(0)
   const [activeItem, setActiveItem] = useState("Dashboard");
@@ -57,6 +58,7 @@ function App() {
       <Route path="flight" element={<Flight />} />
       
       <Route path="visa" element={<Visa />} />
+      <Route path='/traveler-details' element={<TravelerDetails />} />
     </Route>
 
     {/* Admin / Dashboard Routes */}
@@ -67,8 +69,10 @@ function App() {
           setSidebarOpen={setSidebarOpen}
           sidebarOpen={sidebarOpen}
         />
-      }
+      }traveler-details
     />
+
+    
 
     <Route
       path="/admin/global-visa-catalog"
