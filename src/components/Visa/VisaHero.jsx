@@ -1476,11 +1476,6 @@ function VisaCard({ visa }) {
             {visa.country}
           </h3>
 
-          {/* LINE */}
-
-          {/* <div className="my-5 h-px bg-white/15" /> */}
-
-          {/* VISA DETAILS */}
 
           <div
             className={`
@@ -1540,7 +1535,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
                Single
               </p>
             </div>
@@ -1551,7 +1546,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
                 {visa.documents?.join(", ")}
               </p>
             </div>
@@ -1563,7 +1558,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
                3 - 4 days
               </p>
             </div>
@@ -1574,7 +1569,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
               30 days
               </p>
             </div>
@@ -1585,7 +1580,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
                400 AED
               </p>
             </div>
@@ -1596,7 +1591,7 @@ function VisaCard({ visa }) {
             </p>
 
             <div className=" flex items-center justify-between">
-              <p className="text-[14px] font-semibold text-white">
+              <p className="text-[11px] font-semibold text-white">
               abc
               </p>
             </div>
@@ -2074,7 +2069,7 @@ function DetailItem({
         {label}
       </p>
 
-      <p className="mt-1 text-[12px] font-bold tracking-[0.12em] text-white">
+      <p className="mt-1 text-[11px] font-bold tracking-[0.12em] text-white">
         {value}
       </p>
     </div>

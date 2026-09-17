@@ -10,7 +10,7 @@ import {
   FiCheckCircle,
   FiSettings,
 } from "react-icons/fi";
-
+import cliqkar from "../../assets/image/cliqkarLogo.png";
 const user = {
   name: "Vivan Travels",
   email: "mail@vivantravels.com",
@@ -36,23 +36,23 @@ const Sidebar = ({setSidebarOpen, sidebarOpen}) => {
         />
       )} 
 
-    <aside   className={`fixed lg:sticky top-0 left-0 z-30 h-screen w-64  bg-[#F7F8FA] flex flex-col transform transition-transform duration-300 ease-in-out
+    <aside   className={`fixed lg:sticky top-0 left-0 z-30 h-screen w-64  bg-slate-950 flex flex-col transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 flex-shrink-0 overflow-y-auto`}>
       <div className="px-5 pt-6 pb-5">
         <img
-                        src={logo}
+                        src={cliqkar}
                         className="object-contain w-36 36"
                       />
     
       </div>
 
-      <div className="mx-5 mb-5 border border-gray-200 rounded-xl p-4">
-        <p className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
+      <div className=" mb-5  rounded-xl p-4">
+        <p className="flex items-center gap-1.5 text-sm font-bold text-white">
           {user.name}
           <FiCheckCircle className="text-blue-500" size={13} />
         </p>
 
-        <p className="text-xs text-gray-400 mt-0.5">
+        <p className="text-xs text-white mt-0.5">
           {user.email}
         </p>
 
