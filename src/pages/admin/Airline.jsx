@@ -1,31 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiPlus,
   FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
   FiChevronDown,
   FiEdit2,
-  FiTrendingUp,
   FiX,
   FiUploadCloud,
   FiCheckCircle,
+  FiLoader,
+  FiRefreshCw,
+  FiImage,
 } from "react-icons/fi";
 import { TbPlaneDeparture } from "react-icons/tb";
 
-const initialAirlines = [
-  { id: "#A02", name: "Delta Air Lines", sub: "Full-Service International", code: "DL", engines: ["Amadeus", "Sabre"], status: "Active" },
-  { id: "#A03", name: "Emirates", sub: "Premium Long-Haul", code: "EK", engines: ["Amadeus", "Travelport"], status: "Active" },
-  { id: "#A04", name: "British Airways", sub: "Full-Service Network", code: "BA", engines: ["Amadeus", "Sabre"], status: "Active" },
-  { id: "#A05", name: "Qatar Airways", sub: "Global Hub Carrier", code: "QR", engines: ["Amadeus"], status: "Active" },
-  { id: "#A06", name: "Lufthansa", sub: "Full-Service Network", code: "LH", engines: ["Amadeus"], status: "Active" },
-  { id: "#A07", name: "Air France", sub: "Global Hub Carrier", code: "AF", engines: ["Amadeus"], status: "Active" },
-];
+import {
+  getAirlines,
+  addAirline,
+  updateAirline,
+  updateAirlineStatus,
+} from "../../api/airlineApi";
 
-const statCards = [
-  { icon: TbPlaneDeparture, iconBg: "bg-blue-50", iconColor: "text-blue-500", label: "Total Airlines", value: "41" },
-  { icon: FiCheckCircle, iconBg: "bg-emerald-50", iconColor: "text-emerald-500", label: "Active Partners", value: "41", dot: "bg-emerald-500" },
-];
+const SERVER_URL = "https://cliqkar-backend.onrender.com";
 
-const AirlineFormModal = ({ airline, onClose, onSave }) => {
+const getLogoUrl = (logo) => {
+  if (!logo) return "";
+
+  if (
+    logo.startsWith("http://") ||
+    logo.startsWith("https://") ||
+    logo.startsWith("data:")
+  ) {
+    return logo;
+  }
+
+  return `${SERVER_URL}${logo.startsWith("/") ? "" : "/"}${logo}`;
+};
+
+// =====================================================
+// AIRLINE FORM MODAL
+// =====================================================
+
+const AirlineFormModal = ({
+  airline,
+  onClose,
+  onSuccess,
+}) => {
+  const isEdit = Boolean(airline?._id);
+
   const [formData, setFormData] = useState({
     name: airline?.name || "",
     code: airline?.code || "",
@@ -33,338 +56,1483 @@ const AirlineFormModal = ({ airline, onClose, onSave }) => {
     status: airline?.status || "Active",
   });
 
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // ===================================================
+  // HANDLE INPUT
+  // ===================================================
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setError("");
   };
 
+  // ===================================================
+  // HANDLE LOGO
+  // ===================================================
+
   const handleFile = (file) => {
-    if (file) setFormData({ ...formData, logo: file });
+    if (!file) return;
+
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setError(
+        "Please upload a PNG, JPG, WEBP or SVG image."
+      );
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      logo: file,
+    }));
+
+    setError("");
   };
+
+  // ===================================================
+  // SUBMIT
+  // ===================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const payload = new FormData();
-      payload.append("name", formData.name);
-      payload.append("code", formData.code);
-      payload.append("status", formData.status);
-      if (formData.logo) payload.append("logo", formData.logo);
 
-      const response = await fetch("/api/admin/airlines", {
-        method: "POST",
-        body: payload,
-      });
-      const data = await response.json();
-      onSave(data);
-    } catch (error) {
-      console.error("Failed to save airline", error);
+    if (!formData.name.trim()) {
+      setError("Airline name is required.");
+      return;
+    }
+
+    if (!formData.code.trim()) {
+      setError("Airline IATA code is required.");
+      return;
+    }
+
+    if (formData.code.trim().length !== 2) {
+      setError("IATA code must contain exactly 2 letters.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError("");
+
+      const payload = new FormData();
+
+      payload.append("name", formData.name.trim());
+      payload.append(
+        "code",
+        formData.code.trim().toUpperCase()
+      );
+      payload.append("status", formData.status);
+
+      if (formData.logo) {
+        payload.append("logo", formData.logo);
+      }
+
+      let response;
+
+      if (isEdit) {
+        response = await updateAirline(
+          airline._id,
+          payload
+        );
+      } else {
+        response = await addAirline(payload);
+      }
+
+      if (!response?.success) {
+        throw new Error(
+          response?.message ||
+            `Failed to ${
+              isEdit ? "update" : "add"
+            } airline`
+        );
+      }
+
+      onSuccess();
+      onClose();
+    } catch (err) {
+      console.error("Airline save error:", err);
+
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Something went wrong while saving airline."
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-start justify-between px-5 sm:px-6 pt-5">
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-base font-bold text-gray-900">Update Airline Master Profile</h2>
-              <span className="flex items-center gap-1 bg-emerald-50 text-emerald-600 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                <FiCheckCircle size={10} /> {formData.name || "Delta Air Lines"} Active Partner
-              </span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4">
+
+      <div className="w-full max-w-xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-slate-200">
+
+        {/* =================================================
+            HEADER
+        ================================================= */}
+
+        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-slate-100 px-6 py-5">
+
+          <div className="flex items-start justify-between gap-4">
+
+            <div className="flex items-start gap-3">
+
+              <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <TbPlaneDeparture size={22} />
+              </div>
+
+              <div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+
+                  <h2 className="text-lg font-bold text-slate-900">
+                    {isEdit
+                      ? "Edit Airline"
+                      : "Add New Airline"}
+                  </h2>
+
+                  {isEdit && (
+                    <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-semibold px-2 py-1 rounded-full">
+                      <FiCheckCircle size={10} />
+                      {formData.status}
+                    </span>
+                  )}
+
+                </div>
+
+                <p className="text-xs text-slate-500 mt-1">
+                  {isEdit
+                    ? "Update airline master information and official branding."
+                    : "Add a new airline to the global airline registry."}
+                </p>
+
+              </div>
+
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Configure commercial carrier identity, 2-letter IATA code, and official branding assets.
-            </p>
+
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={saving}
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition disabled:opacity-50"
+            >
+              <FiX size={18} />
+            </button>
+
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
-            <FiX size={18} />
-          </button>
+
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 sm:px-6 py-5 space-y-6">
+        {/* =================================================
+            FORM
+        ================================================= */}
+
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 space-y-6"
+        >
+
+          {/* ERROR */}
+
+          {error && (
+            <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
+              {error}
+            </div>
+          )}
+
+          {/* =================================================
+              AIRLINE INFORMATION
+          ================================================= */}
+
           <div>
-            <p className="text-[11px] font-semibold text-gray-400 tracking-wide mb-3">CARRIER IDENTITY</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <div className="flex items-center gap-2 mb-4">
+
+              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <TbPlaneDeparture size={15} />
+              </div>
+
               <div>
-                <label className="text-xs text-gray-500">Airline Commercial Name</label>
-                <div className="mt-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-                  <TbPlaneDeparture className="text-gray-400 flex-shrink-0" size={15} />
+
+                <p className="text-sm font-bold text-slate-900">
+                  Airline Information
+                </p>
+
+                <p className="text-[11px] text-slate-400">
+                  Basic airline identification details
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* AIRLINE NAME */}
+
+              <div>
+
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  Airline Name
+                  <span className="text-red-500 ml-1">
+                    *
+                  </span>
+                </label>
+
+                <div className="flex items-center gap-2 border border-slate-200 rounded-xl px-3.5 py-3 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-50 transition">
+
+                  <TbPlaneDeparture
+                    size={17}
+                    className="text-slate-400"
+                  />
+
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="flex-1 text-sm text-gray-700 focus:outline-none"
+                    placeholder="Enter airline name"
+                    className="flex-1 outline-none text-sm text-slate-700 placeholder:text-slate-300"
                   />
+
                 </div>
+
               </div>
+
+              {/* IATA CODE */}
+
               <div>
-                <label className="text-xs text-gray-500">IATA 2 Letter Code</label>
+
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  IATA Code
+                  <span className="text-red-500 ml-1">
+                    *
+                  </span>
+                </label>
+
                 <input
                   type="text"
                   name="code"
                   value={formData.code}
                   maxLength={2}
                   onChange={handleChange}
-                  className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 uppercase focus:outline-none"
+                  placeholder="e.g. AI"
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm text-slate-700 uppercase outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition"
                 />
+
+                <p className="text-[10px] text-slate-400 mt-1.5">
+                  2-letter airline identification code
+                </p>
+
               </div>
+
             </div>
+
           </div>
 
+          {/* =================================================
+              LOGO
+          ================================================= */}
+
           <div>
-            <p className="text-[11px] font-semibold text-gray-400 tracking-wide mb-3">BRANDING</p>
-            <label className="text-xs text-gray-500">Airline Official Logo</label>
+
+            <div className="flex items-center gap-2 mb-4">
+
+              <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <FiImage size={14} />
+              </div>
+
+              <div>
+
+                <p className="text-sm font-bold text-slate-900">
+                  Official Logo
+                </p>
+
+                <p className="text-[11px] text-slate-400">
+                  Upload the official airline logo
+                </p>
+
+              </div>
+
+            </div>
+
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+              Airline Logo
+            </label>
+
             <div
               onDrop={(e) => {
                 e.preventDefault();
-                handleFile(e.dataTransfer.files[0]);
+                handleFile(
+                  e.dataTransfer.files?.[0]
+                );
               }}
-              onDragOver={(e) => e.preventDefault()}
-              className="mt-1 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center py-8 text-center"
+              onDragOver={(e) =>
+                e.preventDefault()
+              }
+              className="relative border-2 border-dashed border-slate-200 hover:border-blue-300 rounded-2xl flex flex-col items-center justify-center py-9 text-center bg-slate-50/50 hover:bg-blue-50/30 transition"
             >
+
               <input
                 type="file"
                 id="airline-logo"
                 className="hidden"
-                onChange={(e) => handleFile(e.target.files[0])}
+                accept=".png,.jpg,.jpeg,.webp,.svg,image/*"
+                onChange={(e) =>
+                  handleFile(
+                    e.target.files?.[0]
+                  )
+                }
               />
-              <label htmlFor="airline-logo" className="flex flex-col items-center cursor-pointer">
-                <FiUploadCloud className="text-gray-300" size={26} />
-                <p className="text-xs text-gray-500 mt-2">Click to upload or drag and drop</p>
-                <p className="text-[10px] text-gray-400 mt-1">SVG, PNG, JPG or WEBP (Max 800x400)</p>
+
+              <label
+                htmlFor="airline-logo"
+                className="flex flex-col items-center cursor-pointer w-full"
+              >
+
+                <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-blue-500 mb-3">
+                  <FiUploadCloud size={23} />
+                </div>
+
+                <p className="text-xs font-semibold text-slate-600">
+                  Click to upload or drag & drop
+                </p>
+
+                <p className="text-[10px] text-slate-400 mt-1.5">
+                  SVG, PNG, JPG or WEBP
+                </p>
+
               </label>
+
             </div>
+
+            {/* SELECTED FILE */}
 
             {formData.logo && (
-              <div className="mt-3 flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded bg-blue-50 text-blue-600 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                    {formData.code || "DL"}
-                  </span>
-                  <div>
-                    <p className="text-xs text-gray-700">{formData.logo.name}</p>
-                    <p className="text-[10px] text-gray-400">{Math.round(formData.logo.size / 1024)} KB</p>
+              <div className="mt-3 flex items-center justify-between gap-3 border border-slate-200 rounded-xl px-3.5 py-3 bg-white">
+
+                <div className="flex items-center gap-3 min-w-0">
+
+                  <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                    <FiImage size={16} />
                   </div>
+
+                  <div className="min-w-0">
+
+                    <p className="text-xs font-semibold text-slate-700 truncate">
+                      {formData.logo.name}
+                    </p>
+
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      {Math.round(
+                        formData.logo.size / 1024
+                      )}{" "}
+                      KB
+                    </p>
+
+                  </div>
+
                 </div>
-                <label htmlFor="airline-logo" className="text-xs text-blue-600 cursor-pointer">Replace Asset</label>
+
+                <label
+                  htmlFor="airline-logo"
+                  className="text-[11px] font-semibold text-blue-600 cursor-pointer hover:text-blue-700 whitespace-nowrap"
+                >
+                  Replace
+                </label>
+
               </div>
             )}
+
+            {/* EXISTING LOGO */}
+
+            {!formData.logo &&
+              airline?.logo && (
+                <div className="mt-3 flex items-center gap-3 border border-slate-200 rounded-xl px-3.5 py-3">
+
+                  <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
+
+                    <img
+                      src={getLogoUrl(airline.logo)}
+                      alt={airline.name}
+                      className="max-w-full max-h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display =
+                          "none";
+                      }}
+                    />
+
+                  </div>
+
+                  <div>
+
+                    <p className="text-xs font-semibold text-slate-700">
+                      Current Logo
+                    </p>
+
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      Upload a new file to replace it
+                    </p>
+
+                  </div>
+
+                </div>
+              )}
+
           </div>
+
+          {/* =================================================
+              STATUS
+          ================================================= */}
 
           <div>
-            <p className="text-[11px] font-semibold text-gray-400 tracking-wide mb-3">OPERATIONAL STATUS</p>
-            <label className="text-xs text-gray-500">Carrier System Status</label>
-            <div className="mt-2 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, status: "Active" })}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border ${
-                  formData.status === "Active" ? "bg-emerald-50 text-emerald-600 border-emerald-200" : "bg-white text-gray-500 border-gray-200"
-                }`}
-              >
-                <FiCheckCircle size={12} /> Active
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, status: "Inactive" })}
-                className={`px-4 py-2 rounded-lg text-xs font-semibold border ${
-                  formData.status === "Inactive" ? "bg-red-50 text-red-500 border-red-200" : "bg-white text-gray-500 border-gray-200"
-                }`}
-              >
-                Inactive
-              </button>
+
+            <div className="flex items-center gap-2 mb-4">
+
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <FiCheckCircle size={14} />
+              </div>
+
+              <div>
+
+                <p className="text-sm font-bold text-slate-900">
+                  Operational Status
+                </p>
+
+                <p className="text-[11px] text-slate-400">
+                  Control airline availability
+                </p>
+
+              </div>
+
             </div>
+
+            <div className="grid grid-cols-2 gap-3">
+
+              {/* ACTIVE */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: "Active",
+                  }))
+                }
+                className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold border transition ${
+                  formData.status === "Active"
+                    ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                    : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                }`}
+              >
+
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    formData.status === "Active"
+                      ? "bg-emerald-500"
+                      : "bg-slate-300"
+                  }`}
+                />
+
+                Active
+
+              </button>
+
+              {/* DEACTIVE */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: "Deactive",
+                  }))
+                }
+                className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold border transition ${
+                  formData.status === "Deactive"
+                    ? "bg-red-50 text-red-600 border-red-200"
+                    : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                }`}
+              >
+
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    formData.status === "Deactive"
+                      ? "bg-red-500"
+                      : "bg-slate-300"
+                  }`}
+                />
+
+                Deactive
+
+              </button>
+
+            </div>
+
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
-            <p className="text-[10px] text-gray-400">Last modified: Sep 01, 2026 by Super Admin</p>
-            <div className="flex gap-3">
-              <button type="button" onClick={onClose} className="text-xs font-semibold text-gray-600 px-4 py-2.5 rounded-lg border border-gray-200">
-                Cancel
-              </button>
-              <button type="submit" className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-lg">
-                Save & Update Airline
-              </button>
-            </div>
+          {/* =================================================
+              FOOTER
+          ================================================= */}
+
+          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-5 border-t border-slate-100">
+
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={saving}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm shadow-blue-200 transition disabled:opacity-60"
+            >
+
+              {saving ? (
+                <>
+                  <FiLoader
+                    size={14}
+                    className="animate-spin"
+                  />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  {isEdit
+                    ? "Save Changes"
+                    : "Add Airline"}
+                </>
+              )}
+
+            </button>
+
           </div>
+
         </form>
+
       </div>
     </div>
   );
 };
 
+// =====================================================
+// AIRLINE DIRECTORY
+// =====================================================
+
 const AirlineDirectory = () => {
-  const [searchForm, setSearchForm] = useState({ query: "", alliance: "All Alliances", status: "All Statuses" });
-  const [airlines, setAirlines] = useState(initialAirlines);
-  const [selectedAirline, setSelectedAirline] = useState(null);
-  const [showModal, setShowModal] = useState(false);
 
-  const handleChange = (e) => {
-    setSearchForm({ ...searchForm, [e.target.name]: e.target.value });
-  };
+  const [airlines, setAirlines] = useState([]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const [filters, setFilters] = useState({
+    search: "",
+    status: "",
+  });
+
+  const [pagination, setPagination] = useState({
+    total: 0,
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+  });
+
+  const [selectedAirline, setSelectedAirline] =
+    useState(null);
+
+  const [showModal, setShowModal] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  // ===================================================
+  // FETCH AIRLINES
+  // ===================================================
+
+  const fetchAirlines = async (page = 1) => {
     try {
-      const params = new URLSearchParams(searchForm).toString();
-      const response = await fetch(`/api/admin/airlines/search?${params}`);
-      const data = await response.json();
-      if (data?.airlines) setAirlines(data.airlines);
-    } catch (error) {
-      console.error("Search failed", error);
+      setLoading(true);
+      setError("");
+
+      const response = await getAirlines({
+        page,
+        limit: 10,
+        search: filters.search.trim(),
+        status: filters.status,
+      });
+
+      if (!response?.success) {
+        throw new Error(
+          response?.message ||
+            "Failed to fetch airlines"
+        );
+      }
+
+      setAirlines(response.data || []);
+
+      setPagination(
+        response.pagination || {
+          total: 0,
+          currentPage: page,
+          totalPages: 1,
+          pageSize: 10,
+        }
+      );
+
+    } catch (err) {
+      console.error(
+        "Fetch airlines error:",
+        err
+      );
+
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Unable to load airlines."
+      );
+
+      setAirlines([]);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // ===================================================
+  // INITIAL LOAD
+  // ===================================================
+
+  useEffect(() => {
+    fetchAirlines(1);
+  }, []);
+
+  // ===================================================
+  // HANDLE FILTER
+  // ===================================================
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // ===================================================
+  // SEARCH
+  // ===================================================
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    fetchAirlines(1);
+  };
+
+  // ===================================================
+  // RESET
+  // ===================================================
+
+  const handleReset = () => {
+    const resetFilters = {
+      search: "",
+      status: "",
+    };
+
+    setFilters(resetFilters);
+
+    setTimeout(() => {
+      fetchAirlines(1);
+    }, 0);
+  };
+
+  // ===================================================
+  // OPEN ADD
+  // ===================================================
 
   const openAddModal = () => {
     setSelectedAirline(null);
     setShowModal(true);
   };
 
+  // ===================================================
+  // OPEN EDIT
+  // ===================================================
+
   const openEditModal = (airline) => {
     setSelectedAirline(airline);
     setShowModal(true);
   };
 
-  const handleSave = () => {
-    setShowModal(false);
+  // ===================================================
+  // STATUS TOGGLE
+  // ===================================================
+
+  const handleStatusToggle = async (airline) => {
+    try {
+      const newStatus =
+        airline.status === "Active"
+          ? "Deactive"
+          : "Active";
+
+      const response =
+        await updateAirlineStatus(
+          airline._id,
+          newStatus
+        );
+
+      if (!response?.success) {
+        throw new Error(
+          response?.message ||
+            "Failed to update status"
+        );
+      }
+
+      setAirlines((prev) =>
+        prev.map((item) =>
+          item._id === airline._id
+            ? {
+                ...item,
+                status: newStatus,
+              }
+            : item
+        )
+      );
+    } catch (err) {
+      console.error(
+        "Status update error:",
+        err
+      );
+
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to update airline status."
+      );
+    }
   };
 
+  // ===================================================
+  // CURRENT PAGE
+  // ===================================================
+
+  const currentPage =
+    pagination.currentPage || 1;
+
+  const totalPages =
+    pagination.totalPages || 1;
+
+  const totalAirlines =
+    pagination.total || 0;
+
+  const activeAirlines = airlines.filter(
+    (airline) => airline.status === "Active"
+  ).length;
+
   return (
-    <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+    <div className="flex-1 min-w-0 min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+
+      {/* =================================================
+          PAGE HEADER
+      ================================================= */}
+
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+
         <div>
-          <p className="text-xs text-gray-500 mb-1">
-            Master Data <span className="mx-1">›</span> Global Aviation <span className="mx-1">›</span>
-            <span className="text-blue-600 font-medium">Airlines Registry</span>
+
+          <p className="text-xs text-slate-400 mb-1.5">
+
+            Master Data
+
+            <span className="mx-2">
+              ›
+            </span>
+
+            Global Aviation
+
+            <span className="mx-2">
+              ›
+            </span>
+
+            <span className="text-blue-600 font-semibold">
+              Airlines Registry
+            </span>
+
           </p>
-          <h1 className="text-2xl font-bold text-gray-900">Airlines Master Directory</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Manage global airline partnerships, 2-letter IATA codes, carrier visual assets, and booking engine routing.
-          </p>
+
+          <div className="flex items-center gap-3 flex-wrap">
+
+            <div className="flex items-center gap-2">
+
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <TbPlaneDeparture size={21} />
+              </div>
+
+              <div>
+
+                <h1 className="text-2xl font-bold text-slate-900">
+                  Airlines Master Directory
+                </h1>
+
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Manage global airline master data
+                </p>
+
+              </div>
+
+            </div>
+
+            <span className="bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full">
+              {totalAirlines} Airlines
+            </span>
+
+          </div>
+
         </div>
+
         <button
           onClick={openAddModal}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl h-fit"
+          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm shadow-blue-200 transition"
         >
-          <FiPlus size={16} /> Add New Airline
+          <FiPlus size={16} />
+          Add New Airline
         </button>
+
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 max-w-xl">
-        {statCards.map(({ icon: Icon, iconBg, iconColor, label, value, dot }) => (
-          <div key={label} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
-            <div className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}>
-              <Icon className={`${iconColor} text-lg`} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">{label}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-gray-900">{value}</span>
-                {dot && <span className={`w-2 h-2 rounded-full ${dot}`} />}
-              </div>
-            </div>
+      {/* =================================================
+          STAT CARDS
+      ================================================= */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 max-w-2xl">
+
+        {/* TOTAL */}
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
+
+          <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <TbPlaneDeparture size={20} />
           </div>
-        ))}
+
+          <div>
+
+            <p className="text-xs font-medium text-slate-400">
+              Total Airlines
+            </p>
+
+            <p className="text-xl font-bold text-slate-900 mt-0.5">
+              {totalAirlines}
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* ACTIVE */}
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
+
+          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <FiCheckCircle size={19} />
+          </div>
+
+          <div>
+
+            <p className="text-xs font-medium text-slate-400">
+              Active Airlines
+            </p>
+
+            <div className="flex items-center gap-2 mt-0.5">
+
+              <p className="text-xl font-bold text-slate-900">
+                {activeAirlines}
+              </p>
+
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <form onSubmit={handleSearch} className="bg-white rounded-2xl border border-gray-200 p-4 mb-4">
+      {/* =================================================
+          SEARCH / FILTER
+      ================================================= */}
+
+      <form
+        onSubmit={handleSearch}
+        className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-5"
+      >
+
         <div className="flex flex-col lg:flex-row gap-3">
-          <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-            <FiSearch className="text-gray-400 flex-shrink-0" size={16} />
+
+          {/* SEARCH */}
+
+          <div className="flex-1 flex items-center gap-2 border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-50 transition">
+
+            <FiSearch
+              className="text-slate-400 flex-shrink-0"
+              size={17}
+            />
+
             <input
               type="text"
-              name="query"
-              value={searchForm.query}
-              onChange={handleChange}
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
               placeholder="Search by airline name or IATA code..."
-              className="w-full text-sm text-gray-700 focus:outline-none"
+              className="w-full text-sm text-slate-700 placeholder:text-slate-300 focus:outline-none"
             />
+
           </div>
 
-          <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700">
-            <select name="alliance" value={searchForm.alliance} onChange={handleChange} className="outline-none bg-transparent">
-              <option>All Alliances</option>
-              <option>Star Alliance</option>
-              <option>OneWorld</option>
-              <option>SkyTeam</option>
+          {/* STATUS */}
+
+          <div className="relative flex items-center border border-slate-200 rounded-xl px-3.5 py-2.5 min-w-[170px]">
+
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              className="appearance-none bg-transparent outline-none text-sm text-slate-600 w-full pr-6 cursor-pointer"
+            >
+
+              <option value="">
+                All Status
+              </option>
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Deactive">
+                Deactive
+              </option>
+
             </select>
-            <FiChevronDown size={14} className="text-gray-400" />
+
+            <FiChevronDown
+              size={15}
+              className="absolute right-3.5 text-slate-400 pointer-events-none"
+            />
+
           </div>
 
-          <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700">
-            <select name="status" value={searchForm.status} onChange={handleChange} className="outline-none bg-transparent">
-              <option>All Statuses</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-            <FiChevronDown size={14} className="text-gray-400" />
-          </div>
+          {/* SEARCH */}
 
-          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition disabled:opacity-60"
+          >
+
+            <FiSearch size={15} />
+
             Search
+
           </button>
+
+          {/* RESET */}
+
+          <button
+            type="button"
+            onClick={handleReset}
+            className="flex items-center justify-center gap-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-sm font-semibold px-5 py-2.5 rounded-xl transition"
+          >
+
+            <FiRefreshCw size={14} />
+
+            Reset
+
+          </button>
+
         </div>
+
       </form>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px]">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">AIRLINE & FLEET</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">IATA CODE</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">INTEGRATION ENGINES</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">STATUS</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {airlines.map((airline) => (
-                <tr key={airline.id} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-gray-400 text-xs">{airline.id}</span>
-                      <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
-                        <TbPlaneDeparture size={14} />
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{airline.name}</p>
-                        <p className="text-xs text-gray-400">{airline.sub}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-2 py-1 rounded">{airline.code}</span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex gap-2 flex-wrap">
-                      {airline.engines.map((engine) => (
-                        <span key={engine} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">{engine}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="flex items-center gap-1.5 w-fit bg-emerald-50 text-emerald-600 text-xs font-semibold px-2.5 py-1 rounded-full">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {airline.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <button onClick={() => openEditModal(airline)} className="text-gray-400 hover:text-blue-600">
-                      <FiEdit2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* =================================================
+          ERROR
+      ================================================= */}
+
+      {error && (
+        <div className="mb-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 flex items-center justify-between gap-4">
+
+          <p className="text-xs font-medium text-red-600">
+            {error}
+          </p>
+
+          <button
+            onClick={() =>
+              fetchAirlines(currentPage)
+            }
+            className="text-xs font-semibold text-red-600 hover:text-red-800"
+          >
+            Retry
+          </button>
+
         </div>
+      )}
+
+      {/* =================================================
+          TABLE CARD
+      ================================================= */}
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+        {/* TABLE HEADER */}
+
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+
+          <div>
+
+            <p className="text-sm font-bold text-slate-900">
+              Airlines Registry
+            </p>
+
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Live data from airline master database
+            </p>
+
+          </div>
+
+          <button
+            onClick={() =>
+              fetchAirlines(currentPage)
+            }
+            disabled={loading}
+            className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition disabled:opacity-50"
+            title="Refresh"
+          >
+
+            <FiRefreshCw
+              size={15}
+              className={
+                loading
+                  ? "animate-spin"
+                  : ""
+              }
+            />
+
+          </button>
+
+        </div>
+
+        {/* =================================================
+            TABLE
+        ================================================= */}
+
+        <div className="overflow-x-auto">
+
+          <table className="w-full min-w-[720px]">
+
+            <thead>
+
+              <tr className="bg-slate-50/80 border-b border-slate-200">
+
+                {/* SL */}
+
+                <th className="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wide px-5 py-3.5 w-[90px]">
+                  SL
+                </th>
+
+                {/* NAME */}
+
+                <th className="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wide px-5 py-3.5">
+                  Name
+                </th>
+
+                {/* CODE */}
+
+                <th className="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wide px-5 py-3.5 w-[160px]">
+                  Code
+                </th>
+
+                {/* LOGO */}
+
+                <th className="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wide px-5 py-3.5 w-[180px]">
+                  Logo
+                </th>
+
+                {/* ACTION */}
+
+                <th className="text-right text-[11px] font-bold text-slate-500 uppercase tracking-wide px-5 py-3.5 w-[120px]">
+                  Action
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {/* LOADING */}
+
+              {loading ? (
+
+                <tr>
+
+                  <td
+                    colSpan="5"
+                    className="py-20 text-center"
+                  >
+
+                    <div className="flex flex-col items-center justify-center">
+
+                      <FiLoader
+                        size={24}
+                        className="text-blue-600 animate-spin mb-3"
+                      />
+
+                      <p className="text-sm font-semibold text-slate-600">
+                        Loading airlines...
+                      </p>
+
+                      <p className="text-xs text-slate-400 mt-1">
+                        Fetching latest airline data
+                      </p>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ) : airlines.length === 0 ? (
+
+                /* EMPTY */
+
+                <tr>
+
+                  <td
+                    colSpan="5"
+                    className="py-20 text-center"
+                  >
+
+                    <div className="flex flex-col items-center">
+
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                        <TbPlaneDeparture size={22} />
+                      </div>
+
+                      <p className="text-sm font-semibold text-slate-700">
+                        No airlines found
+                      </p>
+
+                      <p className="text-xs text-slate-400 mt-1">
+                        Try changing your search or filters.
+                      </p>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                /* DATA */
+
+                airlines.map((airline, index) => {
+
+                  const serialNumber =
+                    (currentPage - 1) *
+                      pagination.pageSize +
+                    index +
+                    1;
+
+                  return (
+                    <tr
+                      key={airline._id}
+                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50/70 transition"
+                    >
+
+                      {/* SL */}
+
+                      <td className="px-5 py-4">
+
+                        <span className="text-xs font-semibold text-slate-400">
+                          {serialNumber}
+                        </span>
+
+                      </td>
+
+                      {/* NAME */}
+
+                      <td className="px-5 py-4">
+
+                        <div className="flex items-center gap-3">
+
+                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 overflow-hidden">
+
+                            {airline.logo ? (
+                              <img
+                              src={getLogoUrl(airline.logo)}
+                              alt={airline.name}
+                                className="w-full h-full object-contain p-1.5"
+                                onError={(e) => {
+                                  e.currentTarget.style.display =
+                                    "none";
+                                }}
+                              />
+                            ) : (
+                              <TbPlaneDeparture
+                                size={18}
+                              />
+                            )}
+
+                          </div>
+
+                          <div>
+
+                            <p className="text-sm font-semibold text-slate-800">
+                              {airline.name}
+                            </p>
+
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              Airline Partner
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+                      {/* CODE */}
+
+                      <td className="px-5 py-4">
+
+                        <span className="inline-flex items-center bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-lg uppercase">
+                          {airline.code}
+                        </span>
+
+                      </td>
+
+                      {/* LOGO */}
+
+                      <td className="px-5 py-4">
+
+                        <div className="w-16 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden">
+
+                          {airline.logo ? (
+
+                            <img
+                            src={getLogoUrl(airline.logo)}
+                            alt={airline.name}
+                            className="max-w-full max-h-full object-contain p-1"
+                              onError={(e) => {
+                                e.currentTarget.style.display =
+                                  "none";
+                              }}
+                            />
+
+                          ) : (
+
+                            <span className="text-[10px] text-slate-400">
+                              No Logo
+                            </span>
+
+                          )}
+
+                        </div>
+
+                      </td>
+
+                      {/* ACTION */}
+
+                      <td className="px-5 py-4">
+
+                        <div className="flex items-center justify-end gap-2">
+
+                          {/* STATUS */}
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleStatusToggle(
+                                airline
+                              )
+                            }
+                            title="Change status"
+                            className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full border transition ${
+                              airline.status ===
+                              "Active"
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100"
+                                : "bg-red-50 text-red-600 border-red-100 hover:bg-red-100"
+                            }`}
+                          >
+
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                airline.status ===
+                                "Active"
+                                  ? "bg-emerald-500"
+                                  : "bg-red-500"
+                              }`}
+                            />
+
+                            {airline.status}
+
+                          </button>
+
+                          {/* EDIT */}
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              openEditModal(
+                                airline
+                              )
+                            }
+                            className="w-9 h-9 rounded-xl border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 flex items-center justify-center transition"
+                            title="Edit airline"
+                          >
+
+                            <FiEdit2
+                              size={15}
+                            />
+
+                          </button>
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+                  );
+                })
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {/* =================================================
+            PAGINATION
+        ================================================= */}
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-t border-slate-100">
+
+          <p className="text-xs text-slate-400">
+
+            {pagination.total > 0
+              ? `Showing ${
+                  (currentPage - 1) *
+                    pagination.pageSize +
+                  1
+                }–${Math.min(
+                  currentPage *
+                    pagination.pageSize,
+                  pagination.total
+                )} of ${
+                  pagination.total
+                } airlines`
+              : "No airlines to display"}
+
+          </p>
+
+          <div className="flex items-center gap-2">
+
+            {/* PREVIOUS */}
+
+            <button
+              type="button"
+              disabled={
+                currentPage <= 1 ||
+                loading
+              }
+              onClick={() =>
+                fetchAirlines(
+                  currentPage - 1
+                )
+              }
+              className="flex items-center gap-1.5 border border-slate-200 text-slate-600 text-xs font-semibold px-3 py-2 rounded-xl hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+
+              <FiChevronLeft size={14} />
+
+              Previous
+
+            </button>
+
+            {/* CURRENT PAGE */}
+
+            <div className="min-w-[38px] h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+              {currentPage}
+            </div>
+
+            {/* NEXT */}
+
+            <button
+              type="button"
+              disabled={
+                currentPage >=
+                  totalPages ||
+                loading
+              }
+              onClick={() =>
+                fetchAirlines(
+                  currentPage + 1
+                )
+              }
+              className="flex items-center gap-1.5 border border-slate-200 text-slate-600 text-xs font-semibold px-3 py-2 rounded-xl hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+
+              Next
+
+              <FiChevronRight size={14} />
+
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
 
+      {/* =================================================
+          MODAL
+      ================================================= */}
+
       {showModal && (
-        <AirlineFormModal airline={selectedAirline} onClose={() => setShowModal(false)} onSave={handleSave} />
+        <AirlineFormModal
+          airline={selectedAirline}
+          onClose={() =>
+            setShowModal(false)
+          }
+          onSuccess={() =>
+            fetchAirlines(currentPage)
+          }
+        />
       )}
+
     </div>
   );
 };

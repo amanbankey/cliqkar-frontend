@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiPlus,
   FiSearch,
@@ -7,173 +7,526 @@ import {
   FiX,
   FiChevronLeft,
   FiChevronRight,
-  FiCreditCard,
-  FiCamera,
-  FiFileText,
-  FiUser,
-  FiMapPin,
-  FiFolder,
+  FiGlobe,
+  FiSave,
+  FiEdit3,
 } from "react-icons/fi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const initialCountries = [
-  { sl: "01", flag: "🇦🇫", name: "Afghanistan", iso: "AF", currencyCode: "AFN", currencyName: "Afghani", visa: true, otb: false, status: "Active" },
-  { sl: "02", flag: "🇦🇱", name: "Albania", iso: "AL", currencyCode: "ALL", currencyName: "Lek", visa: true, otb: false, status: "Active" },
-  { sl: "03", flag: "🇩🇿", name: "Algeria", iso: "DZ", currencyCode: "DZD", currencyName: "Dinar", visa: true, otb: false, status: "Active" },
-  { sl: "04", flag: "🇦🇸", name: "American Samoa", iso: "AS", currencyCode: "USD", currencyName: "US Dollar", visa: true, otb: false, status: "Active" },
+import {
+  getCountries,
+  addCountry,
+  updateCountry,
+} from "../../api/countryApi";
+
+// =====================================================
+// YES / NO OPTIONS
+// =====================================================
+
+const yesNoFields = [
+  {
+    section: "Identity & Passport",
+    fields: [
+      {
+        key: "allowForPassportFront",
+        label: "Passport Front",
+      },
+      {
+        key: "allowForPassportFrontRequired",
+        label: "Passport Front Required",
+      },
+      {
+        key: "allowForPassportBack",
+        label: "Passport Back",
+      },
+      {
+        key: "allowForPassportBackRequired",
+        label: "Passport Back Required",
+      },
+      {
+        key: "allowForPassportNumber",
+        label: "Passport No",
+      },
+      {
+        key: "allowForPassportNumberRequired",
+        label: "Passport No Required",
+      },
+    ],
+  },
+
+  {
+    section: "Applicant Details",
+    fields: [
+      {
+        key: "allowForFirstName",
+        label: "First Name",
+      },
+      {
+        key: "allowForFirstNameRequired",
+        label: "First Name Required",
+      },
+      {
+        key: "allowForLastName",
+        label: "Last Name",
+      },
+      {
+        key: "allowForLastNameRequired",
+        label: "Last Name Required",
+      },
+      {
+        key: "allowForNationality",
+        label: "Nationality",
+      },
+      {
+        key: "allowForNationalityRequired",
+        label: "Nationality Required",
+      },
+      {
+        key: "allowForGender",
+        label: "Gender",
+      },
+      {
+        key: "allowForGenderRequired",
+        label: "Gender Required",
+      },
+      {
+        key: "allowForDob",
+        label: "DOB",
+      },
+      {
+        key: "allowForDobRequired",
+        label: "DOB Required",
+      },
+    ],
+  },
+
+  {
+    section: "PAN Card",
+    fields: [
+      {
+        key: "allowForPanCard",
+        label: "Pancard",
+      },
+      {
+        key: "allowForPanCardRequired",
+        label: "Pancard Required",
+      },
+      {
+        key: "allowForPanCardNumber",
+        label: "Pancard No",
+      },
+      {
+        key: "allowForPanCardNumberRequired",
+        label: "Pancard No Required",
+      },
+    ],
+  },
+
+  {
+    section: "Travel Details",
+    fields: [
+      {
+        key: "allowForCheckinPoint",
+        label: "Check In Point",
+      },
+      {
+        key: "allowForCheckinPointRequired",
+        label: "Check In Point Required",
+      },
+      {
+        key: "allowForCheckoutPoint",
+        label: "Check Out Point",
+      },
+      {
+        key: "allowForCheckoutPointRequired",
+        label: "Check Out Point Required",
+      },
+      {
+        key: "allowForTravelDate",
+        label: "Travel Date",
+      },
+      {
+        key: "allowForTravelDateRequired",
+        label: "Travel Date Required",
+      },
+    ],
+  },
+
+  {
+    section: "Applicant Information",
+    fields: [
+      {
+        key: "allowForInsurance",
+        label: "Insurance",
+      },
+      {
+        key: "allowForInsuranceRequired",
+        label: "Insurance Required",
+      },
+      {
+        key: "allowForOccupation",
+        label: "Occupation",
+      },
+      {
+        key: "allowForOccupationRequired",
+        label: "Occupation Required",
+      },
+      {
+        key: "allowForPhoto",
+        label: "Photo",
+      },
+      {
+        key: "allowForPhotoRequired",
+        label: "Photo Required",
+      },
+    ],
+  },
+
+  {
+    section: "Hotel Details",
+    fields: [
+      {
+        key: "allowForHotelName",
+        label: "Hotel Name",
+      },
+      {
+        key: "allowForHotelNameRequired",
+        label: "Hotel Name Required",
+      },
+      {
+        key: "allowForHotelVoucher",
+        label: "Hotel Voucher",
+      },
+      {
+        key: "allowForHotelVoucherRequired",
+        label: "Hotel Voucher Required",
+      },
+    ],
+  },
+
+  {
+    section: "Family Details",
+    fields: [
+      {
+        key: "allowForMotherName",
+        label: "Mother Name",
+      },
+      {
+        key: "allowForMotherNameRequired",
+        label: "Mother Name Required",
+      },
+      {
+        key: "allowForFatherName",
+        label: "Father Name",
+      },
+      {
+        key: "allowForFatherNameRequired",
+        label: "Father Name Required",
+      },
+      {
+        key: "allowForSpouseName",
+        label: "Spouse Name",
+      },
+      {
+        key: "allowForSpouseNameRequired",
+        label: "Spouse Name Required",
+      },
+      {
+        key: "allowForPlaceOfBirth",
+        label: "Place of Birth",
+      },
+      {
+        key: "allowForPlaceOfBirthRequired",
+        label: "Place of Birth Required",
+      },
+    ],
+  },
+
+  {
+    section: "Additional Documents",
+    fields: [
+      {
+        key: "allowForAdditionalFolder",
+        label: "Additional Folder",
+      },
+      {
+        key: "allowForAdditionalFolderRequired",
+        label: "Additional Folder Required",
+      },
+    ],
+  },
 ];
 
-const statCards = [
-  { label: "TOTAL COUNTRIES", value: "192", valueColor: "text-gray-900" },
-  { label: "VISA ENABLED", value: "192", valueColor: "text-blue-600" },
-  { label: "OTB ENABLED", value: "12", valueColor: "text-orange-500", tag: "Detail" },
-  { label: "CURRENCIES", value: "140+", valueColor: "text-gray-900", tag: "Active" },
-];
+// =====================================================
+// YES / NO SELECT
+// =====================================================
 
-const identityFields = [
-  { icon: FiCreditCard, label: "Passport Front Scan", visible: true, mandatory: true },
-  { icon: FiCreditCard, label: "Passport Back Scan", visible: true, mandatory: true },
-  { icon: FiFileText, label: "Passport Number", visible: true, mandatory: true },
-  { icon: FiCamera, label: "Applicant Photo", visible: true, mandatory: true },
-  { icon: FiFileText, label: "PAN Card Upload", visible: true, mandatory: true },
-];
+// =====================================================
+// PREMIUM YES / NO TOGGLE
+// =====================================================
 
-const personalFields = [
-  { icon: FiMapPin, label: "Place of Birth", visible: false, mandatory: true },
-  { icon: FiUser, label: "First Name", visible: true, mandatory: true },
-];
+const PremiumToggle = ({ value, onChange, label }) => {
+  const enabled = value === "Yes";
 
-const customFields = [{ icon: FiFolder, label: "Additional Supporting Documents Folder", visible: true, mandatory: true }];
-
-const ToggleSwitch = ({ checked, onChange }) => (
-  <button
-    type="button"
-    onClick={onChange}
-    className={`w-9 h-5 rounded-full flex items-center px-0.5 transition-colors ${checked ? "bg-blue-600 justify-end" : "bg-gray-200 justify-start"}`}
-  >
-    <span className="w-4 h-4 bg-white rounded-full shadow" />
-  </button>
-);
-
-const FieldRow = ({ field, onToggle }) => {
-  const Icon = field.icon;
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-      <div className="flex items-center gap-2">
-        <Icon className="text-gray-400 flex-shrink-0" size={15} />
-        <span className="text-sm text-gray-700">{field.label}</span>
+    <div
+      className={`group flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all duration-200 ${
+        enabled
+          ? "bg-blue-50/60 border-blue-100"
+          : "bg-white border-gray-200 hover:border-gray-300"
+      }`}
+    >
+      <div className="min-w-0">
+        <p
+          className={`text-sm font-semibold transition-colors ${
+            enabled ? "text-gray-900" : "text-gray-600"
+          }`}
+        >
+          {label}
+        </p>
+
+        <p className="text-[10px] text-gray-400 mt-1">
+          {enabled
+            ? "Enabled for this country"
+            : "Disabled for this country"}
+        </p>
       </div>
-      <div className="flex items-center gap-5">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold text-gray-400 tracking-wide">VISIBLE</span>
-          <ToggleSwitch checked={field.visible} onChange={() => onToggle(field.label, "visible")} />
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold text-gray-400 tracking-wide">MANDATORY</span>
-          <span
-            className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              field.mandatory ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            {field.mandatory ? "YES" : "NO"}
-          </span>
-        </div>
-      </div>
+
+      <button
+        type="button"
+        role="switch"
+        aria-checked={enabled}
+        onClick={() => onChange(enabled ? "No" : "Yes")}
+        className={`relative flex-shrink-0 w-[52px] h-[28px] rounded-full p-1 transition-all duration-300 focus:outline-none focus:ring-4 ${
+          enabled
+            ? "bg-blue-600 focus:ring-blue-100"
+            : "bg-gray-200 focus:ring-gray-100"
+        }`}
+      >
+        <span
+          className={`block w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
+            enabled ? "translate-x-6" : "translate-x-0"
+          }`}
+        />
+      </button>
     </div>
   );
 };
 
-const VisaRulesModal = ({ country, onClose }) => {
-  const [identity, setIdentity] = useState(identityFields);
-  const [personal, setPersonal] = useState(personalFields);
-  const [custom, setCustom] = useState(customFields);
-  const [folderLabel, setFolderLabel] = useState("modelData");
+// =====================================================
+// VISA RULES MODAL
+// =====================================================
 
-  const toggleField = (setter) => (label, key) => {
-    setter((prev) => prev.map((f) => (f.label === label ? { ...f, [key]: !f[key] } : f)));
+const VisaRulesModal = ({ country, onClose, onSaved }) => {
+  const [form, setForm] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (country) {
+      setForm({
+        ...country,
+        allowForAdditionalFolderLabel:
+          country.allowForAdditionalFolderLabel || "",
+      });
+    }
+  }, [country]);
+
+  const handleChange = (key, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch(`/api/admin/countries/${country?.iso || "AF"}/visa-rules`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identity, personal, custom, folderLabel }),
-      });
-      await response.json();
-      onClose();
+      setSaving(true);
+
+      const response = await updateCountry(country._id, form);
+
+      if (response?.success) {
+        toast.success("Country validation updated successfully");
+
+        onSaved?.(response.data);
+
+        setTimeout(() => {
+          onClose();
+        }, 500);
+      } else {
+        toast.error(response?.message || "Failed to update country");
+      }
     } catch (error) {
-      console.error("Failed to save rules", error);
+      console.error("Update Country Error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to update country"
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-start justify-between px-5 sm:px-6 pt-5">
+    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-6xl max-h-[92vh] rounded-3xl shadow-2xl overflow-hidden">
+
+        {/* HEADER */}
+        <div className="px-6 sm:px-8 py-5 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-gray-900">Update Visa Application Validation &amp; Form Rules</h2>
-            <p className="text-xs text-gray-500 mt-1 max-w-md">
-              Configure field visibility, mandatory requirement toggles, and document upload rules for this sovereign country.
-            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <FiSettings size={19} />
+              </div>
+
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Update VISA Validation
+                </h2>
+
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Configure application fields and document requirements.
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="bg-gray-100 text-gray-600 text-[10px] font-semibold px-2 py-1 rounded-full whitespace-nowrap">
-              {country?.flag || "🇦🇫"} {country?.name || "Afghanistan"} ({country?.iso || "AF"})
-            </span>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100">
+              <span className="text-sm">🌐</span>
+
+              <div>
+                <p className="text-xs font-semibold text-gray-800">
+                  {country?.countryName}
+                </p>
+
+                <p className="text-[10px] text-gray-400">
+                  {country?.code}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-9 h-9 rounded-xl hover:bg-gray-100 flex items-center justify-center text-gray-500 transition"
+            >
               <FiX size={18} />
             </button>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 sm:px-6 py-5 space-y-6">
-          <div>
-            <p className="text-sm font-semibold text-gray-900 mb-1">Identity &amp; Passport Credentials</p>
-            <div className="bg-gray-50 rounded-xl px-4">
-              {identity.map((field) => (
-                <FieldRow key={field.label} field={field} onToggle={toggleField(setIdentity)} />
-              ))}
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 sm:p-8 overflow-y-auto max-h-[calc(92vh-90px)]"
+        >
+          {/* GENERAL */}
+          <div className="mb-7">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900">
+                  General Application Rules
+                </h3>
+
+                <p className="text-xs text-gray-400 mt-1">
+                  Control whether each field is available and required.
+                </p>
+              </div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <PremiumToggle
+    label="Allow For Visa"
+    value={form.allowForVisa}
+    onChange={(value) =>
+      handleChange("allowForVisa", value)
+    }
+  />
+
+  <PremiumToggle
+    label="Allow For OTB"
+    value={form.allowForOtb}
+    onChange={(value) =>
+      handleChange("allowForOtb", value)
+    }
+  />
+</div>
           </div>
 
-          <div>
-            <p className="text-sm font-semibold text-gray-900 mb-1">Applicant Personal &amp; Family Details</p>
-            <div className="bg-gray-50 rounded-xl px-4">
-              {personal.map((field) => (
-                <FieldRow key={field.label} field={field} onToggle={toggleField(setPersonal)} />
-              ))}
+          {/* ALL RULE SECTIONS */}
+          {yesNoFields.map((section) => (
+            <div key={section.section} className="mb-7">
+             <div className="flex items-center gap-3 mb-4">
+  <div className="w-1 h-6 rounded-full bg-blue-600" />
+
+  <div>
+    <h3 className="text-sm font-bold text-gray-900">
+      {section.section}
+    </h3>
+
+    <p className="text-[11px] text-gray-400 mt-0.5">
+      Configure field availability and requirement settings
+    </p>
+  </div>
+</div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+  {section.fields.map((field) => (
+    <PremiumToggle
+      key={field.key}
+      label={field.label}
+      value={form[field.key]}
+      onChange={(value) =>
+        handleChange(field.key, value)
+      }
+    />
+  ))}
+</div>
             </div>
+          ))}
+
+          {/* FOLDER LABEL */}
+          <div className="mb-7">
+            <label className="block text-xs font-medium text-gray-500 mb-2">
+              Additional Folder Custom Label
+            </label>
+
+            <input
+              type="text"
+              value={form.allowForAdditionalFolderLabel || ""}
+              onChange={(e) =>
+                handleChange(
+                  "allowForAdditionalFolderLabel",
+                  e.target.value
+                )
+              }
+              placeholder="e.g. Additional Documents"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
           </div>
 
-          <div>
-            <p className="text-sm font-semibold text-gray-900 mb-1">Custom &amp; Additional Attachment Rules</p>
-            <div className="bg-gray-50 rounded-xl px-4">
-              {custom.map((field) => (
-                <FieldRow key={field.label} field={field} onToggle={toggleField(setCustom)} />
-              ))}
-            </div>
-
-            <div className="mt-3">
-              <label className="text-xs text-gray-500">Folder Custom Display Label</label>
-              <input
-                type="text"
-                value={folderLabel}
-                onChange={(e) => setFolderLabel(e.target.value)}
-                className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none"
-              />
-              <p className="text-[10px] text-gray-400 mt-1">
-                Enter the custom heading displayed to applicants during document upload.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-            <button type="button" onClick={onClose} className="text-xs font-semibold text-gray-600 px-4 py-2.5 rounded-lg border border-gray-200">
+          {/* FOOTER */}
+          <div className="flex justify-end gap-3 pt-5 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50"
+            >
               Cancel
             </button>
-            <button type="submit" className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-lg">
-              Save Validation Rules
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold shadow-sm"
+            >
+              <FiSave size={16} />
+
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
@@ -182,79 +535,581 @@ const VisaRulesModal = ({ country, onClose }) => {
   );
 };
 
-const CountriesDirectory = () => {
-  const [filters, setFilters] = useState({ country: "", isoCode: "", visaStatus: "", otbStatus: "" });
-  const [countries, setCountries] = useState(initialCountries);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+// =====================================================
+// ADD COUNTRY MODAL
+// =====================================================
+
+const AddCountryModal = ({ onClose, onAdded }) => {
+  const [form, setForm] = useState({
+    countryName: "",
+    code: "",
+    currency: "",
+    status: "Active",
+  });
+
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSearch = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.countryName || !form.code || !form.currency) {
+      toast.error("Country name, code and currency are required");
+      return;
+    }
+
     try {
-      const params = new URLSearchParams(filters).toString();
-      const response = await fetch(`/api/admin/countries/search?${params}`);
-      const data = await response.json();
-      if (data?.countries) setCountries(data.countries);
+      setSaving(true);
+
+      const response = await addCountry({
+        countryName: form.countryName.trim(),
+        code: form.code.trim().toUpperCase(),
+        currency: form.currency.trim().toUpperCase(),
+        status: form.status,
+      });
+
+      if (response?.success) {
+        toast.success("Country added successfully");
+
+        onAdded?.(response.data);
+
+        setTimeout(() => {
+          onClose();
+        }, 500);
+      } else {
+        toast.error(response?.message || "Failed to add country");
+      }
     } catch (error) {
-      console.error("Search failed", error);
+      console.error("Add Country Error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to add country"
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleReset = () => {
-    setFilters({ country: "", isoCode: "", visaStatus: "", otbStatus: "" });
-    setCountries(initialCountries);
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden">
+
+        {/* HEADER */}
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <FiGlobe size={19} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Add Country
+              </h2>
+
+              <p className="text-xs text-gray-400 mt-1">
+                Add a new country to the master directory.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-xl hover:bg-gray-100 flex items-center justify-center text-gray-500"
+          >
+            <FiX size={18} />
+          </button>
+        </div>
+
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-2">
+              Country Name
+            </label>
+
+            <input
+              name="countryName"
+              value={form.countryName}
+              onChange={handleChange}
+              placeholder="e.g. India"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-2">
+                ISO Code
+              </label>
+
+              <input
+                name="code"
+                maxLength={3}
+                value={form.code}
+                onChange={handleChange}
+                placeholder="IN"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm uppercase outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-2">
+                Currency
+              </label>
+
+              <input
+                name="currency"
+                value={form.currency}
+                onChange={handleChange}
+                placeholder="INR"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm uppercase outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-2">
+              Status
+            </label>
+
+            <div className="relative">
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}
+                className="appearance-none w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm outline-none focus:border-blue-500"
+              >
+                <option value="Active">Active</option>
+                <option value="Deactive">Deactive</option>
+              </select>
+
+              <FiChevronDown
+                size={15}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold"
+            >
+              <FiPlus size={16} />
+
+              {saving ? "Adding..." : "Add Country"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// =====================================================
+// MAIN COMPONENT
+// =====================================================
+
+const CountriesDirectory = () => {
+  const [countries, setCountries] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+  });
+
+  const [filters, setFilters] = useState({
+    country: "",
+    isoCode: "",
+    visaStatus: "",
+    otbStatus: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // =====================================================
+  // LOAD COUNTRIES
+  // =====================================================
+
+  const loadCountries = async (page = 1, customFilters = filters) => {
+    try {
+      setLoading(true);
+
+      const search =
+        customFilters.country || customFilters.isoCode || "";
+
+      const response = await getCountries({
+        page,
+        limit: 10,
+        search,
+        visaStatus: customFilters.visaStatus,
+        otbStatus: customFilters.otbStatus,
+      });
+
+      if (response?.success) {
+        setCountries(response.data || []);
+        setPagination(
+          response.pagination || {
+            total: 0,
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 10,
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Get Countries Error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to load countries"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    loadCountries(1);
+  }, []);
+
+  // =====================================================
+  // FILTER CHANGE
+  // =====================================================
+
+  const handleChange = (e) => {
+    setFilters((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // =====================================================
+  // SEARCH
+  // =====================================================
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    loadCountries(1, filters);
+  };
+
+  // =====================================================
+  // RESET
+  // =====================================================
+
+  const handleReset = () => {
+    const resetFilters = {
+      country: "",
+      isoCode: "",
+      visaStatus: "",
+      otbStatus: "",
+    };
+
+    setFilters(resetFilters);
+
+    loadCountries(1, resetFilters);
+  };
+
+  // =====================================================
+  // INLINE VISA / OTB UPDATE
+  // =====================================================
+
+  const toggleVisaOtb = async (country) => {
+    try {
+      const newVisaValue =
+        country.allowForVisa === "Yes" ? "No" : "Yes";
+
+      const response = await updateCountry(country._id, {
+        allowForVisa: newVisaValue,
+      });
+
+      if (response?.success) {
+        setCountries((prev) =>
+          prev.map((item) =>
+            item._id === country._id
+              ? {
+                  ...item,
+                  allowForVisa: newVisaValue,
+                }
+              : item
+          )
+        );
+
+        toast.success("Visa status updated successfully");
+      }
+    } catch (error) {
+      console.error("Visa update error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to update visa status"
+      );
+    }
+  };
+
+  const toggleOtb = async (country) => {
+    try {
+      const newOtbValue =
+        country.allowForOtb === "Yes" ? "No" : "Yes";
+
+      const response = await updateCountry(country._id, {
+        allowForOtb: newOtbValue,
+      });
+
+      if (response?.success) {
+        setCountries((prev) =>
+          prev.map((item) =>
+            item._id === country._id
+              ? {
+                  ...item,
+                  allowForOtb: newOtbValue,
+                }
+              : item
+          )
+        );
+
+        toast.success("OTB status updated successfully");
+      }
+    } catch (error) {
+      console.error("OTB update error:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to update OTB status"
+      );
+    }
+  };
+
+  // =====================================================
+  // OPEN EDIT
+  // =====================================================
 
   const openRulesModal = (country) => {
     setSelectedCountry(country);
-    setShowModal(true);
+    setShowRulesModal(true);
   };
+
+  // =====================================================
+  // AFTER EDIT
+  // =====================================================
+
+  const handleCountryUpdated = (updatedCountry) => {
+    setCountries((prev) =>
+      prev.map((country) =>
+        country._id === updatedCountry._id
+          ? updatedCountry
+          : country
+      )
+    );
+  };
+
+  // =====================================================
+  // AFTER ADD
+  // =====================================================
+
+  const handleCountryAdded = () => {
+    loadCountries(1, filters);
+  };
+
+  // =====================================================
+  // PAGINATION
+  // =====================================================
+
+  const changePage = (page) => {
+    if (
+      page < 1 ||
+      page > pagination.totalPages ||
+      loading
+    ) {
+      return;
+    }
+
+    loadCountries(page, filters);
+  };
+
+  // =====================================================
+  // STATS
+  // =====================================================
+
+  const totalCountries = pagination.total || 0;
+
+  const visaEnabled = countries.filter(
+    (country) => country.allowForVisa === "Yes"
+  ).length;
+
+  const otbEnabled = countries.filter(
+    (country) => country.allowForOtb === "Yes"
+  ).length;
+
+  const currencies = new Set(
+    countries.map((country) => country.currency)
+  ).size;
 
   return (
     <div className="flex-1 min-w-0 min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar
+      />
+
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
+
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
         <div>
           <p className="text-xs text-gray-500 mb-1">
-            Master Data <span className="mx-1">›</span>
-            <span className="text-blue-600 font-medium">Countries</span>
+            Master Data
+            <span className="mx-1">›</span>
+            <span className="text-blue-600 font-medium">
+              Countries
+            </span>
           </p>
+
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-gray-900">Global Countries Directory</h1>
-            <span className="bg-blue-50 text-blue-600 text-[10px] font-semibold px-2 py-1 rounded-full">192 Countries</span>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Global Countries Directory
+            </h1>
+
+            <span className="bg-blue-50 text-blue-600 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+              {totalCountries} Countries
+            </span>
           </div>
-          <p className="text-sm text-gray-500 mt-1">Manage global geographic and administrative parameters.</p>
+
+          <p className="text-sm text-gray-500 mt-1">
+            Manage global geographic and administrative parameters.
+          </p>
         </div>
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl h-fit">
-          <FiPlus size={16} /> Add Country
+
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-sm transition"
+        >
+          <FiPlus size={16} />
+          Add Country
         </button>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        {statCards.map(({ label, value, valueColor, tag }) => (
-          <div key={label} className="bg-white rounded-2xl border border-gray-200 p-4">
-            <p className="text-[10px] font-semibold text-gray-400 tracking-wide mb-1">{label}</p>
-            <div className="flex items-center gap-2">
-              <span className={`text-xl font-bold ${valueColor}`}>{value}</span>
-              {tag && <span className="text-[10px] text-gray-400">{tag}</span>}
-            </div>
+      {/* =====================================================
+          STAT CARDS
+      ===================================================== */}
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-wide">
+            TOTAL COUNTRIES
+          </p>
+
+          <div className="flex items-center gap-2 mt-2">
+            <FiGlobe className="text-blue-500" size={18} />
+
+            <span className="text-xl font-bold text-gray-900">
+              {totalCountries}
+            </span>
           </div>
-        ))}
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-wide">
+            VISA ENABLED
+          </p>
+
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xl font-bold text-blue-600">
+              {visaEnabled}
+            </span>
+
+            <span className="text-[10px] text-gray-400">
+              current page
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-wide">
+            OTB ENABLED
+          </p>
+
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xl font-bold text-orange-500">
+              {otbEnabled}
+            </span>
+
+            <span className="text-[10px] text-gray-400">
+              current page
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-wide">
+            CURRENCIES
+          </p>
+
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xl font-bold text-gray-900">
+              {currencies}
+            </span>
+
+            <span className="text-[10px] text-gray-400">
+              current page
+            </span>
+          </div>
+        </div>
       </div>
 
-      <form onSubmit={handleSearch} className="bg-white rounded-2xl border border-gray-200 p-4 mb-4">
+      {/* =====================================================
+          SEARCH
+      ===================================================== */}
+
+      <form
+        onSubmit={handleSearch}
+        className="bg-white rounded-2xl border border-gray-200 p-4 mb-5 shadow-sm"
+      >
         <div className="flex flex-col lg:flex-row gap-3">
-          <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5">
-            <FiSearch className="text-gray-400 flex-shrink-0" size={16} />
+
+          <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-50">
+            <FiSearch
+              className="text-gray-400 flex-shrink-0"
+              size={16}
+            />
+
             <input
               type="text"
               name="country"
               value={filters.country}
               onChange={handleChange}
-              placeholder="Search Country"
+              placeholder="Search country"
               className="w-full text-sm text-gray-700 focus:outline-none"
             />
           </div>
@@ -265,121 +1120,378 @@ const CountriesDirectory = () => {
             value={filters.isoCode}
             onChange={handleChange}
             placeholder="ISO Code"
-            className="lg:w-40 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none"
+            className="lg:w-36 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
           />
 
-          <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700">
-            <select name="visaStatus" value={filters.visaStatus} onChange={handleChange} className="outline-none bg-transparent w-full">
+          <div className="relative lg:w-40">
+            <select
+              name="visaStatus"
+              value={filters.visaStatus}
+              onChange={handleChange}
+              className="appearance-none w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-sm text-gray-700 outline-none focus:border-blue-500 bg-white"
+            >
               <option value="">Visa Status</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
-            <FiChevronDown size={14} className="text-gray-400" />
+
+            <FiChevronDown
+              size={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            />
           </div>
 
-          <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700">
-            <select name="otbStatus" value={filters.otbStatus} onChange={handleChange} className="outline-none bg-transparent w-full">
+          <div className="relative lg:w-40">
+            <select
+              name="otbStatus"
+              value={filters.otbStatus}
+              onChange={handleChange}
+              className="appearance-none w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-sm text-gray-700 outline-none focus:border-blue-500 bg-white"
+            >
               <option value="">OTB Status</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
-            <FiChevronDown size={14} className="text-gray-400" />
+
+            <FiChevronDown
+              size={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            />
           </div>
 
           <div className="flex gap-2">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold px-6 py-2.5 rounded-xl"
+            >
               Search
             </button>
-            <button type="button" onClick={handleReset} className="border border-gray-200 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-lg">
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl"
+            >
               Reset
             </button>
           </div>
         </div>
       </form>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      {/* =====================================================
+          TABLE
+      ===================================================== */}
+
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[820px]">
+
+          <table className="w-full min-w-[950px]">
+
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">SL</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">COUNTRY</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">ISO CODE</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">CURRENCY</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">VISA</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">OTB</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">STATUS</th>
-                <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">ACTION</th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-5 py-4">
+                  SL
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-5 py-4">
+                  COUNTRY
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-5 py-4">
+                  ISO CODE
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-5 py-4">
+                  CURRENCY
+                </th>
+
+                <th className="text-center text-xs font-semibold text-gray-500 px-5 py-4">
+                  ALLOW FOR VISA
+                </th>
+
+                <th className="text-center text-xs font-semibold text-gray-500 px-5 py-4">
+                  ALLOW FOR OTB
+                </th>
+
+                <th className="text-left text-xs font-semibold text-gray-500 px-5 py-4">
+                  STATUS
+                </th>
+
+                <th className="text-center text-xs font-semibold text-gray-500 px-5 py-4">
+                  ACTION
+                </th>
               </tr>
             </thead>
+
             <tbody>
-              {countries.map((c) => (
-                <tr key={c.iso} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-4 text-sm text-gray-500">{c.sl}</td>
-                  <td className="px-4 py-4">
-                    <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                      <span>{c.flag}</span> {c.name}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-2 py-1 rounded">{c.iso}</span>
-                  </td>
-                  <td className="px-4 py-4 text-sm text-gray-600">
-                    {c.currencyCode} <span className="text-gray-400">{c.currencyName}</span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className={`text-xs font-semibold ${c.visa ? "text-emerald-600" : "text-red-500"}`}>
-                      {c.visa ? "✓ Yes" : "— No"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className={`text-xs font-semibold ${c.otb ? "text-emerald-600" : "text-red-500"}`}>
-                      {c.otb ? "✓ Yes" : "— No"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="flex items-center gap-1.5 w-fit bg-emerald-50 text-emerald-600 text-xs font-semibold px-2.5 py-1 rounded-full">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <button onClick={() => openRulesModal(c)} className="text-gray-400 hover:text-blue-600">
-                      <FiSettings size={16} />
-                    </button>
+
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="text-center py-14 text-sm text-gray-400"
+                  >
+                    Loading countries...
                   </td>
                 </tr>
-              ))}
+              ) : countries.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="text-center py-14"
+                  >
+                    <div className="flex flex-col items-center">
+                      <FiGlobe
+                        size={30}
+                        className="text-gray-300 mb-3"
+                      />
+
+                      <p className="text-sm font-semibold text-gray-500">
+                        No countries found
+                      </p>
+
+                      <p className="text-xs text-gray-400 mt-1">
+                        Try changing your search filters.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                countries.map((country, index) => (
+                  <tr
+                    key={country._id}
+                    className="border-b border-gray-100 last:border-0 hover:bg-blue-50/30 transition"
+                  >
+
+                    <td className="px-5 py-4 text-sm text-gray-500">
+                      {String(
+                        (pagination.currentPage - 1) *
+                          pagination.pageSize +
+                          index +
+                          1
+                      ).padStart(2, "0")}
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                          <FiGlobe size={16} />
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">
+                            {country.countryName}
+                          </p>
+
+                          <p className="text-[10px] text-gray-400">
+                            Global Country
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1.5 rounded-lg">
+                        {country.code}
+                      </span>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <span className="text-sm font-medium text-gray-700">
+                        {country.currency}
+                      </span>
+                    </td>
+
+                    {/* VISA */}
+                    <td className="px-5 py-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleVisaOtb(country)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                          country.allowForVisa === "Yes"
+                            ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                            : "bg-red-50 text-red-500 hover:bg-red-100"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            country.allowForVisa === "Yes"
+                              ? "bg-emerald-500"
+                              : "bg-red-500"
+                          }`}
+                        />
+
+                        {country.allowForVisa === "Yes"
+                          ? "Yes"
+                          : "No"}
+                      </button>
+                    </td>
+
+                    {/* OTB */}
+                    <td className="px-5 py-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleOtb(country)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                          country.allowForOtb === "Yes"
+                            ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                            : "bg-red-50 text-red-500 hover:bg-red-100"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            country.allowForOtb === "Yes"
+                              ? "bg-emerald-500"
+                              : "bg-red-500"
+                          }`}
+                        />
+
+                        {country.allowForOtb === "Yes"
+                          ? "Yes"
+                          : "No"}
+                      </button>
+                    </td>
+
+                    {/* STATUS */}
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold ${
+                          country.status === "Active"
+                            ? "bg-emerald-50 text-emerald-600"
+                            : "bg-red-50 text-red-500"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            country.status === "Active"
+                              ? "bg-emerald-500"
+                              : "bg-red-500"
+                          }`}
+                        />
+
+                        {country.status}
+                      </span>
+                    </td>
+
+                    {/* ACTION */}
+                    <td className="px-5 py-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => openRulesModal(country)}
+                        className="w-9 h-9 inline-flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition"
+                        title="Edit validation rules"
+                      >
+                        <FiEdit3 size={15} />
+                      </button>
+                    </td>
+
+                  </tr>
+                ))
+              )}
+
             </tbody>
           </table>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-gray-100">
-          <p className="text-sm text-gray-500">Showing 1 to 10 of 192 entries</p>
+        {/* =====================================================
+            PAGINATION
+        ===================================================== */}
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-t border-gray-100">
+
+          <p className="text-xs text-gray-500">
+            Showing{" "}
+            {countries.length > 0
+              ? (pagination.currentPage - 1) *
+                  pagination.pageSize +
+                1
+              : 0}{" "}
+            to{" "}
+            {(pagination.currentPage - 1) *
+              pagination.pageSize +
+              countries.length}{" "}
+            of {pagination.total} entries
+          </p>
+
           <div className="flex items-center gap-2">
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 text-gray-500 rounded-lg">
+
+            <button
+              type="button"
+              disabled={pagination.currentPage === 1}
+              onClick={() =>
+                changePage(pagination.currentPage - 1)
+              }
+              className="w-9 h-9 flex items-center justify-center border border-gray-200 text-gray-500 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+            >
               <FiChevronLeft size={14} />
             </button>
-            {[1, 2, 3].map((page) => (
+
+            {Array.from(
+              {
+                length: Math.min(pagination.totalPages, 5),
+              },
+              (_, i) => i + 1
+            ).map((page) => (
               <button
+                type="button"
                 key={page}
-                className={`w-8 h-8 text-xs font-semibold rounded-lg ${
-                  page === 1 ? "bg-blue-600 text-white" : "border border-gray-200 text-gray-600"
+                onClick={() => changePage(page)}
+                className={`w-9 h-9 text-xs font-semibold rounded-lg ${
+                  page === pagination.currentPage
+                    ? "bg-blue-600 text-white"
+                    : "border border-gray-200 text-gray-600 hover:bg-gray-50"
                 }`}
               >
                 {page}
               </button>
             ))}
-            <span className="text-gray-400 text-xs">...</span>
-            <button className="w-8 h-8 text-xs font-semibold border border-gray-200 text-gray-600 rounded-lg">20</button>
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 text-gray-500 rounded-lg">
+
+            <button
+              type="button"
+              disabled={
+                pagination.currentPage >=
+                pagination.totalPages
+              }
+              onClick={() =>
+                changePage(pagination.currentPage + 1)
+              }
+              className="w-9 h-9 flex items-center justify-center border border-gray-200 text-gray-500 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+            >
               <FiChevronRight size={14} />
             </button>
+
           </div>
         </div>
       </div>
 
-      {showModal && <VisaRulesModal country={selectedCountry} onClose={() => setShowModal(false)} />}
+      {/* =====================================================
+          EDIT MODAL
+      ===================================================== */}
+
+      {showRulesModal && selectedCountry && (
+        <VisaRulesModal
+          country={selectedCountry}
+          onClose={() => {
+            setShowRulesModal(false);
+            setSelectedCountry(null);
+          }}
+          onSaved={handleCountryUpdated}
+        />
+      )}
+
+      {/* =====================================================
+          ADD MODAL
+      ===================================================== */}
+
+      {showAddModal && (
+        <AddCountryModal
+          onClose={() => setShowAddModal(false)}
+          onAdded={handleCountryAdded}
+        />
+      )}
     </div>
   );
 };
