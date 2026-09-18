@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../components/userComponent/SideBar";
-import TopBar from "../../components/userComponent/Topbar";
+//import TopBar from "../../components/userComponent/Topbar";
 import {
   FiCreditCard,
   FiSend,
@@ -441,7 +441,7 @@ export const MyBookingsContent = () => {
   const totalPages = 12;
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6 ">
       <div>
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
@@ -614,20 +614,29 @@ export const MyBookingsContent = () => {
   );
 };
 
-const MyBookings = () => { 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F7F8FA]">
-      
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-   
-      <div className="flex-1 min-w-0">
-        <TopBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+const MyBookings = () => {  
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-        <Outlet />
+  return ( 
+    <div className="min-h-screen bg-[#F7F8FA]">
+      
+      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        
+        <div className="min-h-screen">
+  <Sidebar
+    sidebarOpen={sidebarOpen}
+    setSidebarOpen={setSidebarOpen}
+  />
+
+  <div className="lg:ml-80">
+    <Outlet />
+  </div>
+</div>
+        
       </div>
+
     </div>
-  );
+  ); 
 };
 
 export default MyBookings;
