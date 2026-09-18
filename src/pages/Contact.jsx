@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 
 import aero from "../assets/image/contactImg.png";
+import flight from "../assets/image/flight.jpg";
+
 import api from "../api/axios";
 
 const initialForm = {
@@ -80,7 +82,7 @@ export default function FlightContact() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${aero})`,
+            backgroundImage: `url(${flight})`,
           }}
         />
 

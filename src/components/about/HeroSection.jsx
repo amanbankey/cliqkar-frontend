@@ -2,7 +2,7 @@ import React from "react";
 import { FiGlobe, FiSend, FiUserCheck, FiCheckCircle } from "react-icons/fi";
  
 import aero from "../../assets/image/aboutImg.png";
-
+import flight from "../../assets/image/flight2.jpg";
  const cities = ["New Delhi", "Singapore", "London", "Tokyo", "Paris", "New York", "Bangkok", "Doha", "+172 More"];
 const stats = [
   { icon: FiGlobe, value: "180+", label: "Connected Global Cities", sub: "Active airport hubs & sovereign consulates" },
@@ -18,12 +18,12 @@ const HeroSection = () => {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${aero})`,
+          backgroundImage: `url(${flight})`,
         }}
       />
 
       {/* Dark aviation overlay matching Contact.jsx */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#071426]/90 via-[#071426]/75 to-[#071426]/85" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#071426] via-[#071426]/60 to-[#071426]/1" />
 
       {/* Blue glow */}
       <div className="absolute -left-32 top-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[110px]" />
