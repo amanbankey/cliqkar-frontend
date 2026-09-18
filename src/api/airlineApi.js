@@ -103,3 +103,10 @@ export const createOrUpdateAirlinePrice = async (data) => {
 
   return response.data;
 };
+export const getActiveOtbPrices = async () => {
+  const response = await api.get(
+    "/airlines/prices/active"
+  );
+
+  return response.data;
+};

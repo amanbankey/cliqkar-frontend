@@ -61,12 +61,12 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center justify-end gap-2 sm:gap-3">
-            <button
+           {/*<button
               className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
               onClick={() => navigate("/dashboard")}
             >
               Dashboard
-            </button>
+            </button>*/}
             <button
               className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
               onClick={() => navigate("/user-dashboard")}
@@ -79,12 +79,18 @@ const Navbar = () => {
             >
               Sign in
             </button>
-            <button
+             <button
+    onClick={() => navigate("/admin/login")}
+    className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
+  >
+    Admin Login
+  </button>
+            {/*<button
               onClick={() => navigate("/signup")}
               className="hidden sm:block px-4 py-2 bg-[#0A2540] text-white rounded-full cursor-pointer text-sm font-medium shadow-md hover:opacity-90 transition-opacity"
             >
               Get Started
-            </button>
+            </button>*/}
 
             {!mobileMenuOpen && (
               <button
@@ -130,12 +136,12 @@ const Navbar = () => {
             ))}
 
             <div className="flex flex-col items-center gap-3 mt-2 mb-1">
-              <button
+              {/*<button
                 className="hover:text-white text-[#0A2540] bg-white hover:bg-[#0A2540] border border-[#0A2540] px-3 py-2 rounded-full w-full"
                 onClick={onDashboard}
               >
                 Dashboard
-              </button>
+              </button>*/}
               <button
                 className="hover:text-white text-[#0A2540] bg-white hover:bg-[#0A2540] border border-[#0A2540] px-3 py-2 rounded-full w-full"
                 onClick={() => {
@@ -153,6 +159,15 @@ const Navbar = () => {
                 Sign in
               </button>
               <button
+  onClick={() => {
+    navigate("/admin/login");
+    setMobileMenuOpen(false);
+  }}
+  className="px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer w-full"
+>
+  Admin Login
+</button>
+              {/*<button
                 onClick={() => {
                   setMobileMenuOpen((prev) => !prev);
                   navigate("/signup");
@@ -160,7 +175,7 @@ const Navbar = () => {
                 className="w-full text-center block px-4 py-2 bg-[#0A2540] hover:opacity-90 text-white rounded-full cursor-pointer"
               >
                 Get Started
-              </button>
+              </button>*/}
               {isLoggedIn && (
                 <button
                   className="text-white bg-[#0A2540] px-3 py-2 rounded-full w-full"

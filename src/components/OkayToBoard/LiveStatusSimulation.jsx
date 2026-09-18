@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { getActiveOtbPrices } from "../../api/airlineApi";
+import { submitOtbApplication as submitOtbApplicationApi } from "../../api/otbApplicationApi";
 
 import {
   User,
@@ -41,45 +43,7 @@ import {
 
 const API_BASE = "/api";
 
-/* =========================================================
-   FALLBACK DATA
-========================================================= */
-
-const FALLBACK_COUNTRIES = [
-  "United Arab Emirates",
-  "Saudi Arabia",
-  "Qatar",
-  "Singapore",
-  "Thailand",
-  "Malaysia",
-  "United Kingdom",
-  "United States",
-  "Canada",
-  "Australia",
-  "Germany",
-  "France",
-  "Indonesia",
-  "Nepal",
-  "Sri Lanka",
-  "Vietnam",
-  "Japan",
-  "South Korea",
-];
-
-const FALLBACK_AIRLINES = [
-  "IndiGo",
-  "Air India",
-  "Vistara",
-  "SpiceJet",
-  "Emirates",
-  "Qatar Airways",
-  "Etihad Airways",
-  "Air India Express",
-  "AirAsia",
-  "Singapore Airlines",
-  "Malaysia Airlines",
-  "Thai Airways",
-];
+const TOTAL_STEPS = 5;
 
 /* =========================================================
    HELPERS
@@ -118,26 +82,6 @@ function getTravelerCompletion(traveler) {
   };
 }
 
-async function fetchList(endpoint, fallback) {
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`);
-
-    if (!res.ok) {
-      throw new Error("Bad response");
-    }
-
-    const data = await res.json();
-
-    if (Array.isArray(data) && data.length) {
-      return data;
-    }
-
-    return fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 /* =========================================================
    API SUBMIT
 ========================================================= */
@@ -154,69 +98,24 @@ async function submitOtbApplication(payload) {
     "travelers",
     JSON.stringify(
       payload.travelers.map(
-        ({
-          passportFront,
-          passportBack,
-          visa,
-          fromTicket,
-          toTicket,
-          ...rest
-        }) => rest
+        ({ passportFront, passportBack, visa, fromTicket, toTicket, ...rest }) => rest
       )
     )
   );
 
   payload.travelers.forEach((traveler, idx) => {
-    if (traveler.passportFront) {
-      formData.append(
-        `traveler_${idx}_passportFront`,
-        traveler.passportFront
-      );
-    }
-
-    if (traveler.passportBack) {
-      formData.append(
-        `traveler_${idx}_passportBack`,
-        traveler.passportBack
-      );
-    }
-
-    if (traveler.visa) {
-      formData.append(
-        `traveler_${idx}_visa`,
-        traveler.visa
-      );
-    }
-
-    if (traveler.fromTicket) {
-      formData.append(
-        `traveler_${idx}_fromTicket`,
-        traveler.fromTicket
-      );
-    }
-
-    if (traveler.toTicket) {
-      formData.append(
-        `traveler_${idx}_toTicket`,
-        traveler.toTicket
-      );
-    }
+    [
+      ["passportFront", traveler.passportFront],
+      ["passportBack", traveler.passportBack],
+      ["visa", traveler.visa],
+      ["fromTicket", traveler.fromTicket],
+      ["toTicket", traveler.toTicket],
+    ].forEach(([field, file]) => {
+      if (file) formData.append(`traveler_${idx}_${field}`, file);
+    });
   });
 
-  const res = await fetch(`${API_BASE}/otb/apply`, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
-
-    throw new Error(
-      errBody.message || "Something went wrong while submitting"
-    );
-  }
-
-  return res.json();
+  return submitOtbApplicationApi(formData);
 }
 
 /* =========================================================
@@ -247,6 +146,7 @@ function TextInput({
   onChange,
   required,
   type = "text",
+  readOnly = false,
 }) {
   const [focused, setFocused] = useState(false);
 
@@ -278,6 +178,7 @@ function TextInput({
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
+          readOnly={readOnly}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           className="w-full bg-transparent text-sm font-semibold text-slate-700 outline-none placeholder:font-normal placeholder:text-slate-400"
@@ -376,7 +277,9 @@ function SearchDropdown({
     };
   }, []);
 
-  const filtered = options.filter((option) =>
+  const safeOptions = Array.isArray(options) ? options : [];
+
+  const filtered = safeOptions.filter((option) =>
     option.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -652,21 +555,26 @@ function Stepper({ currentStep }) {
   const steps = [
     {
       number: 1,
+      title: "Selection",
+      icon: Receipt,
+    },
+    {
+      number: 2,
       title: "Travelers",
       icon: Users,
     },
     {
-      number: 2,
+      number: 3,
       title: "Documents",
       icon: FileText,
     },
     {
-      number: 3,
+      number: 4,
       title: "Trip Details",
       icon: Plane,
     },
     {
-      number: 4,
+      number: 5,
       title: "Review",
       icon: ClipboardCheck,
     },
@@ -796,7 +704,7 @@ function ApplicationSummary({
               <span>Application progress</span>
 
               <span className="font-bold text-white">
-                Step {currentStep}/4
+                Step {currentStep}/{TOTAL_STEPS}
               </span>
             </div>
 
@@ -804,7 +712,7 @@ function ApplicationSummary({
               <div
                 className="h-full rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 transition-all duration-500"
                 style={{
-                  width: `${currentStep * 25}%`,
+                  width: `${(currentStep / TOTAL_STEPS) * 100}%`,
                 }}
               />
             </div>
@@ -904,6 +812,234 @@ function SummaryRow({ icon, label, value }) {
         <p className="truncate text-sm font-bold text-white">
           {value}
         </p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   STEP 1 — SELECTION (Going To / Airline / Amount / Payment)
+========================================================= */
+
+function SelectionStep({
+  goingTo,
+  setGoingTo,
+  airline,
+  setAirline,
+  totalAmount,
+  setTotalAmount,
+  countries,
+  airlines,
+  otbPricesLoading,
+  paymentMethod,
+  setPaymentMethod,
+  confirmSelection,
+  setConfirmSelection,
+  onApply,
+  canApply,
+}) {
+  return (
+    <div>
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-200">
+            <Receipt size={20} />
+          </span>
+
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">
+              Application Selection
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-400">
+              Choose your destination, airline and payment method
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-[28px] border border-slate-200 bg-gradient-to-br from-white to-blue-50/40 p-5 shadow-sm sm:p-7">
+        <div className="space-y-6">
+          {otbPricesLoading && (
+            <div className="flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-600">
+              <Loader2 size={15} className="animate-spin" />
+              Loading active OTB pricing...
+            </div>
+          )}
+
+          {!otbPricesLoading && countries.length === 0 && (
+            <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-700">
+              No active OTB pricing is currently available. Please contact the administrator.
+            </div>
+          )}
+
+          <SearchDropdown
+            label="Going To"
+            icon={<Globe2 size={17} />}
+            placeholder="Select destination country"
+            value={goingTo}
+            onChange={setGoingTo}
+            options={countries}
+            required
+          />
+
+          <SearchDropdown
+            label="Select Airlines"
+            icon={<Plane size={17} />}
+            placeholder="Select airline"
+            value={airline}
+            onChange={setAirline}
+            options={airlines}
+            required
+          />
+
+          <TextInput
+            label="Total Amount"
+            icon={<IndianRupee size={17} />}
+            placeholder={
+              totalAmount
+                ? "OTB amount from price master"
+                : "Select country and airline first"
+            }
+            value={totalAmount ? `₹${totalAmount}` : ""}
+            onChange={() => {}}
+            readOnly
+            required
+          />
+        </div>
+
+        {/* CONFIRM */}
+
+        <button
+          type="button"
+          onClick={() => setConfirmSelection((prev) => !prev)}
+          className={`mt-6 flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
+            confirmSelection
+              ? "border-blue-300 bg-blue-50"
+              : "border-slate-200 bg-slate-50 hover:border-blue-200"
+          }`}
+        >
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 ${
+              confirmSelection
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-slate-300 bg-white"
+            }`}
+          >
+            {confirmSelection && <Check size={15} />}
+          </span>
+
+          <span className="text-sm font-bold text-slate-700">
+            Confirm and submit
+          </span>
+        </button>
+
+        {/* PAYMENT METHOD */}
+
+        <div className="mt-7 border-t border-slate-100 pt-6">
+          <h3 className="mb-4 font-bold text-slate-700">
+            Choose Payment Method
+          </h3>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="grid flex-1 grid-cols-1 gap-4 sm:max-w-md sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("online")}
+                className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition ${
+                  paymentMethod === "online"
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-slate-200 bg-white hover:border-blue-200"
+                }`}
+              >
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                    paymentMethod === "online"
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  <Zap size={19} />
+                </span>
+
+                <span
+                  className={`font-bold ${
+                    paymentMethod === "online"
+                      ? "text-blue-600"
+                      : "text-slate-700"
+                  }`}
+                >
+                  Online
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("wallet")}
+                className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition ${
+                  paymentMethod === "wallet"
+                    ? "border-indigo-500 bg-indigo-50"
+                    : "border-slate-200 bg-white hover:border-indigo-200"
+                }`}
+              >
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                    paymentMethod === "wallet"
+                      ? "bg-indigo-600 text-white"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  <Wallet size={19} />
+                </span>
+
+                <span
+                  className={`font-bold ${
+                    paymentMethod === "wallet"
+                      ? "text-indigo-600"
+                      : "text-slate-700"
+                  }`}
+                >
+                  Wallet
+                </span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={onApply}
+              disabled={!canApply}
+              className={`group flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-sm font-bold text-white transition ${
+                canApply
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-200 hover:-translate-y-1 hover:shadow-xl"
+                  : "cursor-not-allowed bg-slate-300"
+              }`}
+            >
+              Apply Now
+
+              <ArrowRight
+                size={17}
+                className="transition group-hover:translate-x-1"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-center gap-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+          <ShieldCheck size={18} />
+        </span>
+
+        <div>
+          <p className="font-bold text-slate-700">
+            Before you continue
+          </p>
+
+          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            After applying, you will be asked to add traveler details
+            and upload the required travel documents.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -1280,7 +1416,7 @@ function TripDetailsStep({
             </h2>
 
             <p className="mt-1 text-sm text-slate-400">
-              Tell us about your upcoming journey
+              Confirm your journey information
             </p>
           </div>
         </div>
@@ -1312,13 +1448,14 @@ function TripDetailsStep({
             <TextInput
               label="Total Amount"
               icon={<IndianRupee size={17} />}
-              placeholder="Enter total amount"
-              value={totalAmount}
-              onChange={(value) =>
-                setTotalAmount(
-                  value.replace(/[^0-9.]/g, "")
-                )
+              placeholder={
+                totalAmount
+                  ? "OTB amount from price master"
+                  : "Select country and airline first"
               }
+              value={totalAmount ? `₹${totalAmount}` : ""}
+              onChange={() => {}}
+              readOnly
               required
             />
           </div>
@@ -1577,33 +1714,147 @@ function OTBApplyForm() {
   const [paymentMethod, setPaymentMethod] =
     useState("online");
 
+  const [confirmSelection, setConfirmSelection] =
+    useState(false);
+
   const [confirmSubmit, setConfirmSubmit] =
     useState(false);
 
-  const [countries, setCountries] =
-    useState(FALLBACK_COUNTRIES);
-
-  const [airlines, setAirlines] =
-    useState(FALLBACK_AIRLINES);
+  // OTB pricing master data. Only ACTIVE price records are used.
+  const [otbPrices, setOtbPrices] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [airlines, setAirlines] = useState([]);
+  const [otbPricesLoading, setOtbPricesLoading] =
+    useState(true);
 
   const [status, setStatus] = useState("idle");
 
   const [statusMessage, setStatusMessage] =
     useState("");
 
-  /* FETCH DATA */
+  /* FETCH ACTIVE OTB PRICE MASTER */
 
   useEffect(() => {
-    fetchList(
-      "/countries",
-      FALLBACK_COUNTRIES
-    ).then(setCountries);
+    let mounted = true;
 
-    fetchList(
-      "/airlines",
-      FALLBACK_AIRLINES
-    ).then(setAirlines);
+    const fetchActiveOtbPrices = async () => {
+      try {
+        setOtbPricesLoading(true);
+
+        const response = await getActiveOtbPrices();
+        const activePrices = Array.isArray(response)
+          ? response
+          : response?.data || [];
+
+        if (!mounted) return;
+
+        const validPrices = activePrices.filter(
+          (item) =>
+            item?.status === "Active" &&
+            item?.country?.status === "Active" &&
+            item?.country?.allowForOtb !== "No" &&
+            item?.airline?.status === "Active" &&
+            item?.country?.countryName &&
+            item?.airline?.name &&
+            item?.price !== undefined &&
+            item?.price !== null
+        );
+
+        setOtbPrices(validPrices);
+
+        const uniqueCountries = [
+          ...new Set(
+            validPrices.map((item) => item.country.countryName)
+          ),
+        ];
+
+        setCountries(uniqueCountries);
+        setAirlines([]);
+      } catch (error) {
+        console.error("Active OTB pricing fetch error:", error);
+
+        if (!mounted) return;
+
+        setOtbPrices([]);
+        setCountries([]);
+        setAirlines([]);
+        setStatus("error");
+        setStatusMessage(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Unable to load active OTB pricing. Please refresh and try again."
+        );
+      } finally {
+        if (mounted) {
+          setOtbPricesLoading(false);
+        }
+      }
+    };
+
+    fetchActiveOtbPrices();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  /* COUNTRY -> ACTIVE AIRLINES */
+
+  useEffect(() => {
+    if (!goingTo) {
+      setAirlines([]);
+      setAirline("");
+      setTotalAmount("");
+      setConfirmSelection(false);
+      return;
+    }
+
+    const countryPrices = otbPrices.filter(
+      (item) =>
+        item.status === "Active" &&
+        item.country?.countryName === goingTo &&
+        item.country?.status !== "Deactive" &&
+        item.airline?.status !== "Deactive"
+    );
+
+    const uniqueAirlines = [
+      ...new Set(
+        countryPrices.map(
+          (item) => item.airline.name
+        )
+      ),
+    ];
+
+    setAirlines(uniqueAirlines);
+    setAirline("");
+    setTotalAmount("");
+    setConfirmSelection(false);
+  }, [goingTo, otbPrices]);
+
+  /* AIRLINE -> ADMIN PRICE */
+
+  useEffect(() => {
+    if (!goingTo || !airline) {
+      setTotalAmount("");
+      return;
+    }
+
+    const selectedPrice = otbPrices.find(
+      (item) =>
+        item.status === "Active" &&
+        item.country?.countryName === goingTo &&
+        item.airline?.name === airline &&
+        item.country?.status !== "Deactive" &&
+        item.airline?.status !== "Deactive"
+    );
+
+    setTotalAmount(
+      selectedPrice?.price !== undefined &&
+        selectedPrice?.price !== null
+        ? String(selectedPrice.price)
+        : ""
+    );
+  }, [goingTo, airline, otbPrices]);
 
   /* TRAVELER FUNCTIONS */
 
@@ -1639,6 +1890,12 @@ function OTBApplyForm() {
 
   /* STEP VALIDATION */
 
+  const selectionValid =
+    goingTo &&
+    airline &&
+    totalAmount &&
+    confirmSelection;
+
   const travelersValid = travelers.every(
     (traveler) =>
       traveler.fullName &&
@@ -1667,11 +1924,13 @@ function OTBApplyForm() {
     confirmSubmit;
 
   function canContinue() {
-    if (currentStep === 1) return travelersValid;
+    if (currentStep === 1) return selectionValid;
 
-    if (currentStep === 2) return documentsValid;
+    if (currentStep === 2) return travelersValid;
 
-    if (currentStep === 3) return tripValid;
+    if (currentStep === 3) return documentsValid;
+
+    if (currentStep === 4) return tripValid;
 
     return true;
   }
@@ -1691,7 +1950,7 @@ function OTBApplyForm() {
     setStatusMessage("");
 
     setCurrentStep((prev) =>
-      Math.min(prev + 1, 4)
+      Math.min(prev + 1, TOTAL_STEPS)
     );
 
     window.scrollTo({
@@ -1937,9 +2196,31 @@ function OTBApplyForm() {
                 </div>
               )}
 
-              {/* STEP 1 */}
+              {/* STEP 1 — SELECTION */}
 
               {currentStep === 1 && (
+                <SelectionStep
+                  goingTo={goingTo}
+                  setGoingTo={setGoingTo}
+                  airline={airline}
+                  setAirline={setAirline}
+                  totalAmount={totalAmount}
+                  setTotalAmount={setTotalAmount}
+                  countries={countries}
+                  airlines={airlines}
+                  otbPricesLoading={otbPricesLoading}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                  confirmSelection={confirmSelection}
+                  setConfirmSelection={setConfirmSelection}
+                  onApply={nextStep}
+                  canApply={selectionValid}
+                />
+              )}
+
+              {/* STEP 2 — TRAVELERS */}
+
+              {currentStep === 2 && (
                 <TravelerDetailsStep
                   travelers={travelers}
                   updateTraveler={updateTraveler}
@@ -1948,18 +2229,18 @@ function OTBApplyForm() {
                 />
               )}
 
-              {/* STEP 2 */}
+              {/* STEP 3 — DOCUMENTS */}
 
-              {currentStep === 2 && (
+              {currentStep === 3 && (
                 <DocumentsStep
                   travelers={travelers}
                   updateTraveler={updateTraveler}
                 />
               )}
 
-              {/* STEP 3 */}
+              {/* STEP 4 — TRIP DETAILS */}
 
-              {currentStep === 3 && (
+              {currentStep === 4 && (
                 <TripDetailsStep
                   goingTo={goingTo}
                   setGoingTo={setGoingTo}
@@ -1972,9 +2253,9 @@ function OTBApplyForm() {
                 />
               )}
 
-              {/* STEP 4 */}
+              {/* STEP 5 — REVIEW */}
 
-              {currentStep === 4 && (
+              {currentStep === 5 && (
                 <ReviewStep
                   travelers={travelers}
                   goingTo={goingTo}
@@ -1987,75 +2268,72 @@ function OTBApplyForm() {
                 />
               )}
 
-              {/* NAVIGATION */}
+              {/* NAVIGATION — hidden on step 1 (Apply Now handles it) */}
 
-              <div className="mt-10 flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
+              {currentStep > 1 && (
+                <div className="mt-10 flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
 
-                <button
-                  type="button"
-                  onClick={previousStep}
-                  disabled={currentStep === 1}
-                  className={`flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition ${
-                    currentStep === 1
-                      ? "cursor-not-allowed text-slate-300"
-                      : "text-slate-600 hover:bg-slate-100"
-                  }`}
-                >
-                  <ArrowLeft size={17} />
-
-                  Back
-                </button>
-
-                {currentStep < 4 ? (
                   <button
                     type="button"
-                    onClick={nextStep}
-                    className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-1 hover:shadow-xl"
+                    onClick={previousStep}
+                    className="flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-100"
                   >
-                    Continue
+                    <ArrowLeft size={17} />
 
-                    <ArrowRight
-                      size={17}
-                      className="transition group-hover:translate-x-1"
-                    />
+                    Back
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={
-                      !isFormReady ||
-                      status === "loading"
-                    }
-                    className={`group flex items-center justify-center gap-3 rounded-xl px-7 py-3.5 text-sm font-bold text-white transition ${
-                      isFormReady &&
-                      status !== "loading"
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-200 hover:-translate-y-1 hover:shadow-xl"
-                        : "cursor-not-allowed bg-slate-300"
-                    }`}
-                  >
-                    {status === "loading" ? (
-                      <>
-                        <Loader2
-                          size={18}
-                          className="animate-spin"
-                        />
 
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        Submit Application
+                  {currentStep < TOTAL_STEPS ? (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-1 hover:shadow-xl"
+                    >
+                      Continue
 
-                        <ArrowRight
-                          size={18}
-                          className="transition group-hover:translate-x-1"
-                        />
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
+                      <ArrowRight
+                        size={17}
+                        className="transition group-hover:translate-x-1"
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={
+                        !isFormReady ||
+                        status === "loading"
+                      }
+                      className={`group flex items-center justify-center gap-3 rounded-xl px-7 py-3.5 text-sm font-bold text-white transition ${
+                        isFormReady &&
+                        status !== "loading"
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-200 hover:-translate-y-1 hover:shadow-xl"
+                          : "cursor-not-allowed bg-slate-300"
+                      }`}
+                    >
+                      {status === "loading" ? (
+                        <>
+                          <Loader2
+                            size={18}
+                            className="animate-spin"
+                          />
+
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          Submit Application
+
+                          <ArrowRight
+                            size={18}
+                            className="transition group-hover:translate-x-1"
+                          />
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* RIGHT SUMMARY */}
