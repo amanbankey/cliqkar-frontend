@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   User,
   Mail,
+  Phone,
   Lock,
   Globe,
   X,
@@ -46,6 +47,7 @@ export default function SignUpPage({ onClose }) {
   const [signUpForm, setSignUpForm] = useState({
     fullName: "",
     identifier: "",
+    phoneNumber: "",
     country: "",
     password: "",
     confirmPassword: "",
@@ -137,6 +139,7 @@ export default function SignUpPage({ onClose }) {
       const data = await signupUser({
         fullName: signUpForm.fullName.trim(),
         identifier: signUpForm.identifier.trim(),
+        phoneNumber: signUpForm.phoneNumber.trim(),
         country: signUpForm.country,
         password: signUpForm.password,
         confirmPassword: signUpForm.confirmPassword,
@@ -405,6 +408,20 @@ export default function SignUpPage({ onClose }) {
                       autoComplete="username"
                       className="premium-input"
                     />
+                  </PremiumField>
+
+                  {/* PHONE NUMBER */} 
+                  <PremiumField label="Phone Number" 
+                  required icon={<Phone size={16} />} > 
+                  <input type="tel" 
+                  name="phoneNumber" 
+                  value={signUpForm.phoneNumber} 
+                  onChange={handleChange} 
+                  placeholder="Enter 10-digit phone number" 
+                  autoComplete="tel" 
+                  maxLength={10}
+                  inputMode="numeric" 
+                  className="premium-input" /> 
                   </PremiumField>
 
                   <PremiumField

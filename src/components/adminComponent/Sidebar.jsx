@@ -4,8 +4,8 @@ import { MdSupportAgent, MdOutlineConfirmationNumber, MdOutlineLocalAirport } fr
 import { TbPlaneDeparture } from "react-icons/tb";
 import { BsWallet2 } from "react-icons/bs";
 
-const visaSubItems = ["Visas List", "Applied Visas", "Applied OTB", "Over Stay"];
-const ticketSubItems = ["Applied Tickets", "Series Tickets", "Cancel Tickets", "Offline Tickets"];
+const visaSubItems = ["Visas List", "Applied Visas", "Applied OTB"];
+const ticketSubItems = ["Applied Tickets", "Cancel Tickets", "Offline Tickets"];
 
 const Sidebar = ({ activeItem, onNavigate, sidebarOpen, setSidebarOpen }) => {
   const [visaOpen, setVisaOpen] = useState(false);

@@ -23,7 +23,7 @@ import {
 } from "../../api/airlineApi";
 
 const SERVER_URL = "https://cliqkar-backend.onrender.com";
-
+//https://cliqkar-backend.onrender.com
 const getLogoUrl = (logo) => {
   if (!logo) return "";
 

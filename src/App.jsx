@@ -41,7 +41,8 @@ import TravelerDetails from "./components/Visa/TravelerDetails";
 import ProtectedRoute from "./components/protectedRoute";
 
 import ScrollToTop from "./components/ScrollToTop";
-
+import AgentSignupPage from "./pages/agent/AgentSignup";
+import AgentSigninPage from "./pages/agent/AgentSignin";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -232,7 +233,15 @@ function App() {
         ========================================================= */}
 
         <Route element={<ProtectedRoute />} />
+<Route
+  path="/agent/signup"
+  element={<AgentSignupPage />}
+/>
 
+<Route
+  path="/agent/signin"
+  element={<AgentSigninPage />}
+/>
       </Routes>
     </>
   );

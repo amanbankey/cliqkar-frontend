@@ -55,3 +55,35 @@ export const getMe = async () => {
 
   return response.data;
 };
+
+// ========================================
+// AGENT SIGNUP
+// ========================================
+
+export const signupAgent = async (
+  formData
+) => {
+  const response =
+    await api.post(
+      "/auth/agent/signup",
+      formData
+    );
+
+  return response.data;
+};
+
+// ========================================
+// AGENT SIGNIN
+// ========================================
+
+export const signinAgent = async (
+  formData
+) => {
+  const response =
+    await api.post(
+      "/auth/agent/signin",
+      formData
+    );
+
+  return response.data;
+};
