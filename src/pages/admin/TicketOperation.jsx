@@ -30,7 +30,7 @@ import {
 
 
 import { StatusBadge } from "../../components/adminComponent/StatusBadge";
-const ticketTabs = ["Applied Tickets", "Series Tickets", "Cancel / Withdraw", "Offline Inventory"];
+//const ticketTabs = ["Applied Tickets", "Series Tickets", "Cancel / Withdraw", "Offline Inventory"];
  
 const tickets = [
   { initials: "VT", name: "Vivan Travels", sub: "B2B Agent • ID: AG-8842", route: "DXB ⇄ LHR", ref: "VIN1147739", airline: "EK-007", fare: "AED 2,450", extra: "Paid via Wallet", status: "Ticketed" },
@@ -103,7 +103,7 @@ export const TicketOperationsPage = () => {
           <StatCard label="OFFLINE SEATS" value="3" />
         </div>
  
-        <div className="flex items-center justify-between border-b border-gray-200 mb-4">
+        {/*<div className="flex items-center justify-between border-b border-gray-200 mb-4">
           <div className="flex items-center gap-1">
             {ticketTabs.map((tab) => (
               <button
@@ -125,7 +125,7 @@ export const TicketOperationsPage = () => {
               <Download size={16} />
             </button>
           </div>
-        </div>
+        </div>*/}
  
         {activeTab === "Applied Tickets" ? (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden overflow-x-auto">
