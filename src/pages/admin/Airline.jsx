@@ -22,7 +22,7 @@ import {
   updateAirlineStatus,
 } from "../../api/airlineApi";
 
-const SERVER_URL = "https://cliqkar-backend.onrender.com";
+const SERVER_URL = "http://localhost:5004";
 //https://cliqkar-backend.onrender.com
 const getLogoUrl = (logo) => {
   if (!logo) return "";
