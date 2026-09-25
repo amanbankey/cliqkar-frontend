@@ -17,21 +17,7 @@ const features = [
     title: "Expert Consular Review",
     description: "Every dossier is cross-referenced by former consular visa processing agents to correct discrepancies before embassy filing.",
   },
-  {
-    icon: FiSmartphone,
-    title: "100% Online Application",
-    description: "Eliminate physical queues, confusing paper forms, and postal delays. Complete your application from your smartphone or desktop in minutes.",
-  },
-  {
-    icon: FiBell,
-    title: "Milestone Telemetry",
-    description: "Instant WhatsApp, SMS, and dashboard updates at every checkpoint: Document Audit → Embassy Submission → eVisa Issuance.",
-  },
-  {
-    icon: FiHeadphones,
-    title: "24/7 Human Consular Support",
-    description: "No infinite chatbot loops. Chat directly with dedicated consular travel specialists who understand complex visa scenarios.",
-  },
+  
 ];
 
 // Lightweight scroll-reveal hook — no external animation library required.
@@ -125,7 +111,7 @@ const WhyChooseUs = () => {
             ✪ ENGINEERED FOR RADICAL CLARITY
           </p>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">
-            Why Modern Travelers Choose VISAORA
+            Why Modern Travelers Choose CLIQKAR
           </h2>
           <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto mb-10">
             Replacing bureaucratic confusion with modern software efficiency and institutional consular rigor.

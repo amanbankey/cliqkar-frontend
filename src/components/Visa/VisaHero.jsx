@@ -28,6 +28,8 @@ import {
   Home,
   CalendarDays,
   ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   X,
@@ -39,9 +41,180 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import TravelerDetails from "./TravelerDetails";
-/* =========================================================
-   VISA DATA
-========================================================= */
+
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+const toISO = (y, m, d) =>
+  `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+const getTodayISO = () => {
+  const t = new Date();
+  return toISO(t.getFullYear(), t.getMonth(), t.getDate());
+};
+
+const parseISO = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return { y, m: m - 1, d };
+};
+
+function ThemedDatePicker({ value, onChange, min }) {
+  const todayISO = getTodayISO();
+  const minISO = min && min > todayISO ? min : todayISO;
+
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState(() => {
+    const base = parseISO(value || minISO);
+    return { y: base.y, m: base.m };
+  });
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const toggle = () => {
+    if (!open) {
+      const base = parseISO(value || minISO);
+      setView({ y: base.y, m: base.m });
+    }
+    setOpen((o) => !o);
+  };
+
+  const shiftMonth = (delta) =>
+    setView(({ y, m }) => {
+      const next = new Date(y, m + delta, 1);
+      return { y: next.getFullYear(), m: next.getMonth() };
+    });
+
+  const minParsed = parseISO(minISO);
+  const canGoPrev =
+    view.y > minParsed.y || (view.y === minParsed.y && view.m > minParsed.m);
+
+  const firstDay = new Date(view.y, view.m, 1).getDay();
+  const daysInMonth = new Date(view.y, view.m + 1, 0).getDate();
+  const cells = [
+    ...Array(firstDay).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+
+  const label = value
+    ? (() => {
+        const { y, m, d } = parseISO(value);
+        return `${String(d).padStart(2, "0")} ${MONTHS[m].slice(0, 3)} ${y}`;
+      })()
+    : "Select date";
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        type="button"
+        onClick={toggle}
+        className={`w-full cursor-pointer bg-transparent text-left text-[14px] outline-none ${
+          value ? "font-semibold text-slate-700" : "font-normal text-slate-400"
+        }`}
+      >
+        {label}
+      </button>
+
+      {open && (
+        <div className="absolute -left-14 top-full z-40 mt-5 w-72 rounded-2xl border border-slate-100 bg-white p-4 shadow-2xl shadow-[#5665d6]/15">
+          <div className="mb-3 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => shiftMonth(-1)}
+              disabled={!canGoPrev}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-[#5665d6]/10 hover:text-[#5665d6] disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            <p className="text-sm font-bold text-slate-900">
+              {MONTHS[view.m]} {view.y}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => shiftMonth(1)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-[#5665d6]/10 hover:text-[#5665d6]"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <div className="mb-1 grid grid-cols-7 text-center">
+            {WEEK_DAYS.map((d) => (
+              <span
+                key={d}
+                className="py-1 text-[11px] font-semibold text-slate-400"
+              >
+                {d}
+              </span>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-y-1 text-center">
+            {cells.map((day, i) => {
+              if (!day) return <span key={`e${i}`} />;
+
+              const iso = toISO(view.y, view.m, day);
+              const disabled = iso < minISO;
+              const selected = iso === value;
+              const isToday = iso === todayISO;
+
+              return (
+                <button
+                  key={iso}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => {
+                    onChange(iso);
+                    setOpen(false);
+                  }}
+                  className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                    selected
+                      ? "bg-[#5665d6] text-white shadow-md shadow-[#5665d6]/30"
+                      : disabled
+                        ? "cursor-not-allowed text-slate-300 line-through decoration-slate-200"
+                        : isToday
+                          ? "border border-[#5665d6]/40 text-[#5665d6] hover:bg-[#5665d6]/10"
+                          : "text-slate-700 hover:bg-[#5665d6]/10 hover:text-[#5665d6]"
+                  }`}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 const VISA_COUNTRIES = [
   {
@@ -159,12 +332,6 @@ const VISA_COUNTRIES = [
     documents: ["Passport"],
   },
 ];
-
-
-
-/* =========================================================
-   FILTER DROPDOWN
-========================================================= */
 
 function FilterDropdown({
   label,
@@ -301,11 +468,6 @@ function FilterDropdown({
     </div>
   );
 }
-
-
-/* ================================================================
-   TRAVELER CARD
-================================================================ */
 
 const TravelerCard = ({
   traveler,
@@ -779,10 +941,6 @@ const TravelerCard = ({
   );
 };
 
-
-/* ================================================================
-   VISA INFORMATION
-================================================================ */
 
 const VisaInformation = () => {
   return (
@@ -1379,7 +1537,7 @@ function VisaCard({ visa }) {
         onMouseLeave={() => setHovered(false)}
         className="
           relative
-          h-[425px]
+          h-[350px]
           overflow-hidden
           rounded-[30px]
           bg-slate-900
@@ -1448,7 +1606,7 @@ function VisaCard({ visa }) {
 
         <div
           className={`
-            absolute group-hover:top-44
+            absolute group-hover:top-36
             inset-x-0
             bottom-0
             z-20
@@ -1464,7 +1622,7 @@ function VisaCard({ visa }) {
         >
           {/* FLAG */}
 
-          <div className="mb-4 flex justify-center">
+          <div className="mb-1 flex justify-center">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xl backdrop-blur-md">
               {visa.flag}
             </span>
@@ -1598,30 +1756,30 @@ function VisaCard({ visa }) {
           </div>
           <div className="flex justify-center ">
             <button onClick={() => navigate("/traveler-details")} className="
-    group
-    relative
-    flex
-    h-[40px]
-    items-center
-    justify-center
-    gap-2 mt-2
-    overflow-hidden
-    rounded-2xl
-    bg-gradient-to-r
-    from-[#4d5bd1]
-    via-[#5665d6]
-    to-[#7180ef]
-    px-5
-    text-[14px]
-    font-bold
-    text-white
-    shadow-[0_15px_35px_rgba(86,101,214,0.30)]
-    transition-all
-    duration-300
-    hover:-translate-y-1
-    hover:shadow-[0_22px_45px_rgba(86,101,214,0.40)]
-    active:translate-y-0 ">Apply now</button>
-          </div>
+              group
+              relative
+              flex
+              h-[40px]
+              items-center
+              justify-center
+              gap-2 mt-2
+              overflow-hidden
+              rounded-2xl
+              bg-gradient-to-r
+              from-[#4d5bd1]
+              via-[#5665d6]
+              to-[#7180ef]
+              px-5
+              text-[14px]
+              font-bold
+              text-white
+              shadow-[0_15px_35px_rgba(86,101,214,0.30)]
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:shadow-[0_22px_45px_rgba(86,101,214,0.40)]
+              active:translate-y-0 ">Apply now</button>
+                    </div>
         </div>
       </div>
 
@@ -2187,12 +2345,12 @@ const VisaHero = () => {
           VISA SEARCH SECTION
       ===================================================== */}
 
-      <div className="relative z-10 px-5 pt-10 lg:px-10 lg:pt-14">
+      <div className="relative z-10 px-5 pt-10 lg:px-10 lg:pt-14 ">
         {/* BACKGROUND GLOW */}
 
         <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-[#5665d6]/10 blur-[120px]" />
 
-        <div className="relative mx-auto max-w-[1350px]">
+        <div className="relative mx-auto max-w-5xl ">
           {/* TOP INTRO */}
 
           <div className="mb-8 text-center">
@@ -2439,23 +2597,9 @@ const VisaHero = () => {
                     />
                   </div>
 
-                  <input
-                    type="date"
+                  <ThemedDatePicker
                     value={travelDate}
-                    onChange={(e) =>
-                      setTravelDate(
-                        e.target.value
-                      )
-                    }
-                    className="
-                      w-full
-                      cursor-pointer
-                      bg-transparent
-                      text-[14px]
-                      font-semibold
-                      text-slate-700
-                      outline-none
-                    "
+                    onChange={setTravelDate}
                   />
                 </div>
               </div>
@@ -2508,24 +2652,10 @@ const VisaHero = () => {
                     />
                   </div>
 
-                  <input
-                    type="date"
+                  <ThemedDatePicker
                     value={returnDate}
-                    onChange={(e) =>
-                      setReturnDate(
-                        e.target.value
-                      )
-                    }
+                    onChange={setReturnDate}
                     min={travelDate}
-                    className="
-                      w-full
-                      cursor-pointer
-                      bg-transparent
-                      text-[14px]
-                      font-semibold
-                      text-slate-700
-                      outline-none
-                    "
                   />
                 </div>
               </div>
@@ -2588,54 +2718,13 @@ const VisaHero = () => {
               </button>
             </div>
 
-            {/* FOOTER */}
-
-            <div
-              className="
-                mt-8
-                flex
-                flex-col
-                gap-3
-                border-t
-                border-slate-100
-                pt-5
-                text-[12px]
-                text-slate-500
-                sm:flex-row
-                sm:items-center
-                sm:justify-between
-              "
-            >
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#5665d6]/10">
-                  <Plane
-                    size={13}
-                    className="rotate-[25deg] text-[#5665d6]"
-                  />
-                </div>
-
-                <span>
-                  Compare visa options and plan
-                  your journey with confidence.
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <ShieldCheck
-                  size={15}
-                  className="text-[#5665d6]"
-                />
-
-                <span className="font-medium">
-                  Trusted visa assistance
-                </span>
-              </div>
-            </div>
+    
+          
           </div>
 
           {/* SMALL STATS */}
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
             <div>
               <p className="text-lg font-bold text-slate-900">
                 150+
@@ -2682,7 +2771,7 @@ const VisaHero = () => {
           mx-auto
           max-w-[1500px]
           px-5
-          pt-14
+          pt-16
           lg:px-10
         "
       >

@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   FiRepeat,
   FiCalendar,
   FiUsers,
   FiChevronDown,
   FiChevronUp,
+  FiChevronLeft,
+  FiChevronRight,
   FiX,
   FiCreditCard,
 } from "react-icons/fi";
@@ -19,12 +21,247 @@ import {
   Luggage,
   ShieldCheck,
 } from "lucide-react";
-
+import { createPortal } from "react-dom";
 import { TbPlaneDeparture, TbWallet } from "react-icons/tb";
 import { MdEventSeat } from "react-icons/md";
 import aero from "../../assets/image/aeroplane.jfif";
 import FlightImg from "../../assets/image/img2.png";
 import { Plus, Trash2 } from "lucide-react";
+
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+const toISO = (y, m, d) =>
+  `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+const getTodayISO = () => {
+  const t = new Date();
+  return toISO(t.getFullYear(), t.getMonth(), t.getDate());
+};
+
+const parseISO = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return { y, m: m - 1, d };
+};
+
+function ThemedDatePicker({ value, onChange, min }) {
+  const todayISO = getTodayISO();
+  const minISO = min && min > todayISO ? min : todayISO;
+  const [calendarPos, setCalendarPos] = useState({
+  top: 0,
+  left: 0,
+});
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState(() => {
+    const base = parseISO(value || minISO);
+    return { y: base.y, m: base.m };
+  });
+  const ref = useRef(null);
+ 
+const calendarRef = useRef(null);
+ useEffect(() => {
+  if (!open) return;
+
+  const onDown = (e) => {
+    const clickedInput =
+      ref.current && ref.current.contains(e.target);
+
+    const clickedCalendar =
+      calendarRef.current && calendarRef.current.contains(e.target);
+
+ 
+    if (clickedInput || clickedCalendar) {
+      return;
+    }
+
+   
+    setOpen(false);
+  };
+
+  const onKey = (e) => {
+    if (e.key === "Escape") {
+      setOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", onDown);
+  document.addEventListener("keydown", onKey);
+
+  return () => {
+    document.removeEventListener("mousedown", onDown);
+    document.removeEventListener("keydown", onKey);
+  };
+}, [open]);
+
+  const updateCalendarPosition = () => {
+  const rect = ref.current?.getBoundingClientRect();
+
+  if (!rect) return;
+
+  setCalendarPos({
+    top: rect.bottom + 12,
+    left: rect.left,
+  });
+};
+
+ const toggle = () => {
+  if (!open) {
+    const base = parseISO(value || minISO);
+    setView({ y: base.y, m: base.m });
+
+    updateCalendarPosition();
+  }
+
+  setOpen((o) => !o);
+};
+
+useEffect(() => {
+  if (!open) return;
+
+  const handlePositionUpdate = () => {
+    updateCalendarPosition();
+  };
+
+  window.addEventListener("scroll", handlePositionUpdate, true);
+  window.addEventListener("resize", handlePositionUpdate);
+
+  return () => {
+    window.removeEventListener("scroll", handlePositionUpdate, true);
+    window.removeEventListener("resize", handlePositionUpdate);
+  };
+}, [open]);
+
+  const shiftMonth = (delta) =>
+    setView(({ y, m }) => {
+      const next = new Date(y, m + delta, 1);
+      return { y: next.getFullYear(), m: next.getMonth() };
+    });
+
+  const minParsed = parseISO(minISO);
+  const canGoPrev =
+    view.y > minParsed.y || (view.y === minParsed.y && view.m > minParsed.m);
+
+  const firstDay = new Date(view.y, view.m, 1).getDay();
+  const daysInMonth = new Date(view.y, view.m + 1, 0).getDate();
+  const cells = [
+    ...Array(firstDay).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+
+  const label = value
+    ? (() => {
+        const { y, m, d } = parseISO(value);
+        return `${String(d).padStart(2, "0")} ${MONTHS[m].slice(0, 3)} ${y}`;
+      })()
+    : "Select date";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={toggle}
+        className={`w-full text-left bg-transparent text-sm font-bold focus:outline-none ${
+          value ? "text-gray-900" : "text-gray-400 font-normal"
+        }`}
+      >
+        {label}
+      </button>
+
+      {open &&
+  createPortal(
+    <div   ref={calendarRef}
+      className="fixed z-10 w-72 rounded-2xl border border-gray-100 bg-white p-4 shadow-2xl shadow-blue-900/10"
+      style={{
+        top: calendarPos.top,
+        left: calendarPos.left,
+      }}
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => shiftMonth(-1)}
+          disabled={!canGoPrev}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent"
+        >
+          <FiChevronLeft size={16} />
+        </button>
+
+        <p className="text-sm font-bold text-gray-900">
+          {MONTHS[view.m]} {view.y}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => shiftMonth(1)}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-blue-50 hover:text-blue-600"
+        >
+          <FiChevronRight size={16} />
+        </button>
+      </div>
+
+      <div className="mb-1 grid grid-cols-7 text-center">
+        {WEEK_DAYS.map((d) => (
+          <span
+            key={d}
+            className="py-1 text-[11px] font-semibold text-gray-400"
+          >
+            {d}
+          </span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-y-1 text-center">
+        {cells.map((day, i) => {
+          if (!day) return <span key={`e${i}`} />;
+
+          const iso = toISO(view.y, view.m, day);
+          const disabled = iso < minISO;
+          const selected = iso === value;
+          const isToday = iso === todayISO;
+
+          return (
+            <button
+              key={iso}
+              type="button"
+              disabled={disabled}
+              onClick={() => {
+                onChange(iso);
+                setOpen(false);
+              }}
+              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
+                selected
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                  : disabled
+                    ? "cursor-not-allowed text-gray-300 line-through decoration-gray-200"
+                    : isToday
+                      ? "border border-blue-300 text-blue-600 hover:bg-blue-50"
+                      : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+              }`}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+    </div>,
+    document.body
+  )}
+    </div>
+  );
+}
 
 const tripTypes = ["One way", "Round-trip", "Multi-City"];
 const classTypes = ["ECONOMY", "PREMIUM ECONOMY", "BUSINESS", "FIRST"];
@@ -1314,380 +1551,10 @@ const InlineBookingCard = ({ flight, onNext, onClose }) => {
       </div>
     </div>
 
-    // <div className="fixed inset-0 z-[20] flex items-center justify-center  px-3 py-4 backdrop-blur-sm sm:px-5">
-    //   {" "}
-    //   <div className="relative flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-slate-700/70 bg-slate-900 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
-    //     {" "}
-    //     {/* HEADER */}{" "}
-    //     <div className="flex shrink-0 items-center justify-between border-b border-slate-700/70 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-5 py-4 sm:px-6">
-    //       {" "}
-    //       <div>
-    //         {" "}
-    //         <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-blue-400">
-    //           {" "}
-    //           Flight Booking{" "}
-    //         </p>{" "}
-    //         <h3 className="text-sm font-bold text-white sm:text-base">
-    //           {" "}
-    //           Your Selected Booking Details{" "}
-    //         </h3>{" "}
-    //       </div>{" "}
-    //       <button
-    //         type="button"
-    //         onClick={onClose}
-    //         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-slate-300 transition-all duration-200 hover:scale-105 hover:border-slate-500 hover:bg-slate-700 hover:text-white active:scale-95"
-    //         aria-label="Close booking popup"
-    //       >
-    //         {" "}
-    //         <X size={18} />{" "}
-    //       </button>{" "}
-    //     </div>{" "}
-    //     {/* CONTENT */}{" "}
-    //     <div className="overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
-    //       {" "}
-    //       {/* FLIGHT CARD */}{" "}
-    //       <div className="rounded-2xl border border-slate-700 bg-slate-800/80 p-4 shadow-inner sm:p-5">
-    //         {" "}
-    //         {/* AIRLINE */}{" "}
-    //         <div className="mb-5 flex items-start justify-between gap-3">
-    //           {" "}
-    //           <div className="flex min-w-0 items-center gap-3">
-    //             {" "}
-    //             <div
-    //               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${airlineColors[flight.airline] || "bg-slate-700"}`}
-    //             >
-    //               {" "}
-    //               <TbPlaneDeparture className="text-white" size={19} />{" "}
-    //             </div>{" "}
-    //             <div className="min-w-0">
-    //               {" "}
-    //               <div className="flex flex-wrap items-center gap-2">
-    //                 {" "}
-    //                 <p className="truncate text-sm font-bold text-white">
-    //                   {" "}
-    //                   {flight.airline}{" "}
-    //                 </p>{" "}
-    //                 <span className="rounded-md bg-slate-700 px-1.5 py-0.5 text-[10px] font-medium text-slate-300">
-    //                   {" "}
-    //                   {flight.flightNo}{" "}
-    //                 </span>{" "}
-    //               </div>{" "}
-    //               <p className="mt-1 text-[11px] text-slate-400">
-    //                 {" "}
-    //                 {flight.fareType}{" "}
-    //               </p>{" "}
-    //             </div>{" "}
-    //           </div>{" "}
-    //           <button
-    //             type="button"
-    //             className="shrink-0 text-[10px] font-semibold text-blue-400 transition-colors hover:text-blue-300 sm:text-xs"
-    //           >
-    //             {" "}
-    //             Show Rules{" "}
-    //           </button>{" "}
-    //         </div>{" "}
-    //         {/* FLIGHT ROUTE */}{" "}
-    //         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-5">
-    //           {" "}
-    //           {/* DEPARTURE */}{" "}
-    //           <div className="min-w-0">
-    //             {" "}
-    //             <p className="mb-1 text-[10px] font-medium text-slate-500">
-    //               {" "}
-    //               {flight.date}{" "}
-    //             </p>{" "}
-    //             <p className="text-xl font-bold text-white sm:text-2xl">
-    //               {" "}
-    //               {flight.depTime}{" "}
-    //             </p>{" "}
-    //             <p className="mt-0.5 text-xs font-semibold text-slate-400">
-    //               {" "}
-    //               {flight.depCode}{" "}
-    //             </p>{" "}
-    //           </div>{" "}
-    //           {/* ROUTE */}{" "}
-    //           <div className="flex min-w-[75px] flex-col items-center px-1 sm:min-w-[110px]">
-    //             {" "}
-    //             <p className="mb-2 whitespace-nowrap text-[10px] font-medium text-slate-400">
-    //               {" "}
-    //               {flight.duration}{" "}
-    //             </p>{" "}
-    //             <div className="flex w-full items-center gap-1.5">
-    //               {" "}
-    //               <span className="h-px flex-1 border-t border-dashed border-slate-600" />{" "}
-    //               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-blue-500/30 bg-blue-500/10">
-    //                 {" "}
-    //                 <TbPlaneDeparture
-    //                   className="rotate-90 text-blue-400"
-    //                   size={12}
-    //                 />{" "}
-    //               </span>{" "}
-    //               <span className="h-px flex-1 border-t border-dashed border-slate-600" />{" "}
-    //             </div>{" "}
-    //             <p className="mt-2 whitespace-nowrap text-[10px] font-semibold text-blue-400">
-    //               {" "}
-    //               {flight.stops}{" "}
-    //             </p>{" "}
-    //           </div>{" "}
-    //           {/* ARRIVAL */}{" "}
-    //           <div className="min-w-0 text-right">
-    //             {" "}
-    //             <p className="mb-1 text-[10px] font-medium text-slate-500">
-    //               {" "}
-    //               {flight.date}{" "}
-    //             </p>{" "}
-    //             <p className="text-xl font-bold text-white sm:text-2xl">
-    //               {" "}
-    //               {flight.arrTime}{" "}
-    //             </p>{" "}
-    //             <p className="mt-0.5 text-xs font-semibold text-slate-400">
-    //               {" "}
-    //               {flight.arrCode}{" "}
-    //             </p>{" "}
-    //           </div>{" "}
-    //         </div>{" "}
-    //       </div>{" "}
-    //       {/* BAGGAGE / DETAILS */}{" "}
-    //       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-    //         {" "}
-    //         <div className="flex items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-800/50 px-3 py-3">
-    //           {" "}
-    //           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-    //             {" "}
-    //             <Luggage size={15} />{" "}
-    //           </div>{" "}
-    //           <div>
-    //             {" "}
-    //             <p className="text-[10px] text-slate-500">
-    //               {" "}
-    //               Cabin Baggage{" "}
-    //             </p>{" "}
-    //             <p className="text-xs font-bold text-slate-200"> 7 KG </p>{" "}
-    //           </div>{" "}
-    //         </div>{" "}
-    //         <div className="flex items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-800/50 px-3 py-3">
-    //           {" "}
-    //           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
-    //             {" "}
-    //             <Luggage size={15} />{" "}
-    //           </div>{" "}
-    //           <div>
-    //             {" "}
-    //             <p className="text-[10px] text-slate-500">
-    //               {" "}
-    //               Check-in Baggage{" "}
-    //             </p>{" "}
-    //             <p className="text-xs font-bold text-slate-200"> 15 KG </p>{" "}
-    //           </div>{" "}
-    //         </div>{" "}
-    //         <div className="flex items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-800/50 px-3 py-3">
-    //           {" "}
-    //           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
-    //             {" "}
-    //             <ShieldCheck size={15} />{" "}
-    //           </div>{" "}
-    //           <div className="min-w-0">
-    //             {" "}
-    //             <p className="text-[10px] text-slate-500"> Operated By </p>{" "}
-    //             <p className="truncate text-xs font-bold text-slate-200">
-    //               {" "}
-    //               {flight.airline}{" "}
-    //             </p>{" "}
-    //           </div>{" "}
-    //         </div>{" "}
-    //       </div>{" "}
-    //     </div>{" "}
-    //     {/* FOOTER */}{" "}
-    //     <div className="flex shrink-0 flex-col gap-4 border-t border-slate-700/70 bg-slate-950/60 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-    //       {" "}
-    //       <div>
-    //         {" "}
-    //         <p className="text-[10px] font-medium text-slate-500">
-    //           {" "}
-    //           Total Price{" "}
-    //         </p>{" "}
-    //         <p className="mt-0.5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-    //           {" "}
-    //           ₹{flight.price.toFixed(2)}{" "}
-    //         </p>{" "}
-    //       </div>{" "}
-    //       <button
-    //         type="button"
-    //         onClick={onNext}
-    //         className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-blue-500 hover:to-blue-400 hover:shadow-blue-900/50 active:scale-[0.98] sm:w-auto sm:min-w-[150px]"
-    //       >
-    //         {" "}
-    //         Continue{" "}
-    //         <ChevronRight
-    //           size={17}
-    //           className="transition-transform duration-300 group-hover:translate-x-1"
-    //         />{" "}
-    //       </button>{" "}
-    //     </div>{" "}
-    //   </div>{" "}
-    // </div>
+   
   );
 };
 
-/* =========================================================
-   FILTER BAR
-   ========================================================= */
-
-// const FlightFilterBar = ({ filters, setFilters }) => {
-//   const airlineCounts = sampleFlights.reduce((acc, f) => {
-//     acc[f.airline] = (acc[f.airline] || 0) + 1;
-//     return acc;
-//   }, {});
-
-//   const fareTypeCounts = sampleFlights.reduce((acc, f) => {
-//     acc[f.fareType] = (acc[f.fareType] || 0) + 1;
-//     return acc;
-//   }, {});
-
-//   const stopCounts = sampleFlights.reduce((acc, f) => {
-//     acc[f.stops] = (acc[f.stops] || 0) + 1;
-//     return acc;
-//   }, {});
-
-//   const toggleAirline = (airline) => {
-//     setFilters((prev) => ({
-//       ...prev,
-//       airlines: prev.airlines.includes(airline)
-//         ? prev.airlines.filter((a) => a !== airline)
-//         : [...prev.airlines, airline],
-//     }));
-//   };
-
-//   const setFareType = (fareType) => {
-//     setFilters((prev) => ({
-//       ...prev,
-//       fareType:
-//         prev.fareType === fareType ? "" : fareType,
-//     }));
-//   };
-
-//   const setStop = (stop) => {
-//     setFilters((prev) => ({
-//       ...prev,
-//       stop: prev.stop === stop ? "" : stop,
-//     }));
-//   };
-
-//   return (
-//     <div className="bg-blue-100 rounded-xl border border-gray-100 mb-4 px-5 py-4">
-//       <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-//         <div className="flex items-center gap-4 flex-wrap">
-//           <span className="text-xs font-bold text-gray-800">
-//             AIRLINES
-//           </span>
-
-//           {Object.entries(airlineCounts).map(
-//             ([airline, count]) => (
-//               <label
-//                 key={airline}
-//                 className="flex items-center gap-1.5 cursor-pointer"
-//               >
-//                 <input
-//                   type="checkbox"
-//                   checked={filters.airlines.includes(airline)}
-//                   onChange={() => toggleAirline(airline)}
-//                   className="accent-blue-600 w-4 h-4"
-//                 />
-
-//                 <span className="text-sm text-gray-700">
-//                   {airline}
-//                 </span>
-
-//                 <span className="text-xs text-gray-400">
-//                   ({count})
-//                 </span>
-//               </label>
-//             )
-//           )}
-//         </div>
-
-//         <span className="hidden sm:block w-px h-6 bg-gray-100" />
-
-//         <div className="flex items-center gap-4 flex-wrap">
-//           <span className="text-xs font-bold text-gray-500">
-//             FARE TYPE
-//           </span>
-
-//           {Object.entries(fareTypeCounts).map(
-//             ([fareType, count]) => (
-//               <label
-//                 key={fareType}
-//                 className="flex items-center gap-1.5 cursor-pointer"
-//               >
-//                 <input
-//                   type="radio"
-//                   name="fareType"
-//                   checked={filters.fareType === fareType}
-//                   onChange={() => setFareType(fareType)}
-//                   className="accent-blue-600 w-4 h-4"
-//                 />
-
-//                 <span className="text-sm text-gray-700">
-//                   {fareType}
-//                 </span>
-
-//                 <span className="text-xs text-gray-400">
-//                   ({count})
-//                 </span>
-//               </label>
-//             )
-//           )}
-//         </div>
-
-//         <span className="hidden sm:block w-px h-6 bg-gray-100" />
-
-//         <div className="flex items-center gap-4 flex-wrap">
-//           <span className="text-xs font-bold text-gray-500">
-//             STOP
-//           </span>
-
-//           {Object.entries(stopCounts).map(
-//             ([stop, count]) => (
-//               <label
-//                 key={stop}
-//                 className="flex items-center gap-1.5 cursor-pointer"
-//               >
-//                 <input
-//                   type="radio"
-//                   name="stop"
-//                   checked={filters.stop === stop}
-//                   onChange={() => setStop(stop)}
-//                   className="accent-blue-600 w-4 h-4"
-//                 />
-
-//                 <span className="text-sm text-gray-700">
-//                   {stop}
-//                 </span>
-
-//                 <span className="text-xs text-gray-400">
-//                   ({count})
-//                 </span>
-//               </label>
-//             )
-//           )}
-//         </div>
-
-//         <button
-//           onClick={() =>
-//             setFilters({
-//               airlines: [],
-//               fareType: "",
-//               stop: "",
-//             })
-//           }
-//           className="ml-auto text-xs font-semibold text-blue-600 hover:text-blue-700"
-//         >
-//           Clear
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
 
 const FlightFilterBar = ({ filters, setFilters }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -2293,7 +2160,7 @@ const FlightHero = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="space-y-3">
-                <div className="rounded-2xl border border-gray-100 bg-gray-50/60 overflow-hidden">
+                <div className="rounded-2xl border border-gray-100 bg-gray-50/60">
                   <div
                     className={`grid grid-cols-1 sm:grid-cols-2 ${
                       isRoundTrip ? "lg:grid-cols-6" : "lg:grid-cols-5"
@@ -2344,13 +2211,9 @@ const FlightHero = () => {
                         Departure
                       </p>
 
-                      <input
-                        type="date"
+                      <ThemedDatePicker
                         value={form.departure}
-                        onChange={(e) =>
-                          handleChange("departure", e.target.value)
-                        }
-                        className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                        onChange={(v) => handleChange("departure", v)}
                       />
                     </div>
 
@@ -2361,13 +2224,10 @@ const FlightHero = () => {
                           Return
                         </p>
 
-                        <input
-                          type="date"
+                        <ThemedDatePicker
                           value={form.returnDate}
-                          onChange={(e) =>
-                            handleChange("returnDate", e.target.value)
-                          }
-                          className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
+                          min={form.departure}
+                          onChange={(v) => handleChange("returnDate", v)}
                         />
                       </div>
                     )}
@@ -2420,9 +2280,9 @@ const FlightHero = () => {
                   form.cities.map((city, index) => (
                     <div
                       key={index}
-                      className="rounded-2xl border border-gray-100 bg-gray-50/60 overflow-hidden relative"
+                      className="rounded-2xl border border-gray-100 bg-gray-50/60 relative z-30 overflow-visible"
                     >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100 relative z-30 overflow-visible">
                         <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
                           <p className="text-[11px] font-semibold text-gray-400 mb-1">
                             From
@@ -2463,23 +2323,18 @@ const FlightHero = () => {
                           />
                         </div>
 
-                        <div className="px-4 py-3.5 transition-colors duration-300 hover:bg-white">
+                        <div className="relative z-[100] px-4 py-3.5 transition-colors duration-300 hover:bg-white">
                           <p className="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1">
                             <FiCalendar size={11} />
                             Departure
                           </p>
 
-                          <input
-                            type="date"
+                          <ThemedDatePicker
                             value={city.departure}
-                            onChange={(e) =>
-                              handleCityChange(
-                                index,
-                                "departure",
-                                e.target.value,
-                              )
+                            min={index > 0 ? form.cities[index - 1].departure : ""}
+                            onChange={(v) =>
+                              handleCityChange(index, "departure", v)
                             }
-                            className="w-full bg-transparent text-sm font-bold text-gray-900 focus:outline-none"
                           />
                         </div>
                       </div>

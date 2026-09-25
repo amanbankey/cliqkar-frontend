@@ -5,7 +5,7 @@ import {
   FileText,
   ShieldCheck,
   CheckCircle2,
-  Download,
+  Download, BadgeCheck, Star, Crown,Plane
 } from "lucide-react";
 
 const auditTrail = [
@@ -25,6 +25,39 @@ const auditTrail = [
       "Official Gulf aviation board clearance code issued to airline terminal.",
   },
 ];
+
+const featuredAgent = {
+  name: "Raj Travel Solutions",
+  person: "Mr. Rajesh Verma · Director",
+  rating: "4.95 Rating",
+  reviews: "1,240+ Travelers",
+  note: "96% first-attempt visa success rate across GCC & Schengen routes. Dedicated VIP fast-track concierge liaison.",
+};
+
+
+const agents = [
+  {
+    name: "Priya Sharma",
+    company: "Global Skyline Travel Ltd.",
+    rating: "4.9",
+    reviews: "340+ Reviews",
+    specialization: "Schengen & UK Expedited",
+    responseTime: "< 15 mins",
+    hub: "New Delhi / NCR",
+    featured: false,
+  },
+  {
+    name: "Amit Kapur",
+    company: "Apex Corporate Mobility",
+    rating: "4.8",
+    reviews: "210+ Reviews",
+    specialization: "GCC OTB & Corporate Fleet",
+    responseTime: "< 10 mins",
+    hub: "Mumbai Central",
+    featured: false,
+  },
+];
+
 
 export default function OTBClearance() {
   const [clearanceForm, setClearanceForm] = useState({
@@ -97,7 +130,7 @@ export default function OTBClearance() {
            
       <h2 className="mb-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
         Ready to Fly.{" "}
-        <span className="text-blue-600 ">
+        <span className="  ">
           Verified to Board.
         </span>
       </h2>
@@ -264,114 +297,216 @@ export default function OTBClearance() {
         </form>
       </div>
 
-      {/* ================= RIGHT SIDE ================= */}
+  
 
-      <div className="flex flex-col gap-5">
-
-        {/* Audit Trail */}
-        <div className="group relative flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm backdrop-blur-sm transition-all duration-500 hover:border-emerald-400/40 sm:p-6">
-
-          {/* Data Stream */}
-          <div className="pointer-events-none absolute left-[27px] top-20 bottom-8 w-px overflow-hidden bg-slate-200">
-            <div className="absolute left-0 top-0 h-20 w-px animate-[dataStream_2.5s_linear_infinite] bg-gradient-to-b from-transparent via-emerald-500 to-transparent" />
-          </div>
-
-        <div> 
-          <div className="relative z-10 mb-5 flex items-center justify-between gap-3">
-
-            <p className="text-[10px] font-semibold tracking-wide text-amber-600 sm:text-[11px]">
-              LIVE VERIFICATION AUDIT TRAIL · PNR:{" "}
-              {clearanceForm.pnr}
-            </p>
-
-            <span className="flex flex-shrink-0 items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-              DCS SYNC OK
-            </span>
-          </div> 
  
+        <div className="group relative flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm backdrop-blur-sm transition-all duration-500 hover:border-emerald-400/40 sm:p-4">
+       
+              
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-          </div>
+          {agents.map((agent, index) => (
+            <div
+              key={agent.name}
+              className="group relative overflow-hidden rounded-2xl p-[1px] shadow-sm transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_25px_70px_rgba(15,23,42,0.16)]"
+              style={{
+                animation: "cardReveal 700ms ease-out both",
+                animationDelay: `${index * 140}ms`,
+              }}
+            >
 
-          <div className="relative z-10 space-y-14">
+              {/* DARK ROTATING BORDER */}
+              <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                <div className="absolute -inset-[120%] animate-[spin_5s_linear_infinite] bg-[conic-gradient(from_0deg,#020617_0deg,#0f172a_45deg,#2563eb_90deg,#0f172a_135deg,#020617_180deg,#06b6d4_220deg,#0f172a_270deg,#020617_360deg)] opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+              </div>
 
-            {auditTrail.map((item, index) => (
-              <div
-                key={item.title}
-                className="group/audit flex gap-3  animate-[auditReveal_700ms_ease-out_forwards]"
-                style={{
-                  animationDelay: `${index * 500}ms`,
-                }}
-              >
+              {/* Inner Card */}
+              <div className="relative h-full overflow-hidden rounded-[15px] bg-slate-50 p-4">
 
-                <div className="relative flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10 transition-all duration-500 group-hover/audit:border-emerald-400/70 group-hover/audit:bg-emerald-400/15">
+                {/* Card Glow */}
+                <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 animate-[cardGlow_5s_ease-in-out_infinite] rounded-full bg-blue-500/10 blur-3xl" />
 
-                  <CheckCircle2
-                    className="text-emerald-600 transition-transform duration-300 group-hover/audit:scale-125"
-                    size={16}
-                  />
+                <div className="pointer-events-none absolute -bottom-20 -left-20 h-36 w-36 animate-[cardGlow_6s_ease-in-out_infinite_reverse] rounded-full bg-emerald-400/10 blur-3xl" />
 
+                {/* Scanning Beam */}
+                <div className="pointer-events-none absolute left-0 top-0 h-full w-full overflow-hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute -left-1/2 top-0 h-full w-1/3 rotate-[15deg] bg-gradient-to-r from-transparent via-blue-400/20 to-transparent animate-[cardScan_2.5s_ease-in-out_infinite]" />
                 </div>
 
-                <div>
-                  <p className="text-slate-900 text-sm font-semibold">
-                        {item.title}
+                <div className="relative z-10">
+
+                  {/* Agent Header */}
+                  <div className="mb-3 flex items-center gap-3">
+
+                    {/* Animated Avatar */}
+                    <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-slate-900 text-xs font-bold text-white shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                      {agent.name
+                        .split(" ")
+                        .map((word) => word[0])
+                        .join("")}
+
+                      <span className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-emerald-400/70" />
+
+                      <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-slate-50 bg-emerald-500" />
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-700">
+                          {agent.name}
+                        </p>
+
+                        <BadgeCheck
+                          className="text-blue-500 transition-transform duration-300 group-hover:scale-125"
+                          size={16}
+                        />
+                      </div>
+
+                      <p className="text-xs text-slate-500">
+                        {agent.company}
                       </p>
-                      <p className="text-slate-500 text-xs">
-                        {item.description}
-                      </p>
+
+                     
+                    </div>
+                  </div>
+
+                  {/* Information Box */}
+                  <div className="mb-3 overflow-hidden rounded-xl border border-slate-200 bg-white p-3">
+
+                    {[
+                      ["Specialization:", agent.specialization, "text-slate-900"],
+                      ["Response Time:", agent.responseTime, "text-emerald-600"],
+                      ["Station Hub:", agent.hub, "text-slate-900"],
+                    ].map(([label, value, color], rowIndex) => (
+                      <div
+                        key={label}
+                        className="flex items-center justify-between border-b border-slate-100 py-1.5 last:border-0 last:pb-0 first:pt-0 transition-all duration-300 group-hover:px-1"
+                        style={{
+                          transitionDelay: `${rowIndex * 70}ms`,
+                        }}
+                      >
+                        <span className="text-xs text-slate-400">
+                          {label}
+                        </span>
+
+                        <span
+                          className={`text-right text-xs font-semibold ${color}`}
+                        >
+                          {value}
+                        </span>
+                      </div>
+                    ))}
+
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex gap-2">
+                    <button className="flex-1 rounded-lg bg-slate-100 py-2 text-xs font-semibold text-slate-700 transition-all duration-300 hover:bg-slate-200 hover:-translate-y-0.5">
+                      View Profile
+                    </button>
+
+                    <button className="relative flex-1 overflow-hidden rounded-lg bg-slate-900 py-2 text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/25">
+                      <span className="absolute -left-20 top-0 h-full w-10 rotate-[20deg] bg-white/30 transition-all duration-700 group-hover:left-[130%]" />
+
+                      <span className="relative">
+                        Contact Agent
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bottom Signal */}
+                <div className="absolute bottom-0 left-0 h-[2px] w-full overflow-hidden bg-slate-200">
+                  <div className="h-full w-1/3 animate-[bottomSignal_3s_linear_infinite] bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-500" />
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
 
-          </div>
-        </div>
+          {/* Featured Agent */}
+          <div
+            className="group relative overflow-hidden rounded-2xl p-[2px] transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_25px_80px_rgba(245,158,11,0.22)] sm:col-span-2"
+            style={{
+              animation: "cardReveal 700ms ease-out both",
+              animationDelay: "280ms",
+            }}
+          >
 
-        {/* Clearance Result */}
-        {cleared && (
-          <div className="group/result relative overflow-hidden rounded-2xl border border-emerald-400/40 bg-emerald-50 p-5 shadow-sm transition-all duration-500 hover:border-emerald-400/70 hover:shadow-[0_0_45px_rgba(16,185,129,0.12)] sm:p-6">
+            {/* Gold + Dark Rotating Border */}
+            <div className="absolute inset-0 overflow-hidden rounded-2xl">
+              <div className="absolute -inset-[120%] animate-[spin_6s_linear_infinite] bg-[conic-gradient(from_0deg,#451a03,#f59e0b,#78350f,#fbbf24,#451a03,#020617,#f59e0b,#451a03)] opacity-95" />
+            </div>
 
-            {/* Approval Scanner */}
-            <div className="pointer-events-none absolute left-0 top-0 h-full w-1/3 -translate-x-full bg-gradient-to-r from-transparent via-emerald-300/20 to-transparent skew-x-12 animate-[approvalScan_3.5s_ease-in-out_infinite]" />
+            <div className="relative h-full overflow-hidden rounded-[14px] bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4">
 
-            <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+              {/* Gold Glow */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 animate-[cardGlow_4s_ease-in-out_infinite] rounded-full bg-amber-400/20 blur-3xl" />
 
-              <div className="flex items-center gap-4">
+              {/* Badge */}
+              <span className="absolute right-0 top-0 rounded-bl-xl bg-gradient-to-r from-amber-900 to-amber-700 px-3 py-1.5 text-[10px] font-bold tracking-wide text-amber-50 shadow-lg">
+                TOP AGENT OF THE MONTH
+              </span>
 
-                <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-500 shadow-[0_0_25px_rgba(52,211,153,0.3)] transition-transform duration-500 group-hover/result:scale-110">
+              <div className="relative z-10 mt-3">
 
-                  <div className="absolute inset-0 animate-ping rounded-xl bg-emerald-400/30" />
+                <div className="mb-3 flex items-center gap-3">
 
-                  <ShieldCheck
-                    className="relative text-white"
-                    size={22}
-                  />
+                  {/* Crown Avatar */}
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 text-white shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <Crown
+                      size={22}
+                      className="transition-transform duration-500 group-hover:-translate-y-1"
+                    />
+
+                    <span className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-amber-300" />
+                  </div>
+
+                  <div>
+                    <p className="text-base font-bold text-slate-900">
+                      {featuredAgent.name}
+                    </p>
+
+                    <p className="text-xs text-slate-500">
+                      {featuredAgent.person}
+                    </p>
+
+                    <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-amber-600">
+                      <Star size={12} fill="currentColor" />
+                      {featuredAgent.rating} ({featuredAgent.reviews})
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <span className="mb-1 inline-block rounded bg-emerald-400/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                    CLEARED & STAMPED
+                {/* Note */}
+                <div className="mb-3 rounded-xl border border-amber-200 bg-white/80 p-3 backdrop-blur-sm transition-all duration-500 group-hover:border-amber-300 group-hover:shadow-md">
+                  <p className="text-xs leading-relaxed text-slate-700">
+                    {featuredAgent.note}
+                  </p>
+                </div>
+                <button className="relative w-full overflow-hidden rounded-lg bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-800 hover:shadow-[0_12px_35px_rgba(29,78,216,0.3)]">
+                  <span className="absolute -left-24 top-0 h-full w-14 rotate-[20deg] bg-white/30 transition-all duration-700 group-hover:left-[130%]" />
+
+                  <span className="relative flex items-center justify-center gap-2">
+                    Connect With Top Agent
+                    <Crown
+                      size={16}
+                      className="transition-transform duration-300 group-hover:rotate-12"
+                    />
                   </span>
-
-                  <p className="text-sm font-bold leading-snug text-slate-900 sm:text-base">
-                    OK TO BOARD — Clearance Approved
-                  </p>
-
-                  <p className="text-xs text-slate-500">
-                    Flight AIX 192 · Gate clearance verified in carrier DCS database
-                  </p>
-                </div>
+                </button>
               </div>
 
-              <button className="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                <Download size={16} />
-                Download Slip
-              </button>
-
+              <div className="absolute bottom-0 left-0 h-[2px] w-full bg-amber-100">
+                <div className="h-full w-1/3 animate-[bottomSignal_2.5s_linear_infinite] bg-gradient-to-r from-amber-500 via-orange-400 to-amber-600" />
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+ 
+        </div>
+
+      
+    
     </div>
     </div>
   </section>

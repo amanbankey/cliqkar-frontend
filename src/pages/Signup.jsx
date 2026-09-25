@@ -184,11 +184,11 @@ export default function SignUpPage({ onClose }) {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#edf2f9]">
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[450px] w-[450px] rounded-full bg-blue-300/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -left-40 -top-40 h-[380px] w-[450px] rounded-full bg-blue-300/20 blur-[120px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[450px] w-[450px] rounded-full bg-indigo-300/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[380px] w-[450px] rounded-full bg-indigo-300/20 blur-[120px]" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1220px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
+      <div className="relative mx-auto flex min-h-screen max-w-[1100px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
         <div className="relative my-auto flex w-full max-w-[1080px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
 
           <button
@@ -317,11 +317,7 @@ export default function SignUpPage({ onClose }) {
 
             <div className="relative z-10 mx-auto w-full">
 
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#3b72bd]/15 bg-[#3b72bd]/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#3b72bd]">
-                <ShieldCheck size={13} />
-                Private Member Access
-              </div>
-
+               
               <h1 className="pr-10 text-[26px] font-bold tracking-tight text-[#17243a] sm:text-[30px]">
                 Create your account
               </h1>
@@ -618,14 +614,7 @@ export default function SignUpPage({ onClose }) {
                 </div>
               </form>
 
-              <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
-                <CheckCircle2
-                  size={14}
-                  className="text-[#3b72bd]"
-                />
-
-                Your travel information is protected securely.
-              </div>
+             
             </div>
           </div>
 

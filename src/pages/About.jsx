@@ -12,7 +12,7 @@ const About = () => {
     <div>
       <HeroSection />
       <OperationalHubs />
-      <DestinationNetwork />
+      {/* <DestinationNetwork /> */}
       {/* <NetworkMapBanner /> */}
       {/* <CityLeadership /> */}
       <WhyCliqkar />

@@ -80,7 +80,7 @@ const flights = [
  
 function BorderBeamCard({ flight, children }) {
   return (
-    <div className="group relative mx-auto h-[560px] w-full max-w-[340px] overflow-visible transition-all duration-500 hover:-translate-y-1">
+    <div className="group relative mx-auto h-[430px] w-full max-w-[280px] overflow-visible transition-all duration-500 hover:-translate-y-1">
       <div className="absolute inset-0 rounded-[90px] bg-slate-950 shadow-2xl shadow-slate-900/50 transition-all duration-500 group-hover:shadow-[0_25px_70px_rgba(245,158,11,0.18)]" />
 
  
@@ -148,7 +148,7 @@ function BorderBeamCard({ flight, children }) {
                   Departure
                 </p>
 
-                <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+                <p className="mt-1 text-xl font-extrabold leading-none text-white">
                   {flight.departCode}
                 </p>
 
@@ -186,7 +186,7 @@ function BorderBeamCard({ flight, children }) {
                   Arrival
                 </p>
 
-                <p className="mt-1 text-2xl font-extrabold leading-none text-white">
+                <p className="mt-1 text-xl font-extrabold leading-none text-white">
                   {flight.arriveCode}
                 </p>
 
@@ -255,8 +255,6 @@ export default function FlightOffers() {
       
         </div>
 
-    
-
           <div className="h-full w-full rounded-2xl bg-[#eef1f8] px-4 py-10 sm:px-8">
   <div className="relative mx-auto max-w-6xl">
     <div className="pointer-events-none absolute inset-0 z-30 hidden md:block">
@@ -287,164 +285,169 @@ export default function FlightOffers() {
 
       
 
-        <div className="group relative overflow-hidden rounded-2xl bg-[#0a1628] p-8 sm:p-12">
+            <div className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-8 sm:p-12">
 
-  {/* Deep Background */}
-  <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628] via-[#0a1628]/80 to-[#0a1628]/20" />
+      {/* Deep Background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-white/20" />
 
-  {/* Animated Atmospheric Glow */}
-  <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 animate-[escapeGlow_6s_ease-in-out_infinite] rounded-full bg-blue-500/20 blur-[90px]" />
+      {/* Animated Atmospheric Glow */}
+        <div className="pointer-events-none absolute -left-30 -top-20 h-72 w-72 animate-[escapeGlow_6s_ease-in-out_infinite] rounded-full bg-blue-500/20 blur-[90px]" />
 
-  <div className="pointer-events-none absolute -bottom-32 right-20 h-64 w-64 animate-[escapeGlow_8s_ease-in-out_infinite_reverse] rounded-full bg-cyan-400/10 blur-[100px]" />
+      <div className="pointer-events-none absolute -bottom-24 top-30 h-64 w-64 animate-[escapeGlow_8s_ease-in-out_infinite_reverse] rounded-full bg-cyan-400/10 blur-[100px]" />
 
-  {/* Tiny Stars */}
-  <div className="pointer-events-none absolute inset-0">
-    <span className="absolute left-[55%] top-[20%] h-1 w-1 animate-pulse rounded-full bg-white/60" />
-    <span className="absolute left-[72%] top-[35%] h-1 w-1 animate-pulse rounded-full bg-blue-300/70 delay-300" />
-    <span className="absolute left-[85%] top-[18%] h-1.5 w-1.5 animate-pulse rounded-full bg-white/40 delay-700" />
-    <span className="absolute left-[65%] top-[70%] h-1 w-1 animate-pulse rounded-full bg-cyan-300/60 delay-500" />
-    <span className="absolute right-[8%] bottom-[20%] h-1 w-1 animate-pulse rounded-full bg-white/50 delay-200" />
-  </div>
 
-  {/* Flight Route */}
-  <svg
-    className="pointer-events-none absolute right-[-5%] top-[5%] h-[110%] w-[65%] overflow-visible opacity-40 transition-all duration-700 group-hover:opacity-80"
-    viewBox="0 0 600 500"
-    fill="none"
-  >
-    <path
-      d="M40 410 C150 280 180 400 280 250 C370 115 450 200 560 55"
-      stroke="url(#routeGradient)"
-      strokeWidth="2"
-      strokeDasharray="8 10"
-      className="animate-[routeDash_8s_linear_infinite]"
-    />
+      <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 animate-[escapeGlow_6s_ease-in-out_infinite] rounded-full bg-blue-500/20 blur-[90px]" />
 
-    <path
-      d="M40 410 C150 280 180 400 280 250 C370 115 450 200 560 55"
-      stroke="white"
-      strokeWidth="1"
-      strokeDasharray="2 18"
-      opacity="0.5"
-    />
+      <div className="pointer-events-none absolute -bottom-32 right-20 h-64 w-64 animate-[escapeGlow_8s_ease-in-out_infinite_reverse] rounded-full bg-cyan-400/10 blur-[100px]" />
 
-    <defs>
-      <linearGradient
-        id="routeGradient"
-        x1="40"
-        y1="410"
-        x2="560"
-        y2="55"
-        gradientUnits="userSpaceOnUse"
+      {/* Tiny Stars */}
+      <div className="pointer-events-none absolute inset-0">
+        <span className="absolute left-[55%] top-[20%] h-1 w-1 animate-pulse rounded-full bg-slate-400/60" />
+        <span className="absolute left-[72%] top-[35%] h-1 w-1 animate-pulse rounded-full bg-blue-400/70 delay-300" />
+        <span className="absolute left-[85%] top-[18%] h-1.5 w-1.5 animate-pulse rounded-full bg-slate-400/40 delay-700" />
+        <span className="absolute left-[65%] top-[70%] h-1 w-1 animate-pulse rounded-full bg-cyan-400/60 delay-500" />
+        <span className="absolute right-[8%] bottom-[20%] h-1 w-1 animate-pulse rounded-full bg-slate-400/50 delay-200" />
+      </div>
+
+      {/* Flight Route */}
+      <svg
+        className="pointer-events-none absolute right-[-5%] top-[5%] h-[110%] w-[65%] overflow-visible opacity-40 transition-all duration-700 group-hover:opacity-80"
+        viewBox="0 0 600 500"
+        fill="none"
       >
-        <stop stopColor="#f59e0b" />
-        <stop offset="0.45" stopColor="#38bdf8" />
-        <stop offset="1" stopColor="#60a5fa" />
-      </linearGradient>
-    </defs>
-  </svg>
+        <path
+          d="M40 410 C150 280 180 400 280 250 C370 115 450 200 560 55"
+          stroke="url(#routeGradient)"
+          strokeWidth="2"
+          strokeDasharray="8 10"
+          className="animate-[routeDash_8s_linear_infinite]"
+        />
 
-  {/* Moving Flight Dot */}
-  <div className="pointer-events-none absolute right-[12%] top-[15%] h-3 w-3 animate-[flightDot_6s_ease-in-out_infinite]">
-    <span className="absolute -inset-3 animate-ping rounded-full bg-cyan-400/20" />
-    <span className="relative block h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_20px_rgba(103,232,249,0.9)]" />
-  </div>
+        <path
+          d="M40 410 C150 280 180 400 280 250 C370 115 450 200 560 55"
+          stroke="#94a3b8"
+          strokeWidth="1"
+          strokeDasharray="2 18"
+          opacity="0.5"
+        />
 
-  {/* Radar Rings */}
-  <div className="pointer-events-none absolute right-[10%] top-[18%] h-32 w-32">
-    <span className="absolute inset-0 animate-[radarRing_3s_ease-out_infinite] rounded-full border border-cyan-400/30" />
-    <span className="absolute inset-0 animate-[radarRing_3s_ease-out_1s_infinite] rounded-full border border-blue-400/20" />
-    <span className="absolute inset-0 animate-[radarRing_3s_ease-out_2s_infinite] rounded-full border border-white/10" />
-  </div>
+        <defs>
+          <linearGradient
+            id="routeGradient"
+            x1="40"
+            y1="410"
+            x2="560"
+            y2="55"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#f59e0b" />
+            <stop offset="0.45" stopColor="#38bdf8" />
+            <stop offset="1" stopColor="#60a5fa" />
+          </linearGradient>
+        </defs>
+      </svg>
 
-  {/* Right Side Destination Glow */}
-  <div className="pointer-events-none absolute right-[7%] top-[11%] flex h-16 w-16 items-center justify-center">
-    <div className="absolute inset-0 animate-pulse rounded-full bg-blue-500/10 blur-xl" />
+      {/* Moving Flight Dot */}
+      <div className="pointer-events-none absolute right-[12%] top-[15%] h-3 w-3 animate-[flightDot_6s_ease-in-out_infinite]">
+        <span className="absolute -inset-3 animate-ping rounded-full bg-cyan-400/20" />
+        <span className="relative block h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_20px_rgba(103,232,249,0.9)]" />
+      </div>
 
-    <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-cyan-300/30 bg-[#0d243b]/80 backdrop-blur-sm">
-      <span className="text-lg">✈</span>
-    </div>
-  </div>
+      {/* Radar Rings */}
+      <div className="pointer-events-none absolute right-[10%] top-[18%] h-32 w-32">
+        <span className="absolute inset-0 animate-[radarRing_3s_ease-out_infinite] rounded-full border border-cyan-400/30" />
+        <span className="absolute inset-0 animate-[radarRing_3s_ease-out_1s_infinite] rounded-full border border-blue-400/20" />
+        <span className="absolute inset-0 animate-[radarRing_3s_ease-out_2s_infinite] rounded-full border border-slate-400/20" />
+      </div>
 
-  {/* Content */}
-  <div className="relative z-10 max-w-lg">
+      {/* Right Side Destination Glow */}
+      <div className="pointer-events-none absolute right-[7%] top-[11%] flex h-16 w-16 items-center justify-center">
+        <div className="absolute inset-0 animate-pulse rounded-full bg-blue-500/10 blur-xl" />
 
-    {/* Label */}
-    <div className="mb-3 flex items-center gap-2">
-      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
+        <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/40 bg-white/80 backdrop-blur-sm">
+          <span className="text-lg">✈</span>
+        </div>
+      </div>
 
-      <p className="text-xs font-bold tracking-[0.18em] text-amber-400">
-        FEATURED GETAWAY
-      </p>
-    </div>
+      {/* Content */}
+      <div className="relative z-10 max-w-lg">
 
-    {/* Heading */}
-    <h3 className="mb-3 text-3xl font-extrabold tracking-tight text-white transition-all duration-500 group-hover:translate-x-1 sm:text-4xl">
-      Escape Special
-    </h3>
+        {/* Label */}
+        <div className="mb-3 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.8)]" />
 
-    {/* Description */}
-    <p className="mb-6 text-sm leading-relaxed text-slate-300 sm:text-base">
-      Direct flights from Delhi &amp; Mumbai starting at just ₹12,499.
-      Save up to 20% on combined flight + 30-day tourist visa bundles.
-    </p>
+          <p className="text-xs font-bold tracking-[0.18em] text-amber-600">
+            FEATURED GETAWAY
+          </p>
+        </div>
 
-    {/* Route Status */}
-    <div className="mb-6 flex flex-wrap items-center gap-3">
+        {/* Heading */}
+        <h3 className="mb-3 text-3xl font-extrabold tracking-tight text-slate-900 transition-all duration-500 group-hover:translate-x-1 sm:text-4xl">
+          Escape Special
+        </h3>
 
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm transition-all duration-300 hover:border-blue-400/30 hover:bg-blue-500/10">
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-        <span className="text-[10px] font-semibold tracking-wide text-slate-300">
-          FLIGHTS ACTIVE
+        {/* Description */}
+        <p className="mb-6 text-sm leading-relaxed text-slate-600 sm:text-base">
+          Direct flights from Delhi &amp; Mumbai starting at just ₹12,499.
+          Save up to 20% on combined flight + 30-day tourist visa bundles.
+        </p>
+
+        {/* Route Status */}
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+
+          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-900/5 px-3 py-1.5 backdrop-blur-sm transition-all duration-300 hover:border-blue-400/30 hover:bg-blue-500/10">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            <span className="text-[10px] font-semibold tracking-wide text-slate-600">
+              FLIGHTS ACTIVE
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-900/5 px-3 py-1.5 backdrop-blur-sm transition-all duration-300 hover:border-amber-400/30 hover:bg-amber-500/10">
+            <span className="text-[10px] font-semibold tracking-wide text-slate-600">
+              VISA BUNDLE
+            </span>
+          </div>
+
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={() => navigate("flight")}
+          className="group/btn relative flex items-center gap-2 overflow-hidden rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(15,23,42,0.25)] active:scale-95"
+        >
+
+          {/* Button Shine */}
+          <span className="absolute -left-20 top-0 h-full w-10 rotate-[20deg] bg-blue-400/40 transition-all duration-700 group-hover/btn:left-[130%]" />
+
+          <span className="relative z-10">
+            Explore Flights
+          </span>
+
+          <FiArrowRight
+            className="relative z-10 transition-transform duration-300 group-hover/btn:translate-x-1.5"
+          />
+
+        </button>
+      </div>
+
+      {/* Bottom Flight Status */}
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-slate-200 bg-slate-900 px-8 py-3 sm:px-12">
+        <span className="text-[9px] font-semibold tracking-[0.15em] text-white">
+          DEL → DXB · BOM → DXB
+        </span>
+
+        <span className="flex items-center gap-1.5 text-[9px] font-semibold tracking-[0.15em] text-emerald-500">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full text-white" />
+          LIVE FARE
         </span>
       </div>
 
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm transition-all duration-300 hover:border-amber-400/30 hover:bg-amber-500/10">
-        <span className="text-[10px] font-semibold tracking-wide text-slate-300">
-          VISA BUNDLE
-        </span>
+      {/* Bottom Moving Light */}
+      <div className="absolute bottom-0 left-0 h-[2px] w-full overflow-hidden">
+        <div className="h-full w-1/4 animate-[escapeProgress_3s_linear_infinite] bg-gradient-to-r from-transparent via-amber-400 to-cyan-400" />
       </div>
 
-    </div>
-
-    {/* CTA */}
-    <button
-      onClick={() => navigate("flight")}
-      className="group/btn relative flex items-center gap-2 overflow-hidden rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(255,255,255,0.15)] active:scale-95"
-    >
-
-      {/* Button Shine */}
-      <span className="absolute -left-20 top-0 h-full w-10 rotate-[20deg] bg-blue-200/70 transition-all duration-700 group-hover/btn:left-[130%]" />
-
-      <span className="relative z-10">
-        Explore Flights
-      </span>
-
-      <FiArrowRight
-        className="relative z-10 transition-transform duration-300 group-hover/btn:translate-x-1.5"
-      />
-
-    </button>
-  </div>
-
-  {/* Bottom Flight Status */}
-  <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-white/5 px-8 py-3 sm:px-12">
-    <span className="text-[9px] font-semibold tracking-[0.15em] text-slate-500">
-      DEL → DXB · BOM → DXB
-    </span>
-
-    <span className="flex items-center gap-1.5 text-[9px] font-semibold tracking-[0.15em] text-emerald-400">
-      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-      LIVE FARE
-    </span>
-  </div>
-
-  {/* Bottom Moving Light */}
-  <div className="absolute bottom-0 left-0 h-[2px] w-full overflow-hidden">
-    <div className="h-full w-1/4 animate-[escapeProgress_3s_linear_infinite] bg-gradient-to-r from-transparent via-amber-400 to-cyan-400" />
-  </div>
-
-</div>
+            </div>
 
       </div>
       </div>

@@ -10,23 +10,23 @@ import LiveTracking from "../components/Visa/LiveTracking";
 import WhyChooseUs from "../components/Visa/WhyChooseUs";
 import StatsBanner from "../components/Visa/StatsBanner";
 import Testimonials from "../components/Visa/Testimonials";
-import VisaGuides from "../components/Visa/VisaGuides";
+ 
 import CTABanner from "../components/Visa/CTABanner";
 const Visa = () => {
    
   return (
      <div>
       <VisaHero />
-      <DestinationsCatalog />
+      {/* <DestinationsCatalog /> */}
       <SchengenSuite />
       <EligibilityChecker />
       {/* <HowItWorks /> */}
-      <DocumentDossier />
+      {/* <DocumentDossier /> */}
       {/* <LiveTracking /> */}
       <WhyChooseUs />
       {/* <StatsBanner /> */}
       {/* <Testimonials /> */}
-      {/* <VisaGuides /> */}
+    
       <CTABanner />
     </div>
 

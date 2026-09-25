@@ -14,9 +14,9 @@ const OkayToBoard = () => {
     <div>
       {/* <OTBHero /> */}
       <LiveStatusSimulation />
-      <SupportedAirlines />
+      {/* <SupportedAirlines /> */}
       <ThreeStepWorkflow />
-      <RequirementsMatrix />
+      {/* <RequirementsMatrix /> */}
       <DocumentUploadSimulator />
       {/* <StatsBar /> */}
       {/* <DepartureChecklist /> */}

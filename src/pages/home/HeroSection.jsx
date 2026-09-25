@@ -449,7 +449,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
 
       {/* Main Container */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-4 sm:pt-5 pb-5 sm:pb-7">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-4 sm:pt-20 pb-5 sm:pb-16 ">
 
         {/* Hero Content */}
         <div className="mt-3 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
@@ -471,23 +471,7 @@ export default function HeroSection() {
               Travel Without Friction.
             </h1>
 
-            {/* Service Badge */}
-            <div className="inline-flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 rounded-md px-3 py-1.5 mb-3">
-              <IoShieldCheckmarkOutline className="text-blue-400" />
-
-              <span className="text-blue-300 text-xs sm:text-sm font-medium">
-                Flights. Visas. OTB. All Together.
-              </span>
-            </div>
-
-            {/* Description */}
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-5 max-w-md">
-              Discover competitive flights, simplify visa applications,
-              connect with verified travel experts and complete your
-              boarding requirements — all through one intelligent travel
-              platform.
-            </p>
-
+          
             {/* Buttons */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
               <button
@@ -509,7 +493,7 @@ export default function HeroSection() {
 
             {/* Trending Routes */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-4">
                 <MdFlight className="text-amber-400" />
 
                 <span className="text-slate-400 text-xs font-medium tracking-wide">
@@ -535,7 +519,7 @@ export default function HeroSection() {
               </div>
 
               {/* Concierge */}
-              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5">
+              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pt-7">
                 <div className="w-8 h-8 rounded-lg bg-blue-600/20 flex items-center justify-center shrink-0">
                   <MdOutlineDashboard className="text-blue-400" />
                 </div>

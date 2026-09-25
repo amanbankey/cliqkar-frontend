@@ -155,7 +155,7 @@ export default function PlatformArchitecture() {
         animationDelay: `${index * 120}ms`,
       }}
     >
-      {/* Moving Top Accent */}
+      
       <div className="absolute left-0 top-0 h-[2px] w-full overflow-hidden bg-slate-100">
         <div
           className={`h-full w-1/3 animate-[featureLine_3s_ease-in-out_infinite] ${
@@ -168,18 +168,18 @@ export default function PlatformArchitecture() {
         />
       </div>
 
-      {/* Hover Spotlight */}
+   
       <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-500/10 opacity-0 blur-3xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-100" />
 
-      {/* Bottom Glow */}
+      
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-36 w-36 rounded-full bg-emerald-400/10 opacity-0 blur-3xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-100" />
 
       <div className="relative z-10">
 
-        {/* Header */}
+        
         <div className="mb-4 flex items-start justify-between">
 
-          {/* Animated Icon */}
+          
           <div className="relative">
 
             <div
@@ -194,7 +194,7 @@ export default function PlatformArchitecture() {
 
             <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-blue-50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-blue-100">
 
-              {/* Icon Shine */}
+      
               <span className="absolute -left-10 top-0 h-full w-6 rotate-[20deg] bg-white/80 transition-all duration-700 group-hover:left-[130%]" />
 
               <feature.icon
@@ -203,11 +203,11 @@ export default function PlatformArchitecture() {
               />
             </div>
 
-            {/* Orbit Dot */}
+            
             <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 opacity-0 transition-all duration-500 group-hover:animate-ping group-hover:opacity-100" />
           </div>
 
-          {/* Tag */}
+         
           <span
             className={`rounded-full px-2.5 py-1 text-[10px] font-semibold whitespace-nowrap transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-sm ${feature.tagColor}`}
           >
@@ -215,17 +215,17 @@ export default function PlatformArchitecture() {
           </span>
         </div>
 
-        {/* Title */}
+ 
         <h3 className="mb-2 text-base font-bold text-slate-900 transition-all duration-300 group-hover:translate-x-1 group-hover:text-blue-700">
           {feature.title}
-        </h3>
+        </h3>  
 
-        {/* Description */}
+     
         <p className="text-sm leading-relaxed text-slate-500 transition-colors duration-300 group-hover:text-slate-600">
           {feature.description}
         </p>
 
-        {/* Capability Indicator */}
+    
         <div className="mt-5 flex items-center gap-2">
 
           <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
@@ -242,22 +242,10 @@ export default function PlatformArchitecture() {
           </span>
         </div>
 
-        {/* Bottom Status */}
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-
-          <span className="flex items-center gap-1.5 text-[9px] font-semibold tracking-wide text-slate-400">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-            VERIFIED SYSTEM
-          </span>
-
-          <span className="text-[9px] font-bold tracking-wider text-slate-300 transition-all duration-300 group-hover:translate-x-1 group-hover:text-blue-500">
-            01 / 06
-          </span>
-
-        </div>
+   
+       
       </div>
-
-      {/* Moving Bottom Scanner */}
+ 
       <div className="pointer-events-none absolute bottom-0 left-0 h-px w-full overflow-hidden bg-slate-100">
         <div className="absolute h-full w-1/4 animate-[featureScanner_2.8s_linear_infinite] bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
       </div>

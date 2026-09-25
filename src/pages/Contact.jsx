@@ -92,10 +92,10 @@ export default function FlightContact() {
 
         <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-amber-400/10 blur-[120px]" />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-20">
           <div className="grid items-center gap-12 lg:grid-cols-2">
 
-            <div>
+            <div className="">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3.5 py-2">
                 <span className="flex h-2 w-2 animate-pulse rounded-full bg-amber-300" />
 
@@ -134,7 +134,7 @@ export default function FlightContact() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[450px]">
+            <div className="relative mx-auto w-full max-w-[450px] lg:py-2">
               <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-300/10">
                   <Headphones

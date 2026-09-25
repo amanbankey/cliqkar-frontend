@@ -42,7 +42,7 @@ const HeroSection = () => {
       />
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-14 text-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-24 text-center">
         <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-wide text-amber-400 bg-amber-400/10 px-3 py-1.5 rounded-full border border-amber-300/20 backdrop-blur-md">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
           GLOBAL TRAVEL TECH • 180+ CITIES CONNECTED
@@ -52,7 +52,7 @@ const HeroSection = () => {
           Travel, Reimagined Across Every City.
         </h1>
 
-        <p className="mt-4 text-sm sm:text-base text-gray-300 max-w-2xl mx-auto">
+        <p className="mt-6 text-sm sm:text-base text-gray-300 max-w-2xl mx-auto">
           CLIQKAR is building the modern digital infrastructure for international mobility — unifying flight
           discovery, visa clarity, and boarding clearance across the world's most vibrant metropolitan hubs.
         </p>

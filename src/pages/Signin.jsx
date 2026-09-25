@@ -88,19 +88,20 @@ export default function SignInPage({ onClose }) {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-[#edf2f9] px-4 py-6 sm:px-6 lg:px-10">
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[400px] w-[400px] rounded-full bg-blue-300/20 blur-[120px]" />
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden  px-4 py-6 sm:px-6 lg:px-10">
+      <div className="pointer-events-none absolute -left-40 -top-40 h-[400px] w-[400px] rounded-full  blur-[120px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-300/20 blur-[120px]" />
+      {/* <div className="pointer-events-none absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-300/20 blur-[120px]" /> */}
 
       <div className="relative flex w-full max-w-[935px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
         <button
           type="button"
-          onClick={() => (onClose ? onClose() : navigate("/"))}
+          // onClick={() => (onClose ? onClose() : navigate("/"))}
+          onClick={() => navigate(-1)}
           aria-label="Close"
-          className="absolute right-4 top-4 z-[100] flex h-10 w-10 items-center justify-center rounded-full border border-[#dce7f5] bg-white text-[#315789] shadow-sm transition-all duration-200 hover:scale-105 hover:bg-blue-50 active:scale-95 sm:right-6 sm:top-6"
+          className="absolute cursor-pointer top-3 right-3 p-2  z-20 flex  items-center justify-center rounded-full bo  bg-white text-[#315789] shadow-sm transition-all duration-200 hover:scale-105 hover:bg-blue-50 active:scale-95 "
         >
-          <X size={17} />
+          <X className="text-lg" />
         </button>
 
         {/* MOBILE IMAGE */}
@@ -146,15 +147,7 @@ export default function SignInPage({ onClose }) {
           <div className="relative z-10 mx-auto w-full max-w-[580px]">
             {/* BADGE */}
 
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dce7f5] bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-md">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#173d6c] to-[#3269aa] text-white shadow-sm">
-                <ShieldCheck size={13} />
-              </span>
-
-              <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#315789]">
-                Private Member Access
-              </span>
-            </div>
+           
 
             {/* TITLE */}
 
@@ -329,14 +322,7 @@ export default function SignInPage({ onClose }) {
               </button>
             </form>
 
-            <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
-              <CheckCircle2
-                size={14}
-                className="text-[#3b72bd]"
-              />
-
-              Your travel information is protected securely.
-            </div>
+         
           </div>
         </div>
 
@@ -352,7 +338,7 @@ export default function SignInPage({ onClose }) {
 
           <div className="absolute inset-0 bg-gradient-to-bl from-[#07182f]/50 via-[#0b2850]/30 to-[#07101f]/60" />
 
-          <div className="pointer-events-none absolute left-[-350px] top-[-160px] z-20 h-[900px] w-[500px] rounded-[50%] bg-[#fcfdff]" />
+          {/* <div className="pointer-events-none absolute left-[-350px] top-[-160px] z-20 h-[900px] w-[500px] rounded-[50%] bg-[#fcfdff]" /> */}
 
           {/* PLANE */}
 
@@ -364,7 +350,7 @@ export default function SignInPage({ onClose }) {
 
           {/* LOGO */}
 
-          <div className="absolute right-8 top-8 z-30 flex items-center gap-2">
+          <div className="absolute right-8 top-6 z-30 flex items-center gap-2 pr-14">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-md">
               <Plane size={17} className="-rotate-45" />
             </div>

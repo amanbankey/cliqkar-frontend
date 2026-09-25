@@ -2023,13 +2023,71 @@ function OTBApplyForm() {
 
       <div className="pointer-events-none absolute bottom-0 left-[30%] h-[400px] w-[400px] rounded-full bg-cyan-100/50 blur-[130px]" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4">
+      <div className="relative mx-auto w-full max-w-6xl px-4">
 
         {/* HERO */}
 
-        <div className="overflow-hidden rounded-[32px] bg-[#081525] shadow-[0_30px_100px_rgba(15,23,42,0.18)]">
+        <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.12)]">
 
-          <div className="relative overflow-hidden px-6 py-10 sm:px-10 sm:py-14">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+
+            {/* LEFT — LIGHT */}
+
+            <div className="relative flex items-center bg-gradient-to-br from-white via-slate-50 to-blue-50 px-6 py-10 sm:px-10 sm:py-14">
+
+            <div className="relative max-w-3xl">
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2">
+                <ShieldCheck
+                  size={15}
+                  className="text-blue-600"
+                />
+
+                <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-blue-700">
+                  Secure Travel Verification
+                </span>
+              </div>
+
+              <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                Okay To{" "}
+
+                <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
+                  Board
+                </span>
+              </h1>
+
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                Complete your application in a few simple steps.
+                Submit your travel details and documents securely
+                for verification.
+              </p>
+
+              <div className="mt-7 flex flex-wrap gap-3">
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
+                  <LockKeyhole
+                    size={14}
+                    className="text-blue-600"
+                  />
+
+                  Encrypted Documents
+                </div>
+
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
+                  <Sparkles
+                    size={14}
+                    className="text-cyan-600"
+                  />
+
+                  Fast Verification
+                </div>
+              </div>
+            </div>
+
+            </div>
+
+            {/* RIGHT — DARK */}
+
+            <div className="relative min-h-[260px] overflow-hidden bg-[#081525]">
 
             <div className="absolute inset-0 bg-gradient-to-br from-[#102d50] via-[#0a1d35] to-[#06111f]" />
 
@@ -2037,16 +2095,8 @@ function OTBApplyForm() {
 
             <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
 
-           {/* Animated Flight Path */}
-
-{/* =====================================================
-    ANIMATED FLIGHT
-===================================================== */}
-
 <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
-  {/* FLIGHT PATH */}
-
+ 
   <svg
     className="absolute inset-0 h-full w-full"
     viewBox="0 0 1200 400"
@@ -2110,7 +2160,7 @@ function OTBApplyForm() {
   </div>
 
 
-  {/* CLOUD EFFECT */}
+ 
 
   <div className="otb-cloud otb-cloud-one" />
 
@@ -2118,53 +2168,8 @@ function OTBApplyForm() {
 
 </div>
 
-            <div className="relative max-w-3xl">
-
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 backdrop-blur">
-                <ShieldCheck
-                  size={15}
-                  className="text-blue-300"
-                />
-
-                <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-blue-100">
-                  Secure Travel Verification
-                </span>
-              </div>
-
-              <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                Okay To{" "}
-
-                <span className="bg-gradient-to-r from-blue-300 via-cyan-200 to-indigo-300 bg-clip-text text-transparent">
-                  Board
-                </span>
-              </h1>
-
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
-                Complete your application in a few simple steps.
-                Submit your travel details and documents securely
-                for verification.
-              </p>
-
-              <div className="mt-7 flex flex-wrap gap-3">
-                <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-xs text-slate-300">
-                  <LockKeyhole
-                    size={14}
-                    className="text-blue-300"
-                  />
-
-                  Encrypted Documents
-                </div>
-
-                <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-xs text-slate-300">
-                  <Sparkles
-                    size={14}
-                    className="text-cyan-300"
-                  />
-
-                  Fast Verification
-                </div>
-              </div>
             </div>
+
           </div>
         </div>
 
