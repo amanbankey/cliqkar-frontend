@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://cliqkar-backend.onrender.com/api",
+  baseURL: "http://localhost:5004/api",
 });
 
 //https://cliqkar-backend.onrender.com/api
