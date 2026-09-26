@@ -11,7 +11,7 @@ const About = () => {
   return (
     <div>
       <HeroSection />
-      <OperationalHubs />
+      {/* <OperationalHubs /> */}
       {/* <DestinationNetwork /> */}
       {/* <NetworkMapBanner /> */}
       {/* <CityLeadership /> */}

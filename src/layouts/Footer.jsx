@@ -58,7 +58,7 @@ export default function Footer() {
 
         <footer className=" bg-[#0a1628] text-gray-400 px-4  pt-12 pb-6">
       <div className="max-w-7xl mx-auto " >
-        <div className="flex flex-col sm:flex-row items-start justify-around gap-8 mb-10 px-5 sm:px-2">
+        <div className="flex flex-col md:flex-row items-start justify-around gap-8 mb-10 px-5 sm:px-2">
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
            <NavLink to="/" className="flex-shrink-0 text-white duration-200">
             <img src={logo} className="object-contain w-36" />
@@ -106,7 +106,7 @@ export default function Footer() {
             </ul>
           </div>
         ))}
-        <div className="max-w-[240px] shrink-0">
+        <div className="md:max-w-[240px] sm:max-w-[200px] max-w-[170px] shrink-0">
           <h4 className="mb-4 text-sm font-semibold text-white">Contact Us</h4>
 
           <ul className="space-y-3.5">

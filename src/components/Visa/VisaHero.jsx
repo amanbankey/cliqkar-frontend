@@ -133,7 +133,7 @@ function ThemedDatePicker({ value, onChange, min }) {
       <button
         type="button"
         onClick={toggle}
-        className={`w-full cursor-pointer bg-transparent text-left text-[14px] outline-none ${
+        className={`w-full cursor-pointer whitespace-nowrap bg-transparent text-left text-[14px] outline-none ${
           value ? "font-semibold text-slate-700" : "font-normal text-slate-400"
         }`}
       >
@@ -1411,7 +1411,7 @@ function VisaSelect({
         type="button"
         onClick={onToggle}
         className="
-          flex
+          flex whitespace-nowrap
           w-full
           items-center
           gap-3
@@ -1420,7 +1420,7 @@ function VisaSelect({
           border-slate-200
           bg-white
           px-4
-          py-3.5
+          py-2
           text-left
           shadow-sm
           transition-all
@@ -1469,7 +1469,7 @@ function VisaSelect({
             absolute
             left-0
             top-[calc(100%+8px)]
-            z-[30]
+            z-10
             w-full
             overflow-hidden
             rounded-2xl
@@ -2377,19 +2377,6 @@ const VisaHero = () => {
                 VISA MADE SIMPLE
               </span>
             </div>
-
-            <h2 className="mt-5 text-[32px] font-bold tracking-tight text-slate-900 md:text-[42px]">
-              Find the perfect visa for
-
-              <span className="ml-2 bg-gradient-to-r from-[#4d5bd1] via-[#7180ef] to-[#5665d6] bg-clip-text text-transparent">
-                your journey
-              </span>
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-xl text-[14px] leading-6 text-slate-500 md:text-[15px]">
-              Select your nationality, destination and travel dates to
-              discover the best visa options for your next adventure.
-            </p>
           </div>
 
           {/* MAIN PREMIUM SEARCH CARD */}
@@ -2400,16 +2387,16 @@ const VisaHero = () => {
               overflow-visible
               rounded-[32px]
               border
-              border-white
-              bg-white/90
+              border-blur 
+              bg-white/30
               p-5
               shadow-[0_25px_80px_rgba(15,23,42,0.10)]
-              backdrop-blur-2xl
+              backdrop-blur
               md:p-7
               lg:p-8
             "
           >
-            {/* TOP ACCENT */}
+          
 
             <div
               className="
@@ -2547,10 +2534,10 @@ const VisaHero = () => {
                 onSelect={setGoingTo}
               />
 
-              {/* TRAVEL DATE */}
+         
 
               <div>
-                <label className="mb-2.5 flex items-center gap-2 text-[12px] font-bold tracking-wide text-slate-600">
+                <label className="mb-2.5 flex items-center gap-2 text-[13px] font-medium text-slate-600  tracking-wide  ">
                   <span>Travel Date</span>
 
                   <span className="text-red-500">
@@ -2567,9 +2554,9 @@ const VisaHero = () => {
                     rounded-2xl
                     border
                     border-slate-200
-                    bg-slate-50/60
+                    bg-white
                     px-4
-                    py-3.5
+          py-2
                     transition-all
                     duration-300
                     hover:border-[#5665d6]/40
@@ -2607,7 +2594,7 @@ const VisaHero = () => {
               {/* RETURN DATE */}
 
               <div>
-                <label className="mb-2.5 flex items-center gap-2 text-[12px] font-bold tracking-wide text-slate-600">
+                <label className="mb-2.5 flex items-center gap-2   tracking-wide text-[13px] font-medium text-slate-600">
                   <span>Return Date</span>
 
                   <span className="text-red-500">
@@ -2624,9 +2611,9 @@ const VisaHero = () => {
                     rounded-2xl
                     border
                     border-slate-200
-                    bg-slate-50/60
-                    px-4
-                    py-3.5
+                    bg-white
+                     px-4
+                     py-2
                     transition-all
                     duration-300
                     hover:border-[#5665d6]/40
@@ -2668,7 +2655,7 @@ const VisaHero = () => {
                   group
                   relative
                   flex
-                  h-[58px]
+                  h-[50px]
                   items-center
                   justify-center
                   gap-2
@@ -2703,7 +2690,7 @@ const VisaHero = () => {
                     to-transparent
                     transition-transform
                     duration-700
-                    group-hover:translate-x-full
+                    group-hover:translate-x-full 
                   "
                 />
 
@@ -2712,7 +2699,7 @@ const VisaHero = () => {
                   className="relative"
                 />
 
-                <span className="relative">
+                <span className="relative whitespace-nowrap">
                   Search Visa
                 </span>
               </button>

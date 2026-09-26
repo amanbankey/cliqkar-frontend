@@ -133,8 +133,8 @@ const TravelerDetails = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+      <div className=" z-20 border-b border-slate-200 bg-white/95 backdrop-blur-xl ">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -168,7 +168,7 @@ const TravelerDetails = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <div className="mx-auto max-w-4xl px-4 py-2 sm:px-6 lg:px-8 ">
         <div className="space-y-6">
           {travelers.map((traveler, index) => (
             <TravelerCard
@@ -184,7 +184,7 @@ const TravelerDetails = () => {
           ))}
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="my-4 flex justify-end">
           <button
             type="button"
             onClick={addTraveler}
@@ -197,7 +197,7 @@ const TravelerDetails = () => {
           </button>
         </div>
 
-        <div className="my-8 h-px bg-slate-200" />
+        {/* <div className="my-2 h-px bg-slate-200" /> */}
 
         <VisaInformation />
 
@@ -267,8 +267,8 @@ const TravelerDetails = () => {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-30 border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <div className=" z-30 border-t border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-4xl flex-col gap-3 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <div>
             <p className="text-xs font-extrabold text-slate-900">
               {travelers.length} Traveler{travelers.length > 1 ? "s" : ""}
@@ -312,8 +312,8 @@ const TravelerCard = ({
 }) => {
   return (
     <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_12px_35px_rgba(15,23,42,0.07)] sm:rounded-[26px] sm:p-5 lg:p-6">
-      <div className="mb-5 flex items-center justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-3">
+      <div className=" flex items-center justify-between  border-slate-100 pb-1">
+        <div className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-xs font-extrabold text-white">
             {index + 1}
           </div>
@@ -339,7 +339,41 @@ const TravelerCard = ({
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        
+
+      <h4 className="text-sm font-extrabold text-slate-900">Required Documents</h4>
+      <p className="mt-1 text-[10px] text-slate-500">
+        Upload clear and readable documents.
+      </p>
+      
+          <div className="my-2  grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+         <UploadBox
+          label="Traveler's Photo"
+          required
+          file={traveler.files.travelerPhoto}
+          onFile={(file) => updateFile(traveler.id, "travelerPhoto", file)}
+          onRemove={() => removeFile(traveler.id, "travelerPhoto")}
+        />
+        <UploadBox
+          label="Front Passport Image"
+          required
+          file={traveler.files.passportFront}
+          onFile={(file) => updateFile(traveler.id, "passportFront", file)}
+          onRemove={() => removeFile(traveler.id, "passportFront")}
+        />
+
+        <UploadBox
+          label="Back Passport Image"
+          required
+          file={traveler.files.passportBack}
+          onFile={(file) => updateFile(traveler.id, "passportBack", file)}
+          onRemove={() => removeFile(traveler.id, "passportBack")}
+        />
+          </div>
+
+    <div className="my-1 h-px" />
+
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
         <InputField
           label="Traveler First Name"
           required
@@ -455,38 +489,10 @@ const TravelerCard = ({
         />
       </div>
 
-      <div className="my-6 h-px bg-slate-100" />
+      
 
-      <h4 className="text-sm font-extrabold text-slate-900">Required Documents</h4>
-      <p className="mt-1 text-[10px] text-slate-500">
-        Upload clear and readable documents.
-      </p>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <UploadBox
-          label="Traveler's Photo"
-          required
-          file={traveler.files.travelerPhoto}
-          onFile={(file) => updateFile(traveler.id, "travelerPhoto", file)}
-          onRemove={() => removeFile(traveler.id, "travelerPhoto")}
-        />
-
-        <UploadBox
-          label="Front Passport Image"
-          required
-          file={traveler.files.passportFront}
-          onFile={(file) => updateFile(traveler.id, "passportFront", file)}
-          onRemove={() => removeFile(traveler.id, "passportFront")}
-        />
-
-        <UploadBox
-          label="Back Passport Image"
-          required
-          file={traveler.files.passportBack}
-          onFile={(file) => updateFile(traveler.id, "passportBack", file)}
-          onRemove={() => removeFile(traveler.id, "passportBack")}
-        />
-
         <UploadBox
           label="Traveler's PAN Card"
           required
@@ -720,7 +726,7 @@ const UploadBox = ({ label, required, file, onFile, onRemove }) => {
 
       <label
         htmlFor={inputId}
-        className="group flex h-[72px] w-full max-w-[310px] cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-3 transition-all duration-300 hover:border-slate-900 hover:bg-slate-100"
+        className="group flex h-[60px] w-full max-w-[310px] cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-3 transition-all duration-300 hover:border-slate-900 hover:bg-slate-100"
       >
         {!file ? (
           <div className="flex items-center gap-3">

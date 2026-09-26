@@ -40,7 +40,7 @@ import {
   MapPin,
   Receipt,
 } from "lucide-react";
-
+ 
 const API_BASE = "/api";
 
 const TOTAL_STEPS = 5;
@@ -2027,11 +2027,11 @@ function OTBApplyForm() {
 
         {/* HERO */}
 
-        <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.12)]">
+        {/* <div className="overflow-hidden rounded-[32px]  border border-slate-200 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.12)]">
 
           <div className="grid grid-cols-1 lg:grid-cols-2">
 
-            {/* LEFT — LIGHT */}
+ 
 
             <div className="relative flex items-center bg-gradient-to-br from-white via-slate-50 to-blue-50 px-6 py-10 sm:px-10 sm:py-14">
 
@@ -2084,10 +2084,9 @@ function OTBApplyForm() {
             </div>
 
             </div>
+ 
 
-            {/* RIGHT — DARK */}
-
-            <div className="relative min-h-[260px] overflow-hidden bg-[#081525]">
+            <div className="relative min-h-[260px] rounded-l-full overflow-hidden bg-[#081525]">
 
             <div className="absolute inset-0 bg-gradient-to-br from-[#102d50] via-[#0a1d35] to-[#06111f]" />
 
@@ -2110,8 +2109,7 @@ function OTBApplyForm() {
       strokeDasharray="12 14"
       className="otb-flight-path"
     />
-
-    {/* Small glowing dots */}
+ 
 
     <circle
       cx="180"
@@ -2139,13 +2137,13 @@ function OTBApplyForm() {
   </svg>
 
 
-  {/* MOVING PLANE */}
+ 
 
   <div className="otb-moving-plane">
 
     <div className="relative">
 
-      {/* Plane glow */}
+       
 
       <div className="absolute inset-0 scale-150 rounded-full bg-blue-400/20 blur-xl" />
 
@@ -2171,11 +2169,174 @@ function OTBApplyForm() {
             </div>
 
           </div>
+        </div> */}
+
+        <div className="overflow-hidden rounded-[24px]  border-0 shadow-none sm:rounded-[32px] sm:border sm:border-slate-200   sm:shadow-[0_30px_100px_rgba(15,23,42,0.12)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[46%_54%]">
+        {/* LEFT: copy */}
+        <div className="relative flex items-center bg-gradient-to-br from-white via-slate-50 to-blue-50 px-6 py-10 sm:px-10 sm:py-14 lg:pr-20">
+          <div className="relative z-10 max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2">
+              <ShieldCheck size={15} className="text-blue-600" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-blue-700">
+                Secure Travel Verification
+              </span>
+            </div>
+ 
+            <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              Okay To{" "}
+              <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
+                Board
+              </span>
+            </h1>
+ 
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Complete your application in a few simple steps. Submit your
+              travel details and documents securely for verification.
+            </p>
+ 
+            <div className="mt-7 flex flex-wrap gap-3">
+              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
+                <LockKeyhole size={14} className="text-blue-600" />
+                Encrypted Documents
+              </div>
+              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
+                <Sparkles size={14} className="text-cyan-600" />
+                Fast Verification
+              </div>
+            </div>
+          </div>
         </div>
+ 
+        {/* RIGHT: night sky panel */}
+        <div className="relative min-h-[260px] overflow-hidden rounded-b-[28px] bg-[#081525] sm:min-h-[320px] lg:-ml-16 lg:min-h-[360px] lg:rounded-b-none lg:rounded-l-[50%]">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#173b68] via-[#0a1d35] to-[#06111f]" />
+          <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-blue-500/20 blur-3xl" />
+          <div className="absolute -right-20 top-10 h-96 w-96 rounded-full bg-indigo-500/20 blur-3xl" />
+ 
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 1200 400"
+            fill="none"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <radialGradient id="otbFlameGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#fed7aa" stopOpacity="0.95" />
+                <stop offset="45%" stopColor="#fb923c" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#fb923c" stopOpacity="0" />
+              </radialGradient>
+ 
+              <filter id="otbGlow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="3.2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+ 
+              <filter id="otbCloudBlur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="9" />
+              </filter>
+            </defs>
+ 
+            {/* flight path — plane travels exactly on this line */}
+            <path
+              id="otbFlightPath"
+              d="M-80 300 C180 120, 430 380, 700 230 S1050 100, 1280 70"
+              stroke="rgba(96,165,250,0.38)"
+              strokeWidth="2"
+              strokeDasharray="12 14"
+              className="otb-flight-path"
+            />
+ 
+            {/* stars */}
+            <circle cx="180" cy="150" r="3" fill="rgba(96,165,250,0.7)" className="otb-star otb-star-one" />
+            <circle cx="850" cy="150" r="2.5" fill="rgba(129,140,248,0.7)" className="otb-star otb-star-two" />
+            <circle cx="1050" cy="100" r="2" fill="rgba(125,211,252,0.8)" className="otb-star otb-star-three" />
+            <circle cx="480" cy="60" r="2" fill="rgba(191,219,254,0.75)" className="otb-star otb-star-four" />
+            <circle cx="960" cy="230" r="1.6" fill="rgba(191,219,254,0.7)" className="otb-star otb-star-five" />
+ 
+            {/* clouds, bottom of the panel */}
+            <g opacity="0.4" filter="url(#otbCloudBlur)">
+              <ellipse cx="150" cy="385" rx="95" ry="28" fill="#60a5fa" />
+              <circle cx="105" cy="368" r="34" fill="#60a5fa" />
+              <circle cx="175" cy="362" r="27" fill="#60a5fa" />
+              <circle cx="225" cy="378" r="20" fill="#60a5fa" />
+            </g>
+            <g opacity="0.32" filter="url(#otbCloudBlur)">
+              <ellipse cx="980" cy="395" rx="110" ry="26" fill="#818cf8" />
+              <circle cx="930" cy="378" r="30" fill="#818cf8" />
+              <circle cx="1010" cy="372" r="24" fill="#818cf8" />
+              <circle cx="1060" cy="385" r="20" fill="#818cf8" />
+            </g>
+ 
+            {/* plane — moves along #otbFlightPath, nose always facing travel direction */}
+            <g filter="url(#otbGlow)">
+              <animateMotion dur="8s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#otbFlightPath" />
+              </animateMotion>
+              <animate
+                attributeName="opacity"
+                values="0;1;1;0"
+                keyTimes="0;0.08;0.92;1"
+                dur="8s"
+                repeatCount="indefinite"
+              />
+ 
+              {/* exhaust flame, trails behind the nose */}
+              <ellipse cx="-25" cy="0" rx="10" ry="3.2" fill="url(#otbFlameGrad)" className="otb-flame-flicker" />
+              <ellipse cx="-16" cy="0" rx="5.5" ry="1.8" fill="url(#otbFlameGrad)" opacity="0.8" />
+ 
+              {/* plane silhouette, nose points along local +x */}
+              <g stroke="#bfdbfe" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                <line x1="-16" y1="0" x2="16" y2="0" />
+                <line x1="2" y1="-1" x2="-8" y2="-13" />
+                <line x1="-8" y1="-13" x2="-4" y2="-1" />
+                <line x1="2" y1="1" x2="-8" y2="13" />
+                <line x1="-8" y1="13" x2="-4" y2="1" />
+                <line x1="-13" y1="-1" x2="-17" y2="-7" />
+                <line x1="-13" y1="1" x2="-17" y2="7" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+ 
+      <style>{`
+        .otb-star {
+          animation: otb-twinkle 2.4s ease-in-out infinite;
+        }
+        .otb-star-one { animation-delay: 0s; }
+        .otb-star-two { animation-delay: 0.6s; }
+        .otb-star-three { animation-delay: 1.2s; }
+        .otb-star-four { animation-delay: 1.8s; }
+        .otb-star-five { animation-delay: 0.3s; }
+ 
+        @keyframes otb-twinkle {
+          0%, 100% { opacity: 0.25; }
+          50% { opacity: 1; }
+        }
+ 
+        .otb-flame-flicker {
+          transform-origin: 0px 0px;
+          animation: otb-flame-flicker 0.55s ease-in-out infinite;
+        }
+ 
+        @keyframes otb-flame-flicker {
+          0%, 100% { opacity: 0.55; transform: scaleX(1); }
+          50% { opacity: 1; transform: scaleX(1.35); }
+        }
+ 
+        .otb-flight-path {
+          stroke-dashoffset: 0;
+        }
+      `}</style>
+    </div>
 
         {/* MAIN APPLICATION */}
 
-        <div className="mt-6 overflow-hidden rounded-[30px] border border-white bg-white shadow-[0_20px_70px_rgba(15,23,42,0.08)]">
+        <div className="mt-6 overflow-hidden  rounded-[30px] border border-white bg-white shadow-[0_20px_70px_rgba(15,23,42,0.08)]">
 
           <Stepper currentStep={currentStep} />
 

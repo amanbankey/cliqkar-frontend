@@ -239,8 +239,8 @@ export default function FlightOffers() {
 
   return (
     <section className="bg-white py-14 sm:py-20 px-4 sm:px-6 lg:px-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8 px-4 sm:px-8">
           <div>
             <p className="text-slate-900 text-xs sm:text-sm font-semibold tracking-wide mb-2">
               CURATED AVIATION SAVINGS
@@ -255,7 +255,7 @@ export default function FlightOffers() {
       
         </div>
 
-          <div className="h-full w-full rounded-2xl bg-[#eef1f8] px-4 py-10 sm:px-8">
+          <div className="h-full w-full rounded-2xl bg-[#] px-4 py-10 sm:px-8">
   <div className="relative mx-auto max-w-6xl">
     <div className="pointer-events-none absolute inset-0 z-30 hidden md:block">
       <div className="absolute left-[8%] top-[48%] animate-[flyPlane_7s_linear_infinite]">
