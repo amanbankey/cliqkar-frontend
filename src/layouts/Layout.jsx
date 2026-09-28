@@ -11,7 +11,8 @@ const Layout = () => {
   const hideNavbar =   location.pathname === "/signin" || location.pathname === "/signup" 
 
   const hideFooter = location.pathname === '/signin' || location.pathname === "/signup" || location.pathname === "/user-dashboard" || location.pathname === "/user-dashboard/profile" 
-  || location.pathname === "/user-dashboard/wallet-history" || location.pathname === "/user-dashboard/visa-history" || location.pathname === "/user-dashboard/otb-history"
+  || location.pathname === "/user-dashboard/wallet-history" || location.pathname === "/user-dashboard/visa-history" || location.pathname === "/user-dashboard/otb-history"  || location.pathname === "/agent-dashboard" || location.pathname === "/agent-dashboard/profile" 
+  || location.pathname === "/agent-dashboard/wallet-history" || location.pathname === "/agent-dashboard/visa-history" || location.pathname === "/agent-dashboard/otb-history"
 
   return (
     <>

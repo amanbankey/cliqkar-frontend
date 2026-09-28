@@ -42,7 +42,11 @@ const Navbar = () => {
   const openUserProfile = () => {
     setProfileOpen(false);
     setMobileMenuOpen(false);
-    navigate("/user-dashboard/profile");
+    navigate(
+      user?.role === "agent"
+        ? "/agent-dashboard/profile"
+        : "/user-dashboard/profile"
+    );
   };
 
   const onDashboard = () => {
@@ -120,6 +124,14 @@ const Navbar = () => {
               Sign in
             </button>
 
+             {/* AGENT SIGN IN */}
+            <button
+              onClick={() => navigate("/agent/signin")}
+              className="hidden sm:block px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer text-sm font-medium transition-colors"
+            >
+              Agent Sign in
+            </button>
+
             {/* EXISTING ADMIN LOGIN */}
             <button
               onClick={() => navigate("/admin/login")}
@@ -178,6 +190,11 @@ const Navbar = () => {
 
                             <p className="text-xs text-gray-500 mt-1 truncate">
                               {user.email || ""}
+                            {user.role === "agent" && (
+                              <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+                                Agent
+                              </span>
+                            )}
                             </p>
                           </div>
 
@@ -287,6 +304,11 @@ const Navbar = () => {
 
                         <p className="text-xs text-gray-500 mt-1 truncate">
                           {user.email || ""}
+                            {user.role === "agent" && (
+                              <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+                                Agent
+                              </span>
+                            )}
                         </p>
                       </div>
 
@@ -309,7 +331,16 @@ const Navbar = () => {
               >
                 Sign in
               </button>
-
+ {/* AGENT SIGN IN */}
+              <button
+                onClick={() => {
+                  navigate("/agent/signin");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-4 py-2 hover:bg-[#0A2540] hover:text-white border border-[#0A2540] text-[#0A2540] rounded-full cursor-pointer w-full"
+              >
+                Agent Sign in
+              </button>
               {/* EXISTING ADMIN LOGIN */}
               <button
                 onClick={() => {

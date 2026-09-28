@@ -43,6 +43,17 @@ import ProtectedRoute from "./components/protectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import AgentSignupPage from "./pages/agent/AgentSignup";
 import AgentSigninPage from "./pages/agent/AgentSignin";
+import AgentDashboard from "./pages/agent/AgentDashboard";
+import AgentProfile from "./pages/agent/AgentProfile";
+import AgentBookings from "./pages/agent/AgentBookings";
+import AgentWalletHistory from "./pages/agent/AgentWalletHistory";
+import AgentVisaHistory from "./pages/agent/AgentVisaHistory";
+import AgentOTBHistory from "./pages/agent/AgentOTBHistory";
+
+
+import VisaPayment from "./pages/VisaPayment";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailure from "./pages/PaymentFailure";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -90,7 +101,19 @@ function App() {
             path="traveler-details"
             element={<TravelerDetails />}
           />
+ <Route
+  path="/visa-payment"
+  element={<VisaPayment />}
+/>
+<Route
+  path="/payment-success"
+  element={<PaymentSuccess />}
+/>
 
+<Route
+  path="/payment-failure"
+  element={<PaymentFailure />}
+/>
 
           {/* =======================================================
               USER DASHBOARD
@@ -141,6 +164,50 @@ function App() {
             <Route
               path="otb-history"
               element={<OTBHistory />}
+            />
+
+          </Route>
+{/* =======================================================
+              AGENT DASHBOARD
+
+              Same idea as USER DASHBOARD above: this stays INSIDE
+              Layout, so Navbar + Agent Dashboard + Footer render
+              together on one page.
+          ======================================================= */}
+
+          <Route
+            path="agent-dashboard"
+            element={<AgentDashboard />}
+          >
+
+            {/* /agent-dashboard */}
+            <Route
+              index
+              element={<AgentBookings />}
+            />
+
+            {/* /agent-dashboard/profile */}
+            <Route
+              path="profile"
+              element={<AgentProfile />}
+            />
+
+            {/* /agent-dashboard/wallet-history */}
+            <Route
+              path="wallet-history"
+              element={<AgentWalletHistory />}
+            />
+
+            {/* /agent-dashboard/visa-history */}
+            <Route
+              path="visa-history"
+              element={<AgentVisaHistory />}
+            />
+
+            {/* /agent-dashboard/otb-history */}
+            <Route
+              path="otb-history"
+              element={<AgentOTBHistory />}
             />
 
           </Route>

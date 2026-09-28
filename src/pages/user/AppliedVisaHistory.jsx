@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { getMyVisaApplications } from "../../api/visaApplicationApi";
 
 import {
   FiCopy,
@@ -30,146 +31,71 @@ import {
    DATA
 ===================================================== */
 
-const dossiers = [
-  {
-    ref: "803746190",
-    flag: "🇦🇪",
-    title: "UAE 30-Day Express Tourist Visa",
-    category: "Individual",
-    status: "hold",
+const normalizeStatus = (status = "") => {
+  const value = String(status).toLowerCase().trim();
+  if (value === "approved") return "approved";
+  if (["on hold", "hold", "rejected"].includes(value)) return "hold";
+  if (value === "draft") return "draft";
+  return "processing";
+};
+
+const formatVisaDate = (value) => {
+  if (!value) return "Not provided";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? String(value)
+    : date.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+};
+
+const getVisaDossier = (application, index) => {
+  const travelers = Array.isArray(application.travelers) ? application.travelers : [];
+  const lead = travelers[0] || {};
+  const applicant = application.applicant || {};
+  const visa = application.visa || {};
+  const visaTitle = visa.name || visa.visaName || visa.title || visa.type || visa.category || "Visa Application";
+  const destination = application.destination || visa.country || visa.destination || "Visa";
+  const reference = application.referenceNumber || application._id || `VISA-${index + 1}`;
+  const applicantName = lead.fullName || lead.name || [lead.firstName, lead.middleName, lead.lastName].filter(Boolean).join(" ") || applicant.name || "Applicant details pending";
+  const passport = lead.passportNumber || lead.passportNo || lead.passport || "Not provided";
+  const nationality = lead.nationality || lead.countryOfCitizenship || "Not provided";
+  const status = normalizeStatus(application.status);
+  const statusLabel = application.status || "Pending";
+  const familyCount = travelers.length;
+  const amount = Number(application.amount || 0);
+  return {
+    ref: String(reference),
+    flag: "🌍",
+    title: `${destination} ${visaTitle}`,
+    category: familyCount > 1 ? `Family (${familyCount} Pax)` : "Individual",
+    status,
     fields: [
-      { label: "Applicant Name", value: "SANTOSH KUMAR VERMA" },
-      { label: "Passport No.", value: "AF734301", sub: "(Exp: 14 Aug 2031)" },
-      { label: "PAN & Nationality", value: "ASDFG1234F", sub: "· Indian" },
-      { label: "Submission Timestamp", value: "Sep 26, 2025 • 05:33 PM IST" },
+      { label: "Applicant Name", value: applicantName },
+      { label: "Passport No.", value: passport },
+      { label: "Nationality", value: nationality },
+      { label: "Application Submitted", value: formatVisaDate(application.createdAt) },
+      { label: "Travel Route", value: `${application.origin || "Not provided"} → ${destination}` },
+      { label: "Travel Date", value: application.travelDate || "Not provided" },
+      { label: "Return Date", value: application.returnDate || "Not provided" },
+      { label: "Application Amount", value: `₹${amount.toLocaleString("en-IN")}` },
+      { label: "Payment Status", value: application.paymentStatus || "Pending" },
+      { label: "Application Status", value: statusLabel },
     ],
-    note: {
-      icon: FiAlertTriangle,
-      bold: "Consulate Requirement:",
-      text: "High-resolution passport front/back bio-page re-upload requested by Dubai GDRFA clearance desk due to scan glare on MRZ string.",
-    },
-    actions: [
-      { label: "Resolve & Re-upload", icon: FiRefreshCw, variant: "primary" },
-      { label: "View Application", icon: FiEye, variant: "default" },
-    ],
-  },
-  {
-    ref: "252244745",
-    flag: "🇫🇷",
-    title: "Schengen Short-Stay Tourist Visa (France)",
-    category: "Family (3 Pax)",
-    status: "draft",
-    fields: [
-      { label: "Lead Applicant", value: "Vikramaditya Rathore" },
-      { label: "Passport No.", value: "V8829103", sub: "(Lead Pax)" },
-      { label: "Co-Applicants", value: "2 Dependents", sub: "(Spouse + Child)" },
-      { label: "Last Edited", value: "Oct 24, 2025 • 11:15 AM IST" },
-    ],
-    progress: {
-      step: "Step 2 of 4:",
-      text: "Travel Medical Insurance (€30,000 cover) & Confirmed Hotel Vouchers missing",
-      percent: 50,
-    },
-    actions: [
-      { label: "Complete Draft", icon: FiEdit, variant: "primary" },
-      { label: "Discard Draft", icon: FiTrash2, variant: "danger" },
-    ],
-  },
-  {
-    ref: "719171304",
-    flag: "🇸🇦",
-    title: "Saudi Tourist eVisa (Multiple Entry - 1 Year)",
-    category: "Individual",
-    status: "approved",
-    fields: [
-      { label: "Applicant Name", value: "MRS. KAVITA PATEL" },
-      { label: "Passport No.", value: "Z4928104", sub: "· Indian" },
-      { label: "Visa Grant Number", value: "MOFA-SA-992140" },
-      { label: "Approval Timestamp", value: "Oct 19, 2025 • 13:45 IST" },
-    ],
-    note: {
-      icon: FiCheckCircle,
-      bold: "Validity Granted:",
-      text: "18 Oct 2025 → 17 Oct 2026 (Max 90 days stay per visit • Medical coverage included under KSA CCHI).",
-    },
-    actions: [
-      { label: "Download eVisa PDF", icon: FiDownload, variant: "primary" },
-      { label: "View Dossier", icon: FiEye, variant: "default" },
-    ],
-  },
-  {
-    ref: "917613806",
-    flag: "🇬🇧",
-    title: "UK Standard Visitor Visa (6 Months Single/Multiple)",
-    category: "Corporate Express",
-    status: "processing",
-    fields: [
-      { label: "Applicant Name", value: "MR. SUNALI MAJMUDAR" },
-      { label: "Passport No.", value: "T4410298", sub: "· PAN: AAACM5512L" },
-      { label: "VFS Global File Ref", value: "VFS-LON-DEL-8821" },
-      { label: "Submission Date", value: "Oct 15, 2025 • 09:20 AM IST" },
-    ],
-    note: {
-      icon: FiMapPin,
-      text: "Biometrics Cleared at VFS Shivaji Stadium, New Delhi. Under Home Office review.",
-      right: "Estimated Clearance: 3 Working Days",
-    },
-    actions: [
-      { label: "Track VFS Status", icon: FiRefreshCw, variant: "primary" },
-      { label: "View Dossier", icon: FiFileText, variant: "default" },
-    ],
-  },
-  {
-    ref: "338192055",
-    flag: "🇸🇬",
-    title: "Singapore SGAC & E-Visa (Single Entry)",
-    category: "Individual",
-    status: "approved",
-    fields: [
-      { label: "Applicant Name", value: "MR. UMESH TAGLANI" },
-      { label: "Passport No.", value: "VT850247", sub: "· Indian" },
-      { label: "ICA Singapore Ref", value: "ICA-SIN-091823" },
-      { label: "Approval Timestamp", value: "Oct 22, 2025 • 16:30 IST" },
-    ],
-    note: {
-      icon: FiShield,
-      text: "Electronic pass verified: Changi Automated Clearance (Automated Gates eligible). SG Arrival Card submitted.",
-    },
-    actions: [
-      { label: "Download E-Visa PDF", icon: FiDownload, variant: "primary" },
-      { label: "View Dossier", icon: FiEye, variant: "default" },
-    ],
-  },
-  {
-    ref: "640192841",
-    flag: "🇴🇲",
-    title: "Oman Royal Police (ROP) Tourist Visa 10-Day",
-    category: "Individual",
-    status: "draft",
-    fields: [
-      { label: "Lead Applicant", value: "Pending Primary Pax Entry", muted: true },
-      { label: "Passport No.", value: "Pending Upload", muted: true },
-      { label: "Nationality", value: "Indian (Selected)" },
-      { label: "Created Timestamp", value: "Oct 25, 2025 • 08:40 AM IST" },
-    ],
-    progress: {
-      step: "Step 1 of 3:",
-      text: "Applicant Demographics & Travel Dates pending entry.",
-      percent: 15,
-    },
-    actions: [
-      { label: "Complete Application", icon: FiEdit, variant: "primary" },
-      { label: "Delete", icon: FiTrash2, variant: "danger" },
-    ],
-  },
-];
+    note: application.adminNote ? {
+      icon: status === "approved" ? FiCheckCircle : FiAlertTriangle,
+      bold: "Admin Update:",
+      text: application.adminNote,
+    } : null,
+    actions: [{ label: "View Application", icon: FiEye, variant: "default" }],
+    originalApplication: application,
+  };
+};
 
 const statusTabs = [
-  { key: "all", label: "All", count: 64 },
-  { key: "approved", label: "Approved", count: 48, dot: "bg-emerald-500" },
-  { key: "processing", label: "In Processing", count: 12, dot: "bg-blue-500" },
-  { key: "hold", label: "On Hold", count: 4, dot: "bg-red-500" },
-  { key: "draft", label: "Drafts", count: 8, dot: "bg-gray-400" },
+  { key: "all", label: "All" },
+  { key: "approved", label: "Approved", dot: "bg-emerald-500" },
+  { key: "processing", label: "In Processing", dot: "bg-blue-500" },
+  { key: "hold", label: "On Hold", dot: "bg-red-500" },
+  { key: "draft", label: "Drafts", dot: "bg-gray-400" },
 ];
 
 const statusConfig = {
@@ -216,7 +142,7 @@ const actionClass = {
   danger: "border border-red-100 bg-red-50 text-red-600 hover:bg-red-100",
 };
 
-const categories = ["All", ...new Set(dossiers.map((d) => d.category))];
+
 
 const TOTAL_PAGES = 11;
 
@@ -448,7 +374,48 @@ const AppliedVisaHistory = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [category, setCategory] = useState("All");
   const [ready, setReady] = useState(false);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const searchRef = useRef(null);
+
+  const dossiers = useMemo(
+    () => applications.map((application, index) => getVisaDossier(application, index)),
+    [applications]
+  );
+  const categories = useMemo(
+    () => ["All", ...new Set(dossiers.map((dossier) => dossier.category))],
+    [dossiers]
+  );
+  const countForStatus = (status) => status === "all"
+    ? dossiers.length
+    : dossiers.filter((dossier) => dossier.status === status).length;
+
+  useEffect(() => {
+    let active = true;
+    const loadApplications = async () => {
+      try {
+        setLoading(true);
+        setLoadError("");
+        const response = await getMyVisaApplications();
+        const records = Array.isArray(response?.applications)
+          ? response.applications
+          : Array.isArray(response?.data?.applications)
+          ? response.data.applications
+          : Array.isArray(response?.data)
+          ? response.data
+          : [];
+        if (active) setApplications(records);
+      } catch (error) {
+        console.error("Failed to load visa applications:", error);
+        if (active) setLoadError(error?.response?.data?.message || "Unable to load visa applications. Please try again.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    loadApplications();
+    return () => { active = false; };
+  }, []);
 
   const isMac =
     typeof navigator !== "undefined" && /Mac/i.test(navigator.platform);
@@ -490,7 +457,7 @@ const AppliedVisaHistory = () => {
         .toLowerCase()
         .includes(q);
     });
-  }, [query, statusFilter, category]);
+  }, [dossiers, query, statusFilter, category]);
 
   const isFiltering =
     query.trim() !== "" || statusFilter !== "all" || category !== "All";
@@ -519,7 +486,7 @@ const AppliedVisaHistory = () => {
             </h1>
 
             <span className="rounded-full bg-[#0B1120] px-3 py-1 text-sm font-semibold tabular-nums text-white">
-              64 Records
+              {dossiers.length} {dossiers.length === 1 ? "Record" : "Records"}
             </span>
 
             <span className="flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-100">
@@ -571,18 +538,18 @@ const AppliedVisaHistory = () => {
                 <FiUser size={16} />
               </span>
               <p className="text-sm font-medium text-slate-300">
-                Total Visas Processed
+                Total Visa Applications
               </p>
             </div>
 
             <p className="mt-4 text-3xl font-bold tabular-nums">
-              342{" "}
+              {dossiers.length}{" "}
               <span className="text-sm font-medium text-slate-400">Cases</span>
             </p>
 
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">
               <FiTrendingUp size={12} />
-              +18 processed this calendar month
+              {countForStatus("approved")} approved applications
             </p>
           </div>
         </div>
@@ -602,9 +569,9 @@ const AppliedVisaHistory = () => {
           </div>
 
           <p className="mt-4 text-3xl font-bold tabular-nums text-gray-900">
-            19{" "}
+            {countForStatus("processing")}{" "}
             <span className="text-sm font-medium text-gray-400">
-              Consulates
+              In Processing
             </span>
           </p>
 
@@ -612,14 +579,14 @@ const AppliedVisaHistory = () => {
             <span
               className="h-full rounded-full bg-blue-600"
               style={{
-                width: ready ? `${(12 / 19) * 100}%` : "0%",
+                width: ready && dossiers.length ? `${(countForStatus("processing") / dossiers.length) * 100}%` : "0%",
                 transition: "width 1.1s cubic-bezier(.22,1,.36,1)",
               }}
             />
             <span
               className="h-full rounded-full bg-sky-300"
               style={{
-                width: ready ? `${(7 / 19) * 100}%` : "0%",
+                width: ready && dossiers.length ? `${(countForStatus("approved") / dossiers.length) * 100}%` : "0%",
                 transition: "width 1.1s cubic-bezier(.22,1,.36,1) .1s",
               }}
             />
@@ -628,13 +595,11 @@ const AppliedVisaHistory = () => {
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-gray-500">
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-blue-600" />
-              <span className="font-semibold text-gray-700">12</span> Express
-              Track
+              <span className="font-semibold text-gray-700">{countForStatus("processing")}</span> In processing
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-sky-300" />
-              <span className="font-semibold text-gray-700">7</span> Standard
-              Review
+              <span className="font-semibold text-gray-700">{countForStatus("approved")}</span> Approved
             </span>
           </div>
         </div>
@@ -654,7 +619,7 @@ const AppliedVisaHistory = () => {
           </div>
 
           <p className="mt-4 text-3xl font-bold tabular-nums text-red-500">
-            4{" "}
+            {countForStatus("hold")}{" "}
             <span className="text-sm font-medium text-gray-400">Cases</span>
           </p>
 
@@ -709,7 +674,7 @@ const AppliedVisaHistory = () => {
                       active ? "text-white/70" : "text-gray-400"
                     }`}
                   >
-                    {tab.count}
+                    {countForStatus(tab.key)}
                   </span>
                 </button>
               );
@@ -792,7 +757,17 @@ const AppliedVisaHistory = () => {
       </form>
 
       {/* ---------- DOSSIERS ---------- */}
-      {filtered.length > 0 ? (
+      {loading ? (
+        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-14 text-center text-sm font-medium text-gray-500">
+          <FiRefreshCw className="mx-auto mb-3 animate-spin text-blue-800" size={22} />
+          Loading your visa applications...
+        </div>
+      ) : loadError ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-10 text-center text-sm font-medium text-red-700">
+          {loadError}
+          <button type="button" onClick={() => window.location.reload()} className="ml-3 underline">Retry</button>
+        </div>
+      ) : filtered.length > 0 ? (
         <div className="space-y-5">
           {filtered.map((dossier, index) => (
             <DossierCard
@@ -810,11 +785,11 @@ const AppliedVisaHistory = () => {
           </span>
 
           <p className="mt-4 text-base font-semibold text-gray-900">
-            No visa dossiers found
+            {dossiers.length === 0 ? "No visa applications submitted yet" : "No visa dossiers found"}
           </p>
 
           <p className="mt-1 text-sm text-gray-500">
-            Try a different reference number, applicant name or passport number.
+            {dossiers.length === 0 ? "Your submitted visa applications will appear here." : "Try a different reference number, applicant name or passport number."}
           </p>
 
           <button
@@ -834,7 +809,7 @@ const AppliedVisaHistory = () => {
             ? `${filtered.length} matching ${
                 filtered.length === 1 ? "dossier" : "dossiers"
               }`
-            : "Showing 1 to 6 of 64 visa dossiers"}
+            : `Showing ${dossiers.length} visa ${dossiers.length === 1 ? "dossier" : "dossiers"}`}
 
           {!isFiltering && (
             <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600">

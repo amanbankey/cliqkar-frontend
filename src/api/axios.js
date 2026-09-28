@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5004/api",
+  baseURL: "https://cliqkar-backend.onrender.com/api",
 });
 
 //https://cliqkar-backend.onrender.com/api
+//http://localhost:7001/api
 // ======================================
 // AUTOMATICALLY ATTACH TOKEN
 // ======================================
