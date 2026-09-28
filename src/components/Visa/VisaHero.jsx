@@ -2701,7 +2701,7 @@ const VisaHero = () => {
                     to-transparent
                     transition-transform
                     duration-700
-                    group-hover:translate-x-full
+                    group-hover:translate-x-full 
                   "
                 />
 

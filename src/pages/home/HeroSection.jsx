@@ -8,6 +8,7 @@ import {
   FiGlobe,
 } from "react-icons/fi";
 import aero from "../../assets/image/aero.png";
+import img3 from "../../assets/image/img3.png";
 import {
   MdFlight,
   MdOutlineVerifiedUser,
@@ -436,47 +437,344 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Background */}
+    // <section className="relative overflow-hidden">
+    //   {/* Background */}
+    //   <div
+    //     className="absolute inset-0 bg-cover bg-center"
+    //     style={{
+    //       backgroundImage: `url(${img3})`,
+    //     }}
+    //   />
+
+  
+
+    //   {/* Main Container */}
+    //   <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-4 sm:pt-20 pb-5 sm:pb-16 ">
+
+    //     {/* Hero Content */}
+    //     <div className="mt-3 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
+    //       <div className="w-full lg:max-w-3xl">
+
+    //         {/* Top Badge */}
+    //         <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 mb-3">
+    //           <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+
+    //           <span className="text-amber-300 text-[11px] sm:text-xs font-semibold tracking-wide">
+    //             SMART TRAVEL · GLOBAL MOBILITY · VERIFIED PARTNERS
+    //           </span>
+    //         </div>
+
+    //         {/* Heading */}
+    //         <h1 className="text-4xl sm:text-5xl font-poppins font-extrabold text-white leading-[1.05] mb-4">
+    //           Your Journey.
+    //           <br />
+    //           Travel Without Friction.
+    //         </h1>
+
+          
+    //         {/* Buttons */}
+    //         <div className="flex flex-wrap items-center gap-3 mb-6">
+    //           <button
+    //             onClick={() => navigate("/flight")}
+    //             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors"
+    //           >
+    //             Search Flights
+    //             <FiArrowRight />
+    //           </button>
+
+    //           <button
+    //             onClick={() => navigate("/visa")}
+    //             className="flex items-center gap-2 bg-white/5 border border-white/15 hover:bg-white/10 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors"
+    //           >
+    //             <MdOutlineVerifiedUser />
+    //             Explore Visa Services
+    //           </button>
+    //         </div>
+
+    //         {/* Trending Routes */}
+    //         <div>
+    //           <div className="flex items-center gap-2 mb-4">
+    //             <MdFlight className="text-amber-400" />
+
+    //             <span className="text-slate-400 text-xs font-medium tracking-wide">
+    //               TRENDING IN-FLIGHT ROUTES HANDLED BY CLIQKAR
+    //             </span>
+    //           </div>
+
+    //           <div className="grid grid-cols-3 gap-3 mb-3">
+    //             {trendingRoutes.map((route) => (
+    //               <div
+    //                 key={route.city}
+    //                 className="bg-white/5 border border-white/10 rounded-lg h-14 sm:h-16 flex flex-col justify-end p-2 sm:p-3"
+    //               >
+    //                 <p className="text-white text-[11px] sm:text-xs font-semibold">
+    //                   {route.city}
+    //                 </p>
+
+    //                 <p className="text-slate-400 text-[9px] sm:text-[10px]">
+    //                   {route.tag}
+    //                 </p>
+    //               </div>
+    //             ))}
+    //           </div>
+
+    //           {/* Concierge */}
+    //           <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pt-7">
+    //             <div className="w-8 h-8 rounded-lg bg-blue-600/20 flex items-center justify-center shrink-0">
+    //               <MdOutlineDashboard className="text-blue-400" />
+    //             </div>
+
+    //             <div>
+    //               <p className="text-white text-xs sm:text-sm font-semibold">
+    //                 1-on-1 Concierge Consultation
+    //               </p>
+
+    //               <p className="text-slate-400 text-[10px] sm:text-xs">
+    //                 Private lounge document &amp; itinerary curation with
+    //                 licensed agents
+    //               </p>
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div>
+
+    //       {/* Globe intentionally hidden */}
+    //       {/* <FlightGlobeAnimation /> */}
+    //     </div>
+
+    //     {/* Stats */}
+    //     <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
+    //       {stats.map((stat) => (
+    //         <div
+    //           key={stat.label}
+    //           className="text-center sm:text-left"
+    //         >
+    //           <p className="text-white text-2xl sm:text-3xl font-extrabold">
+    //             {typeof stat.value === "number" ? (
+    //               <CountUp
+    //                 end={stat.value}
+    //                 suffix={stat.suffix}
+    //               />
+    //             ) : (
+    //               stat.value
+    //             )}
+    //           </p>
+
+    //           <p className="text-slate-400 text-xs sm:text-sm mt-1 flex items-center justify-center sm:justify-start gap-1">
+    //             <HiOutlineSparkles className="text-amber-400" />
+    //             {stat.label}
+    //           </p>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   </div>
+    // </section>
+
+
+
+    //     <section className="relative overflow-hidden min-h-[680px] lg:min-h-[300px] ">
+    
+    //   <div
+    //     className="
+    //       absolute inset-y-0 right-0
+    //       w-full lg:w-[62%]
+    //       overflow-hidden
+    //     "
+    //   >
+    //     <div
+    //       className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    //       style={{
+    //         backgroundImage: `url(${img3})`,
+    //       }}
+    //     />
+    //     <div className="absolute inset-0 bg-slate-900/10" />
+    //   </div>
+
+    
+
+    
+    //   <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+    //     <div className="min-h-[680px] lg:min-h-[400px] flex items-center ">
+
+    //       <div className="w-full lg:w-[58%] py-10">
+
+    //         <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-full px-3 py-1.5 mb-5">
+    //           <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+    //           <span className="text-slate-600 text-[11px] sm:text-xs font-semibold tracking-wide">
+    //             SMART TRAVEL · GLOBAL MOBILITY · VERIFIED PARTNERS
+    //           </span>
+    //         </div>
+
+    //         <h1 className="text-4xl sm:text-5xl font-poppins font-extrabold text-slate-900 leading-[1.05] mb-5">
+    //           Your Journey.
+    //           <br />
+    //           <span className="text-slate-900">
+    //             Travel Without Friction.
+    //           </span>
+    //         </h1>
+
+    //         <div className="flex flex-wrap items-center gap-3 mb-8">
+    //           <button
+    //             onClick={() => navigate("/flight")}
+    //             className="
+    //               flex items-center gap-2
+    //               bg-blue-600 hover:bg-blue-700
+    //               text-white
+    //               font-semibold
+    //               px-5 py-3
+    //               rounded-lg
+    //               text-sm
+    //               transition-all
+    //               shadow-lg shadow-blue-600/20
+    //             "
+    //           >
+    //             Search Flights
+    //             <FiArrowRight />
+    //           </button>
+
+    //           <button
+    //             onClick={() => navigate("/visa")}
+    //             className="
+    //               flex items-center gap-2
+    //               bg-white
+    //               border border-slate-300
+    //               hover:bg-slate-50
+    //               text-slate-800
+    //               font-semibold
+    //               px-5 py-3
+    //               rounded-lg
+    //               text-sm
+    //               transition-all
+    //             "
+    //           >
+    //             <MdOutlineVerifiedUser className="text-blue-600" />
+    //             Explore Visa Services
+    //           </button>
+    //         </div>
+
+    //         <div>
+    //           {/* <div className="flex items-center gap-2 mb-4">
+    //             <MdFlight className="text-amber-500" />
+    //             <span className="text-slate-500 text-xs font-medium tracking-wide">
+    //               TRENDING IN-FLIGHT ROUTES HANDLED BY CLIQKAR
+    //             </span>
+    //           </div> */}
+
+    //           <div className="grid grid-cols-3 gap-3 mb-4 max-w-2xl">
+    //             {trendingRoutes.map((route) => (
+    //               <div
+    //                 key={route.city}
+    //                 className="
+    //                   bg-slate-50
+    //                   border border-slate-200
+    //                   rounded-lg
+    //                   h-14 sm:h-16
+    //                   flex flex-col justify-end
+    //                   p-2 sm:p-3
+    //                   hover:bg-slate-100
+    //                   transition-colors
+    //                 "
+    //               >
+    //                 <p className="text-slate-900 text-[11px] sm:text-xs font-semibold">
+    //                   {route.city}
+    //                 </p>
+    //                 <p className="text-slate-500 text-[9px] sm:text-[10px]">
+    //                   {route.tag}
+    //                 </p>
+    //               </div>
+    //             ))}
+    //           </div>
+    //         </div>
+
+    //         <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-2xl">
+    //           {stats.map((stat) => (
+    //             <div
+    //               key={stat.label}
+    //               className="text-center sm:text-left"
+    //             >
+    //               <p className="text-slate-900 text-xl sm:text-2xl font-extrabold">
+    //                 {typeof stat.value === "number" ? (
+    //                   <CountUp
+    //                     end={stat.value}
+    //                     suffix={stat.suffix}
+    //                   />
+    //                 ) : (
+    //                   stat.value
+    //                 )}
+    //               </p>
+    //               <p className="text-slate-500 text-xs  mt-1 flex items-center justify-center sm:justify-start gap-1">
+    //                 <HiOutlineSparkles className="text-amber-500" />
+    //                 {stat.label}
+    //               </p>
+    //             </div>
+    //           ))}
+    //         </div>
+
+    //       </div>
+    //     </div>
+    //   </div>
+    // </section>
+
+    <> 
+    {/* <section className="relative overflow-hidden min-h-[680px] lg:min-h-[300px]">
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="
+          absolute inset-y-0 right-0
+          w-full 
+          overflow-hidden inset-0 bg-cover bg-center bg-no-repeat
+        "
         style={{
-          backgroundImage: `url(${aero})`,
-        }}
-      />
+            backgroundImage: `url(${img3})`,
+          }}
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-sm scale-110"
+          style={{
+            backgroundImage: `url(${img3})`,
+            WebkitMaskImage:
+              "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+            maskImage:
+              "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+          }}
+        />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/50 via-white/15 to-transparent" />
+      </div>
 
-      {/* Main Container */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-4 sm:pt-20 pb-5 sm:pb-16 ">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="min-h-[680px] lg:min-h-[400px] flex items-center ">
 
-        {/* Hero Content */}
-        <div className="mt-3 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
-          <div className="w-full lg:max-w-3xl">
+          <div className="w-full lg:w-[58%] py-10">
 
-            {/* Top Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-
-              <span className="text-amber-300 text-[11px] sm:text-xs font-semibold tracking-wide">
+            <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-full px-3 py-1.5 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span className="text-slate-600 text-[11px] sm:text-xs font-semibold tracking-wide">
                 SMART TRAVEL · GLOBAL MOBILITY · VERIFIED PARTNERS
               </span>
             </div>
 
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl font-poppins font-extrabold text-white leading-[1.05] mb-4">
+            <h1 className="text-4xl sm:text-5xl font-poppins font-extrabold text-slate-900 leading-[1.05] mb-5">
               Your Journey.
               <br />
-              Travel Without Friction.
+              <span className="text-slate-900">
+                Travel Without Friction.
+              </span>
             </h1>
 
-          
-            {/* Buttons */}
-            <div className="flex flex-wrap items-center gap-3 mb-6">
+            <div className="flex flex-wrap items-center gap-3 mb-8">
               <button
                 onClick={() => navigate("/flight")}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors"
+                className="
+                  flex items-center gap-2
+                  bg-blue-600 hover:bg-blue-700
+                  text-white
+                  font-semibold
+                  px-5 py-3
+                  rounded-lg
+                  text-sm
+                  transition-all
+                  shadow-lg shadow-blue-600/20
+                "
               >
                 Search Flights
                 <FiArrowRight />
@@ -484,72 +782,526 @@ export default function HeroSection() {
 
               <button
                 onClick={() => navigate("/visa")}
-                className="flex items-center gap-2 bg-white/5 border border-white/15 hover:bg-white/10 text-white font-semibold px-5 py-3 rounded-lg text-sm transition-colors"
+                className="
+                  flex items-center gap-2
+                  bg-white
+                  border border-slate-300
+                  hover:bg-slate-50
+                  text-slate-800
+                  font-semibold
+                  px-5 py-3
+                  rounded-lg
+                  text-sm
+                  transition-all
+                "
               >
-                <MdOutlineVerifiedUser />
+                <MdOutlineVerifiedUser className="text-blue-600" />
                 Explore Visa Services
               </button>
             </div>
 
-            {/* Trending Routes */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <MdFlight className="text-amber-400" />
-
-                <span className="text-slate-400 text-xs font-medium tracking-wide">
-                  TRENDING IN-FLIGHT ROUTES HANDLED BY CLIQKAR
-                </span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-3">
+    
+              <div className="grid grid-cols-3 gap-3 mb-4 max-w-2xl">
                 {trendingRoutes.map((route) => (
                   <div
                     key={route.city}
-                    className="bg-white/5 border border-white/10 rounded-lg h-14 sm:h-16 flex flex-col justify-end p-2 sm:p-3"
+                    className="
+                      bg-slate-50
+                      border border-slate-200
+                      rounded-lg
+                      h-14 sm:h-16
+                      flex flex-col justify-end
+                      p-2 sm:p-3
+                      hover:bg-slate-100
+                      transition-colors
+                    "
                   >
-                    <p className="text-white text-[11px] sm:text-xs font-semibold">
+                    <p className="text-slate-900 text-[11px] sm:text-xs font-semibold">
                       {route.city}
                     </p>
-
-                    <p className="text-slate-400 text-[9px] sm:text-[10px]">
+                    <p className="text-slate-500 text-[9px] sm:text-[10px]">
                       {route.tag}
                     </p>
                   </div>
                 ))}
               </div>
-
-              {/* Concierge */}
-              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pt-7">
-                <div className="w-8 h-8 rounded-lg bg-blue-600/20 flex items-center justify-center shrink-0">
-                  <MdOutlineDashboard className="text-blue-400" />
-                </div>
-
-                <div>
-                  <p className="text-white text-xs sm:text-sm font-semibold">
-                    1-on-1 Concierge Consultation
-                  </p>
-
-                  <p className="text-slate-400 text-[10px] sm:text-xs">
-                    Private lounge document &amp; itinerary curation with
-                    licensed agents
-                  </p>
-                </div>
-              </div>
             </div>
-          </div>
 
-          {/* Globe intentionally hidden */}
-          {/* <FlightGlobeAnimation /> */}
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-2xl">
+              {stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="text-center sm:text-left"
+                >
+                  <p className="text-slate-900 text-xl sm:text-2xl font-extrabold">
+                    {typeof stat.value === "number" ? (
+                      <CountUp
+                        end={stat.value}
+                        suffix={stat.suffix}
+                      />
+                    ) : (
+                      stat.value
+                    )}
+                  </p>
+                  <p className="text-slate-500 text-xs  mt-1 flex items-center justify-center sm:justify-start gap-1">
+                    <HiOutlineSparkles className="text-amber-500" />
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section> */}
+
+       {/* <section className="relative overflow-hidden min-h-[680px] lg:min-h-[550px]">
+        <div
+          className="
+            absolute inset-y-0 right-0
+            w-full 
+            overflow-hidden inset-0 bg-no-repeat
+          "
+          style={{
+              backgroundImage: `url(${img3})`,
+              backgroundSize: "100% auto",
+              backgroundPosition: "right center",
+            }}
+        >
+          <div
+            className="absolute inset-0 bg-no-repeat blur-sm"
+            style={{
+              backgroundImage: `url(${img3})`,
+              backgroundSize: "100% auto",
+              backgroundPosition: "right center",
+              WebkitMaskImage:
+                "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+              maskImage:
+                "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+            }}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-r from-white/50 via-white/15 to-transparent" />
         </div>
 
-        {/* Stats */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10   flex items-center">
+          <div className="min-h-[680px] lg:min-h-[400px] flex items-center ">
+
+            <div className="w-full lg:w-[58%] py-10">
+
+              <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-full px-3 py-1.5 mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <span className="text-slate-600 text-[11px] sm:text-xs font-semibold tracking-wide">
+                  SMART TRAVEL · GLOBAL MOBILITY · VERIFIED PARTNERS
+                </span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl font-poppins font-extrabold text-slate-900 leading-[1.05] mb-5">
+                Your Journey.
+                <br />
+                <span className="text-slate-900">
+                  Travel Without Friction.
+                </span>
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-3 mb-8">
+                <button
+                  onClick={() => navigate("/flight")}
+                  className="
+                    flex items-center gap-2
+                    bg-blue-600 hover:bg-blue-700
+                    text-white
+                    font-semibold
+                    px-5 py-3
+                    rounded-lg
+                    text-sm
+                    transition-all
+                    shadow-lg shadow-blue-600/20
+                  "
+                >
+                  Search Flights
+                  <FiArrowRight />
+                </button>
+
+                <button
+                  onClick={() => navigate("/visa")}
+                  className="
+                    flex items-center gap-2
+                    bg-white
+                    border border-slate-300
+                    hover:bg-slate-50
+                    text-slate-800
+                    font-semibold
+                    px-5 py-3
+                    rounded-lg
+                    text-sm
+                    transition-all
+                  "
+                >
+                  <MdOutlineVerifiedUser className="text-blue-600" />
+                  Explore Visa Services
+                </button>
+              </div>
+
+              <div>
+      
+                <div className="grid grid-cols-3 gap-3 mb-4 max-w-2xl">
+                  {trendingRoutes.map((route) => (
+                    <div
+                      key={route.city}
+                      className="
+                        bg-slate-50
+                        border border-slate-200
+                        rounded-lg
+                        h-14 sm:h-16
+                        flex flex-col justify-end
+                        p-2 sm:p-3
+                        hover:bg-slate-100
+                        transition-colors
+                      "
+                    >
+                      <p className="text-slate-900 text-[11px] sm:text-xs font-semibold">
+                        {route.city}
+                      </p>
+                      <p className="text-slate-500 text-[9px] sm:text-[10px]">
+                        {route.tag}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-2xl">
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="text-center sm:text-left"
+                  >
+                    <p className="text-slate-900 text-xl sm:text-2xl font-extrabold">
+                      {typeof stat.value === "number" ? (
+                        <CountUp
+                          end={stat.value}
+                          suffix={stat.suffix}
+                        />
+                      ) : (
+                        stat.value
+                      )}
+                    </p>
+                    <p className="text-slate-500 text-xs  mt-1 flex items-center justify-center sm:justify-start gap-1">
+                      <HiOutlineSparkles className="text-amber-500" />
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </div>
+        </section> */}
+
+     <section className="relative overflow-hidden min-h-[540px] sm:min-h-[580px] lg:min-h-[550px]">
+
+  {/* =========================================================
+      BACKGROUND IMAGE
+      Mobile + Desktop दोनों में image background के रूप में
+      ========================================================= */}
+  <div
+    className="absolute inset-0 bg-no-repeat"
+    style={{
+      backgroundImage: `url(${img3})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center center",
+    }}
+  />
+
+  {/* =========================================================
+      DESKTOP IMAGE BLUR / FADE
+      ========================================================= */}
+  <div
+    className="
+      hidden lg:block
+      absolute inset-0
+      bg-no-repeat
+      blur-sm
+    "
+    style={{
+      backgroundImage: `url(${img3})`,
+      backgroundSize: "100% auto",
+      backgroundPosition: "right center",
+      WebkitMaskImage:
+        "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+      maskImage:
+        "linear-gradient(to right, black 0%, black 30%, transparent 55%)",
+    }}
+  />
+
+  {/* =========================================================
+      MOBILE OVERLAY
+      Text को image के ऊपर readable बनाने के लिए
+      ========================================================= */}
+  <div
+    className="
+      absolute inset-0
+      lg:hidden
+      bg-gradient-to-b
+      from-white/90
+      via-white/55
+      via-55%
+      to-white/10
+    "
+  />
+
+  {/* =========================================================
+      DESKTOP OVERLAY
+      ========================================================= */}
+  <div
+    className="
+      hidden lg:block
+      absolute inset-0
+      bg-gradient-to-r
+      from-white/95
+      via-white/60
+      via-45%
+      to-transparent
+    "
+  />
+
+  {/* =========================================================
+      CONTENT
+      ========================================================= */}
+  <div
+    className="
+      relative z-10
+      max-w-7xl mx-auto
+      px-4 sm:px-6 lg:px-10
+      min-h-[540px] sm:min-h-[580px] lg:min-h-[550px]
+      flex items-center
+    "
+  >
+    <div className="w-full">
+
+      <div
+        className="
+          w-full
+          lg:w-[58%]
+          py-8 sm:py-10 lg:py-10
+        "
+      >
+
+        {/* =====================================================
+            BADGE
+            ===================================================== */}
+        <div
+          className="
+            inline-flex items-center gap-2
+            bg-white/85 backdrop-blur-md
+            border border-slate-200/80
+            rounded-full
+            px-3 py-1.5
+            mb-4 sm:mb-5
+            shadow-sm
+          "
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+
+          <span
+            className="
+              text-slate-600
+              text-[9px] sm:text-xs
+              font-semibold
+              tracking-wide
+            "
+          >
+            SMART TRAVEL · GLOBAL MOBILITY
+          </span>
+        </div>
+
+        {/* =====================================================
+            MAIN HEADING
+            Mobile size deliberately reduced
+            ===================================================== */}
+        <h1
+          className="
+            text-[34px]
+            sm:text-5xl
+            lg:text-5xl
+             
+            font-poppins
+            font-extrabold
+            text-slate-900
+            leading-[1.03]
+            tracking-[-0.02em]
+            mb-2
+            max-w-[620px]
+          "
+        >
+          
+The world Is Closer
+          <br />
+
+         
+        </h1>
+          <h1 className="text-[34px]  sm:text-5xl font-medium
+            lg:text-4xl">
+             <span className="  font-kalam  text-[54px]
+     
+    leading-[0.95]
+    tracking-[-0.02em]
+    text-[#0875D1]">
+            Than You Think
+          </span>
+          </h1>
+        {/* =====================================================
+            DESCRIPTION
+            ===================================================== */}
+        <p
+          className="
+            text-slate-600
+            text-sm sm:text-base
+            leading-relaxed
+            max-w-[500px]
+            mb-6
+            font-medium
+          "
+        >
+          Seamless travel solutions, trusted partners and smarter
+          mobility services — all in one place.
+        </p>
+
+        {/* =====================================================
+            BUTTONS
+            Desktop: 2 buttons
+            Mobile: only primary button
+            ===================================================== */}
+        <div className="flex flex-wrap items-center gap-3 mb-7">
+
+          {/* PRIMARY BUTTON */}
+          <button
+            onClick={() => navigate("/flight")}
+            className="
+              flex items-center justify-center gap-2
+              bg-blue-600
+              hover:bg-blue-700
+              text-white
+              font-semibold
+              px-5 py-3
+              rounded-lg
+              text-sm
+              transition-all
+              shadow-lg shadow-blue-600/25
+              active:scale-[0.98]
+            "
+          >
+            Search Flights
+            <FiArrowRight />
+          </button>
+
+          {/* SECONDARY BUTTON
+              Mobile पर hidden */}
+          <button
+            onClick={() => navigate("/visa")}
+            className="
+              hidden sm:flex
+              items-center gap-2
+              bg-white/90
+              backdrop-blur-md
+              border border-slate-300
+              hover:bg-white
+              text-slate-800
+              font-semibold
+              px-5 py-3
+              rounded-lg
+              text-sm
+              transition-all
+            "
+          >
+            <MdOutlineVerifiedUser className="text-blue-600" />
+            Explore Visa Services
+          </button>
+
+        </div>
+
+        {/* =====================================================
+            TRENDING ROUTES
+            Mobile पर पूरी तरह hide
+            ===================================================== */}
+        <div className="hidden sm:block">
+
+          <div
+            className="
+              grid grid-cols-3
+              gap-3
+              mb-5
+              max-w-2xl
+            "
+          >
+            {trendingRoutes.map((route) => (
+              <div
+                key={route.city}
+                className="
+                  bg-white/75
+                  backdrop-blur-md
+                  border border-slate-200
+                  rounded-lg
+                  h-14 sm:h-16
+                  flex flex-col justify-end
+                  p-2 sm:p-3
+                  hover:bg-white
+                  transition-colors
+                "
+              >
+                <p
+                  className="
+                    text-slate-900
+                    text-[11px] sm:text-xs
+                    font-semibold
+                  "
+                >
+                  {route.city}
+                </p>
+
+                <p
+                  className="
+                    text-slate-500
+                    text-[9px] sm:text-[10px]
+                  "
+                >
+                  {route.tag}
+                </p>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        {/* =====================================================
+            STATS
+            Mobile पर hide
+            ===================================================== */}
+        <div
+          className="
+            hidden sm:grid
+            grid-cols-2
+            sm:grid-cols-4
+            gap-4 sm:gap-6
+            max-w-2xl
+          "
+        >
           {stats.map((stat) => (
             <div
               key={stat.label}
               className="text-center sm:text-left"
             >
-              <p className="text-white text-2xl sm:text-3xl font-extrabold">
+              <p
+                className="
+                  text-slate-900
+                  text-xl sm:text-2xl
+                  font-extrabold
+                "
+              >
                 {typeof stat.value === "number" ? (
                   <CountUp
                     end={stat.value}
@@ -560,14 +1312,28 @@ export default function HeroSection() {
                 )}
               </p>
 
-              <p className="text-slate-400 text-xs sm:text-sm mt-1 flex items-center justify-center sm:justify-start gap-1">
-                <HiOutlineSparkles className="text-amber-400" />
+              <p
+                className="
+                  text-slate-500
+                  text-xs
+                  mt-1
+                  flex items-center
+                  justify-center sm:justify-start
+                  gap-1
+                "
+              >
+                <HiOutlineSparkles className="text-amber-500" />
                 {stat.label}
               </p>
             </div>
           ))}
         </div>
+
       </div>
-    </section>
-  );
-}
+    </div>
+  </div>
+
+</section>
+    </>
+      );
+    }

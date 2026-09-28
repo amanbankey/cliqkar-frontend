@@ -93,7 +93,7 @@ export default function SignInPage({ onClose }) {
 
       {/* <div className="pointer-events-none absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-indigo-300/20 blur-[120px]" /> */}
 
-      <div className="relative flex w-full max-w-[935px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
+      <div className="relative flex w-full max-w-[800px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
         <button
           type="button"
           // onClick={() => (onClose ? onClose() : navigate("/"))}
@@ -144,24 +144,16 @@ export default function SignInPage({ onClose }) {
 
           <div className="pointer-events-none absolute bottom-[-180px] right-[20%] h-[280px] w-[280px] rounded-full bg-indigo-100/30 blur-[100px]" />
 
-          <div className="relative z-10 mx-auto w-full max-w-[580px]">
-            {/* BADGE */}
-
-           
-
-            {/* TITLE */}
-
+          <div className="relative z-10 mx-auto w-full max-w-[500px]">
+  
             <h1 className="text-[26px] font-bold tracking-tight text-[#17243a] sm:text-[30px]">
               Welcome back
             </h1>
 
-            <p className="mt-1.5 max-w-[480px] text-[13px] leading-relaxed text-slate-500">
+            {/* <p className="mt-1.5 max-w-[480px] text-[13px] leading-relaxed text-slate-500">
               Sign in to continue your journey and access your personalized
               travel experience.
-            </p>
-
-            {/* TABS */}
-
+            </p> */}
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 type="button"

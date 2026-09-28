@@ -188,8 +188,8 @@ export default function SignUpPage({ onClose }) {
 
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-[380px] w-[450px] rounded-full bg-indigo-300/20 blur-[120px]" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1100px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10">
-        <div className="relative my-auto flex w-full max-w-[1080px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row">
+      <div className="relative mx-auto flex min-h-screen max-w-[900px] items-center justify-center px-4 py-5 sm:px-6 lg:px-10 ">
+        <div className="relative my-auto  flex w-full max-w-[1080px] flex-col overflow-hidden rounded-[26px] bg-[#fcfdff] shadow-[0_25px_80px_rgba(15,23,42,0.16)] lg:flex-row ">
 
           <button
             type="button"
@@ -223,7 +223,7 @@ export default function SignUpPage({ onClose }) {
             <X size={17} />
           </button>
 
-          <div className="relative hidden min-h-[560px] w-[44%] overflow-hidden lg:block">
+          <div className="relative hidden min-h-[500px] w-[44%] overflow-hidden lg:block">
 
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -322,10 +322,10 @@ export default function SignUpPage({ onClose }) {
                 Create your account
               </h1>
 
-              <p className="mt-1.5 max-w-[520px] text-[13px] leading-relaxed text-slate-500">
+              {/* <p className="mt-1.5 max-w-[520px] text-[13px] leading-relaxed text-slate-500">
                 Join Cliqkar and unlock a smarter, seamless
                 and more personalized travel experience.
-              </p>
+              </p> */}
 
               <div className="mb-4 mt-4 flex w-full rounded-xl bg-slate-100 p-1">
                 <button
@@ -496,7 +496,7 @@ export default function SignUpPage({ onClose }) {
                     </button>
                   </PremiumField>
 
-                  <div className="sm:col-span-2">
+                  {/* <div className="sm:col-span-2"> */}
                     <PremiumField
                       label="Country"
                       required
@@ -559,7 +559,7 @@ export default function SignUpPage({ onClose }) {
                         )}
                       </div>
                     </PremiumField>
-                  </div>
+                  {/* </div> */}
                 </div>
 
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
