@@ -146,27 +146,27 @@ const TravelerDetails = () => {
   ]);
 
 
-  /* =====================================================
-     PASSPORT UPLOAD + AUTO FILL
-  ===================================================== */
+/* =====================================================
+   PASSPORT UPLOAD + AUTO FILL
+===================================================== */
 
-  const handlePassportUpload = async (travelerId, file) => {
+const handlePassportUpload = async (travelerId, file) => {
   if (!file) return;
 
+  setReadingPassport((prev) => ({
+    ...prev,
+    [travelerId]: true,
+  }));
+
+  // File upload ko immediately save/show karo
+  updateFile(travelerId, "passportFront", file);
+
   try {
-    setReadingPassport((prev) => ({
-      ...prev,
-      [travelerId]: true,
-    }));
-
-    // Show uploaded file immediately
-    updateFile(travelerId, "passportFront", file);
-
     const response = await extractPassportData(file);
 
-    console.log("Passport OCR API response:", response);
+    console.log("Passport OCR response:", response);
 
-    // Handle common Axios + sendSuccess response structures
+    // Handles common Axios + sendSuccess response structures
     const candidates = [
       response?.data?.data?.data,
       response?.data?.data,
@@ -180,70 +180,63 @@ const TravelerDetails = () => {
           item &&
           typeof item === "object" &&
           (
-            item.passportNumber ||
             item.firstName ||
             item.lastName ||
-            item.dateOfBirth
+            item.passportNumber ||
+            item.nationality
           )
       ) || {};
 
     console.log("Passport extracted fields:", extracted);
 
-    const passportNumber = String(
-      extracted.passportNumber || ""
-    )
-      .trim()
-      .toUpperCase();
-
     const firstName = String(extracted.firstName || "")
+      .replace(/[<>]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
 
     const lastName = String(extracted.lastName || "")
+      .replace(/[<>]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
 
-    const nationality = String(extracted.nationality || "")
-      .trim()
-      .toUpperCase();
+    const passportNumber = String(extracted.passportNumber || "")
+      .replace(/\s/g, "")
+      .toUpperCase()
+      .trim();
 
+    const nationality = String(extracted.nationality || "").trim();
     const sex = String(extracted.sex || "").trim();
+    const dateOfBirth = String(extracted.dateOfBirth || "").trim();
+    const placeOfBirth = String(extracted.placeOfBirth || "").trim();
 
-    const dateOfBirth = String(
-      extracted.dateOfBirth || ""
-    ).trim();
+    const validName = (value) =>
+      value.length >= 2 &&
+      /^[A-Z][A-Z\s'-]*$/i.test(value);
 
-    const placeOfBirth = String(
-      extracted.placeOfBirth || ""
-    ).trim();
+    const validFirstName = validName(firstName);
+    const validLastName = validName(lastName);
 
-    // Validate passport number format before autofilling
     const validPassportNumber =
       /^[A-Z0-9]{6,12}$/.test(passportNumber);
 
-    // Validate ISO date format
     const validDateOfBirth =
       /^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth) &&
       !Number.isNaN(Date.parse(`${dateOfBirth}T00:00:00`));
 
-    const validSex = ["Male", "Female"].includes(sex);
+    const validSex =
+      sex === "Male" || sex === "Female";
 
-    const hasValidData =
-      validPassportNumber ||
-      firstName ||
-      lastName ||
-      nationality ||
-      validDateOfBirth ||
-      validSex;
-
-    if (!hasValidData) {
+    if (
+      !validFirstName &&
+      !validLastName &&
+      !validPassportNumber
+    ) {
       alert(
-        "Passport details could not be verified. Please upload a clear passport biodata page or enter details manually."
+        "Passport details could not be read. Please upload a clear passport biodata page with both MRZ lines visible."
       );
       return;
     }
 
-    // Update all extracted fields together to avoid stale state updates.
     setTravelers((prev) =>
       prev.map((traveler) => {
         if (traveler.id !== travelerId) return traveler;
@@ -251,31 +244,36 @@ const TravelerDetails = () => {
         return {
           ...traveler,
 
-          ...(firstName ? { firstName } : {}),
-          ...(lastName ? { lastName } : {}),
-          ...(validPassportNumber
-            ? { passportNumber }
-            : {}),
+          // Keep names in their correct fields.
+          // Never put the full OCR line into either name field.
+          ...(validFirstName ? { firstName } : {}),
+          ...(validLastName ? { lastName } : {}),
+
+          ...(validPassportNumber ? { passportNumber } : {}),
           ...(nationality ? { nationality } : {}),
           ...(validSex ? { sex } : {}),
-          ...(validDateOfBirth
-            ? { dateOfBirth }
-            : {}),
+          ...(validDateOfBirth ? { dateOfBirth } : {}),
           ...(placeOfBirth ? { placeOfBirth } : {}),
         };
       })
     );
 
-    alert(
-      "Passport scan completed. Please verify the extracted details before continuing."
-    );
+    if (!validFirstName || !validLastName) {
+      alert(
+        "Passport scanned, but the name could not be confidently separated. Please check the name against your passport and enter any missing part manually."
+      );
+    } else {
+      alert(
+        "Passport scan completed. Please verify the details against your passport."
+      );
+    }
   } catch (error) {
     console.error("Passport extraction failed:", error);
 
     alert(
       error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        "Unable to read passport. Please upload a clear passport biodata page or enter details manually."
+      error?.response?.data?.error ||
+      "Unable to read passport. Please upload a clear passport biodata page or enter details manually."
     );
   } finally {
     setReadingPassport((prev) => ({
@@ -283,29 +281,27 @@ const TravelerDetails = () => {
       [travelerId]: false,
     }));
   }
-};
-
-  /* =====================================================
-     PAN UPLOAD + AUTO FILL
-  ===================================================== */
+};/* =====================================================
+   PAN UPLOAD + AUTO FILL
+===================================================== */
 
 const handlePanUpload = async (travelerId, file) => {
   if (!file) return;
 
+  setReadingPan((prev) => ({
+    ...prev,
+    [travelerId]: true,
+  }));
+
+  // Save uploaded file immediately
+  updateFile(travelerId, "panCard", file);
+
   try {
-    setReadingPan((prev) => ({
-      ...prev,
-      [travelerId]: true,
-    }));
-
-    // Show uploaded file immediately
-    updateFile(travelerId, "panCard", file);
-
     const response = await extractPanData(file);
 
-    console.log("PAN OCR API response:", response);
+    console.log("PAN OCR response:", response);
 
-    // Handle common Axios + sendSuccess response structures
+    // Handles common Axios + sendSuccess response structures
     const candidates = [
       response?.data?.data?.data,
       response?.data?.data,
@@ -320,6 +316,8 @@ const handlePanUpload = async (travelerId, file) => {
           typeof item === "object" &&
           (
             item.panNumber ||
+            item.firstName ||
+            item.lastName ||
             item.name ||
             item.dateOfBirth
           )
@@ -328,25 +326,35 @@ const handlePanUpload = async (travelerId, file) => {
     console.log("PAN extracted fields:", extracted);
 
     const panNumber = String(extracted.panNumber || "")
-      .trim()
-      .toUpperCase();
+      .replace(/\s/g, "")
+      .toUpperCase()
+      .trim();
 
-    const panName = String(extracted.name || "")
+    const firstName = String(extracted.firstName || "")
+      .replace(/[<>]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
 
-    const dateOfBirth = String(
-      extracted.dateOfBirth || ""
-    ).trim();
+    const lastName = String(extracted.lastName || "")
+      .replace(/[<>]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
-    // PAN format: 5 letters + 4 digits + 1 letter
+    const dateOfBirth = String(extracted.dateOfBirth || "").trim();
+
     const validPanNumber =
       /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(panNumber);
 
-    // Validate ISO date
     const validDateOfBirth =
       /^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth) &&
       !Number.isNaN(Date.parse(`${dateOfBirth}T00:00:00`));
+
+    const validName = (value) =>
+      value.length >= 2 &&
+      /^[A-Z][A-Z\s'-]*$/i.test(value);
+
+    const validFirstName = validName(firstName);
+    const validLastName = validName(lastName);
 
     if (!validPanNumber) {
       alert(
@@ -355,52 +363,41 @@ const handlePanUpload = async (travelerId, file) => {
       return;
     }
 
-    // Split the extracted cardholder name into first and last name.
-    // Keep the first word as firstName and remaining words as lastName.
-    const nameParts = panName
-      .split(/\s+/)
-      .filter(Boolean);
-
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ");
-
     setTravelers((prev) =>
       prev.map((traveler) => {
         if (traveler.id !== travelerId) return traveler;
 
         return {
           ...traveler,
-
           panNumber,
 
-          // Only fill name if OCR returned a name.
-          ...(firstName ? { firstName } : {}),
-          ...(lastName ? { lastName } : {}),
+          // PAN name fills only if the name fields are currently empty.
+          // Passport name will not be overwritten by PAN OCR.
+          ...(validFirstName && !traveler.firstName
+            ? { firstName }
+            : {}),
 
-          // Only fill DOB if OCR returned a valid date.
-          ...(validDateOfBirth
+          ...(validLastName && !traveler.lastName
+            ? { lastName }
+            : {}),
+
+          ...(validDateOfBirth && !traveler.dateOfBirth
             ? { dateOfBirth }
             : {}),
         };
       })
     );
 
-    if (!panName || !validDateOfBirth) {
-      alert(
-        "PAN number was read. Name or date of birth could not be confidently read, so please verify or enter those fields manually."
-      );
-    } else {
-      alert(
-        "PAN scan completed. Please verify the extracted details before continuing."
-      );
-    }
+    alert(
+      "PAN scan completed. Please verify the PAN number and any details filled from the card."
+    );
   } catch (error) {
     console.error("PAN extraction failed:", error);
 
     alert(
       error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        "Unable to read PAN card. Please upload a clear image or enter details manually."
+      error?.response?.data?.error ||
+      "Unable to read PAN card. Please upload a clear image or enter details manually."
     );
   } finally {
     setReadingPan((prev) => ({
@@ -408,7 +405,9 @@ const handlePanUpload = async (travelerId, file) => {
       [travelerId]: false,
     }));
   }
-};  /* =====================================================
+};
+
+  /* =====================================================
      INSURANCE
   ===================================================== */
 
