@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 
 import { getMyAgentWallet } from "../../api/agentApi";
+import { initiateWalletRecharge } from "../../api/walletApi";
 import {
   agentPageStyles,
   PageHeader,
@@ -67,6 +68,7 @@ const AgentWalletHistory = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [query, setQuery] = useState("");
+  const [recharging, setRecharging] = useState(false);
 
   const fetchWallet = useCallback(async () => {
     try {
@@ -108,11 +110,36 @@ const AgentWalletHistory = () => {
     <div className="space-y-6 p-4 sm:p-6">
       <style>{agentPageStyles}</style>
 
-      <PageHeader
-        title="Wallet History"
-        count={`${transactions.length} Records`}
-        subtitle="Your agent wallet balance and every credit, debit and refund."
-      />
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <PageHeader
+          title="Wallet History"
+          count={`${transactions.length} Records`}
+          subtitle="Your agent wallet balance and every credit, debit and refund."
+        />
+        <button
+          type="button"
+          disabled={recharging}
+          onClick={async () => {
+            const entered = window.prompt("Enter wallet recharge amount (₹1 to ₹5,00,000):");
+            if (entered === null) return;
+            const amount = Number(entered);
+            if (!Number.isFinite(amount) || amount < 1 || amount > 500000) {
+              window.alert("Enter a valid amount between ₹1 and ₹5,00,000.");
+              return;
+            }
+            try {
+              setRecharging(true);
+              const result = await initiateWalletRecharge(amount);
+              if (!result?.accessKey || !result?.paymentUrl) throw new Error(result?.message || "Unable to start recharge");
+              window.location.assign(`${result.paymentUrl}${result.accessKey}`);
+            } catch (error) {
+              window.alert(error?.response?.data?.message || error.message || "Unable to start recharge");
+              setRecharging(false);
+            }
+          }}
+          className="rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
+        >{recharging ? "Redirecting..." : "+ Recharge Wallet"}</button>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard dark icon={FiCreditCard} label="Current Balance" value={`₹ ${inr(summary.currentBalance)}`} delay={0.08} />

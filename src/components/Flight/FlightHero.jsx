@@ -133,7 +133,7 @@ const airlineTheme = {
     border: "border-[#f5d8da]",
   },
 };
-
+//https://cliqkar-backend.onrender.com/api
 const barcodePattern = [2, 1, 3, 1, 2, 3, 1, 1, 2, 3, 1, 2, 1, 3, 2, 1, 1, 3, 2, 1];
 
 const AIRPORT_API_URL = `${import.meta.env.VITE_API_URL || "https://cliqkar-backend.onrender.com/api"}/airports`;

@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { getMe } from "../../api/authApi";
 import { getActiveOtbPrices } from "../../api/airlineApi";
 import { submitOtbApplication as submitOtbApplicationApi } from "../../api/otbApplicationApi";
+import { getMyWallet, payFromWallet } from "../../api/walletApi";
+import { initiatePayment } from "../../api/paymentApi";
 
 import {
   User,
@@ -1491,8 +1495,13 @@ function ReviewStep({
   goingTo,
   airline,
   totalAmount,
+  payableAmount,
   paymentMethod,
   setPaymentMethod,
+  paymentPhone,
+  setPaymentPhone,
+  paymentEmail,
+  setPaymentEmail,
   confirmSubmit,
   setConfirmSubmit,
 }) {
@@ -1547,7 +1556,7 @@ function ReviewStep({
           <ReviewItem
             icon={<IndianRupee size={17} />}
             label="Total Amount"
-            value={totalAmount ? `₹${totalAmount}` : "-"}
+            value={payableAmount ? `₹${payableAmount}` : "-"}
           />
         </div>
       </div>
@@ -1636,6 +1645,51 @@ function ReviewStep({
         </div>
       </div>
 
+      {/* PAYMENT CONTACT DETAILS (Visa jaisa) — sirf online payment me */}
+
+      {paymentMethod === "online" && (
+        <div className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 className="font-bold text-slate-700">
+            Payment contact details
+          </h3>
+
+          <p className="mt-1 text-xs text-slate-400">
+            Your mobile number is required to continue with the payment.
+          </p>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <FieldLabel>Email</FieldLabel>
+
+              <input
+                type="email"
+                value={paymentEmail}
+                onChange={(e) => setPaymentEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <FieldLabel required>Mobile Number</FieldLabel>
+
+              <input
+                type="tel"
+                value={paymentPhone}
+                maxLength={10}
+                onChange={(e) =>
+                  setPaymentPhone(
+                    e.target.value.replace(/\D/g, "").slice(0, 10)
+                  )
+                }
+                placeholder="Enter 10-digit mobile number"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CONFIRM */}
 
       <button
@@ -1699,6 +1753,8 @@ function ReviewItem({ icon, label, value }) {
 ========================================================= */
 
 function OTBApplyForm() {
+  const navigate = useNavigate();
+
   const [currentStep, setCurrentStep] = useState(1);
 
   const [travelers, setTravelers] = useState([
@@ -1731,6 +1787,16 @@ function OTBApplyForm() {
 
   const [statusMessage, setStatusMessage] =
     useState("");
+
+  // Payment contact details (Visa jaisa) — profile me na ho to yahin se
+  const [paymentPhone, setPaymentPhone] = useState("");
+  const [paymentEmail, setPaymentEmail] = useState("");
+
+  // Saved application (online retry / wallet retry par duplicate application na bane)
+  const savedApplicationRef = useRef(null);
+
+  // OTB price per traveler x travelers
+  const payableAmount = Number(totalAmount || 0) * travelers.length;
 
   /* FETCH ACTIVE OTB PRICE MASTER */
 
@@ -1976,7 +2042,7 @@ function OTBApplyForm() {
   /* SUBMIT */
 
   async function handleSubmit() {
-    if (!isFormReady || status === "loading") {
+    if (!isFormReady || status === "loading" || status === "success") {
       return;
     }
 
@@ -1984,31 +2050,166 @@ function OTBApplyForm() {
     setStatusMessage("");
 
     try {
-      await submitOtbApplication({
-        goingTo,
-        airline,
-        totalAmount,
-        paymentMethod,
-        travelers,
+      const amount = Number(payableAmount);
+
+      if (!amount || amount <= 0) {
+        throw new Error("Invalid payment amount.");
+      }
+
+      // ---------- LOGGED-IN USER (Visa jaisa getMe) ----------
+      let user = {};
+
+      try {
+        const meResponse = await getMe();
+
+        user =
+          meResponse?.user ||
+          meResponse?.data?.user ||
+          meResponse?.data ||
+          {};
+      } catch (error) {
+        throw new Error(
+          "Unable to fetch your account details. Please login again."
+        );
+      }
+
+      const email =
+        paymentEmail || user?.email || user?.emailAddress || "";
+
+      const cleanPhone = String(
+        paymentPhone ||
+          user?.phoneNumber ||
+          user?.phone ||
+          user?.mobile ||
+          user?.mobileNumber ||
+          ""
+      ).replace(/\D/g, "");
+
+      if (paymentMethod === "online") {
+        if (!email) {
+          throw new Error("Please enter your email to pay online.");
+        }
+
+        if (cleanPhone.length !== 10) {
+          throw new Error(
+            "Please enter a valid 10-digit mobile number to continue with payment."
+          );
+        }
+      }
+
+      // ---------- WALLET BALANCE CHECK ----------
+      if (paymentMethod === "wallet") {
+        const wallet = await getMyWallet();
+
+        if (Number(wallet?.currentBalance || 0) < amount) {
+          throw new Error(
+            "Insufficient wallet balance. Please recharge your wallet first."
+          );
+        }
+      }
+
+      // ---------- SAVE OTB APPLICATION BEFORE PAYMENT ----------
+      if (!savedApplicationRef.current) {
+        const saved = await submitOtbApplication({
+          goingTo,
+          airline,
+          totalAmount,
+          paymentMethod,
+          travelers,
+        });
+
+        if (!saved?.success || !saved?.data?._id) {
+          throw new Error(
+            saved?.message || "Unable to save OTB application."
+          );
+        }
+
+        savedApplicationRef.current = saved.data;
+      }
+
+      const application = savedApplicationRef.current;
+
+      // ---------- WALLET PAYMENT ----------
+      if (paymentMethod === "wallet") {
+        const walletResult = await payFromWallet({
+          amount,
+          service: "otb",
+          title: `OTB Application Payment - ${goingTo || "OTB"}`,
+          reference: `OTB-WALLET-${application._id}`,
+          applicationId: application._id,
+        });
+
+        savedApplicationRef.current = null;
+
+        alert(
+          walletResult?.message || "OTB payment completed successfully."
+        );
+
+        navigate(
+          user?.role === "agent"
+            ? "/agent-dashboard/otb-history"
+            : "/user-dashboard/otb-history"
+        );
+
+        return;
+      }
+
+      // ---------- ONLINE PAYMENT (EASEBUZZ) ----------
+      const response = await initiatePayment({
+        txnid: `OTB_${Date.now()}`,
+        amount: amount.toFixed(2),
+        productinfo: `${goingTo || "OTB"} OTB Application`,
+        firstname:
+          travelers?.[0]?.fullName ||
+          user?.fullName ||
+          user?.name ||
+          "Customer",
+        phone: cleanPhone,
+        email: String(email),
+        udf1: String(application._id),
+        udf2: "",
+        service: "otb",
       });
 
-      setStatus("success");
+      if (!response?.success) {
+        throw new Error(
+          response?.message || "Unable to initiate payment"
+        );
+      }
 
-      setStatusMessage(
-        "Your OTB application has been submitted successfully."
-      );
+      const easebuzzData = response?.data;
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      const accessKey =
+        easebuzzData?.data ||
+        easebuzzData?.access_key ||
+        easebuzzData?.accessKey ||
+        response?.accessKey;
+
+      if (!accessKey) {
+        throw new Error("Easebuzz access key was not received.");
+      }
+
+      const checkoutUrl =
+        import.meta.env.VITE_EASEBUZZ_ENV === "test"
+          ? `https://testpay.easebuzz.in/v2/pay/${accessKey}`
+          : `https://pay.easebuzz.in/v2/pay/${accessKey}`;
+
+      window.location.href = checkoutUrl;
     } catch (error) {
-      setStatus("error");
+      console.error("OTB payment error:", error?.response?.data || error);
 
-      setStatusMessage(
-        error.message ||
-          "Submission failed. Please try again."
-      );
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Unable to start payment. Please try again.";
+
+      setStatus("error");
+      setStatusMessage(message);
+
+      // Visa jaisa: error turant dikhe (red box page ke upar hota hai)
+      alert(message);
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
@@ -2427,8 +2628,13 @@ function OTBApplyForm() {
                   goingTo={goingTo}
                   airline={airline}
                   totalAmount={totalAmount}
+                  payableAmount={payableAmount}
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
+                  paymentPhone={paymentPhone}
+                  setPaymentPhone={setPaymentPhone}
+                  paymentEmail={paymentEmail}
+                  setPaymentEmail={setPaymentEmail}
                   confirmSubmit={confirmSubmit}
                   setConfirmSubmit={setConfirmSubmit}
                 />
@@ -2468,11 +2674,13 @@ function OTBApplyForm() {
                       onClick={handleSubmit}
                       disabled={
                         !isFormReady ||
-                        status === "loading"
+                        status === "loading" ||
+                        status === "success"
                       }
                       className={`group flex items-center justify-center gap-3 rounded-xl px-7 py-3.5 text-sm font-bold text-white transition ${
                         isFormReady &&
-                        status !== "loading"
+                        status !== "loading" &&
+                        status !== "success"
                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-200 hover:-translate-y-1 hover:shadow-xl"
                           : "cursor-not-allowed bg-slate-300"
                       }`}
@@ -2488,7 +2696,7 @@ function OTBApplyForm() {
                         </>
                       ) : (
                         <>
-                          Submit Application
+                          {paymentMethod === "wallet" ? "Pay from Wallet & Submit" : "Pay Online & Submit"}
 
                           <ArrowRight
                             size={18}

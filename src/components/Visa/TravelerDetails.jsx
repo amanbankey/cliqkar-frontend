@@ -43,6 +43,7 @@ import {
 } from "../../api/visaApplicationApi";
 
 import { initiatePayment } from "../../api/paymentApi";
+import { getMyWallet, payFromWallet } from "../../api/walletApi";
 
 import { getMe } from "../../api/authApi";
 
@@ -146,266 +147,205 @@ const TravelerDetails = () => {
   ]);
 
 
-/* =====================================================
-   PASSPORT UPLOAD + AUTO FILL
-===================================================== */
+  /* =====================================================
+     PASSPORT UPLOAD + AUTO FILL
+  ===================================================== */
 
-const handlePassportUpload = async (travelerId, file) => {
-  if (!file) return;
+  const handlePassportUpload = async (
+    travelerId,
+    file
+  ) => {
+    if (!file) return;
 
-  setReadingPassport((prev) => ({
-    ...prev,
-    [travelerId]: true,
-  }));
+    try {
+      setReadingPassport((prev) => ({
+        ...prev,
+        [travelerId]: true,
+      }));
 
-  // File upload ko immediately save/show karo
-  updateFile(travelerId, "passportFront", file);
-
-  try {
-    const response = await extractPassportData(file);
-
-    console.log("Passport OCR response:", response);
-
-    // Handles common Axios + sendSuccess response structures
-    const candidates = [
-      response?.data?.data?.data,
-      response?.data?.data,
-      response?.data,
-      response,
-    ];
-
-    const extracted =
-      candidates.find(
-        (item) =>
-          item &&
-          typeof item === "object" &&
-          (
-            item.firstName ||
-            item.lastName ||
-            item.passportNumber ||
-            item.nationality
-          )
-      ) || {};
-
-    console.log("Passport extracted fields:", extracted);
-
-    const firstName = String(extracted.firstName || "")
-      .replace(/[<>]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const lastName = String(extracted.lastName || "")
-      .replace(/[<>]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const passportNumber = String(extracted.passportNumber || "")
-      .replace(/\s/g, "")
-      .toUpperCase()
-      .trim();
-
-    const nationality = String(extracted.nationality || "").trim();
-    const sex = String(extracted.sex || "").trim();
-    const dateOfBirth = String(extracted.dateOfBirth || "").trim();
-    const placeOfBirth = String(extracted.placeOfBirth || "").trim();
-
-    const validName = (value) =>
-      value.length >= 2 &&
-      /^[A-Z][A-Z\s'-]*$/i.test(value);
-
-    const validFirstName = validName(firstName);
-    const validLastName = validName(lastName);
-
-    const validPassportNumber =
-      /^[A-Z0-9]{6,12}$/.test(passportNumber);
-
-    const validDateOfBirth =
-      /^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth) &&
-      !Number.isNaN(Date.parse(`${dateOfBirth}T00:00:00`));
-
-    const validSex =
-      sex === "Male" || sex === "Female";
-
-    if (
-      !validFirstName &&
-      !validLastName &&
-      !validPassportNumber
-    ) {
-      alert(
-        "Passport details could not be read. Please upload a clear passport biodata page with both MRZ lines visible."
+      // Immediately show uploaded file
+      updateFile(
+        travelerId,
+        "passportFront",
+        file
       );
-      return;
+
+      // Send passport to backend
+      const response =
+        await extractPassportData(file);
+
+      console.log(
+        "Passport extraction response:",
+        response
+      );
+
+      const extracted =
+        response?.data || {};
+
+      /* -----------------------------------------
+         AUTO FILL PASSPORT DATA
+      ----------------------------------------- */
+
+      if (extracted.firstName) {
+        updateTraveler(
+          travelerId,
+          "firstName",
+          extracted.firstName
+        );
+      }
+
+      if (extracted.lastName) {
+        updateTraveler(
+          travelerId,
+          "lastName",
+          extracted.lastName
+        );
+      }
+
+      if (extracted.passportNumber) {
+        updateTraveler(
+          travelerId,
+          "passportNumber",
+          extracted.passportNumber
+        );
+      }
+
+      if (extracted.nationality) {
+        updateTraveler(
+          travelerId,
+          "nationality",
+          extracted.nationality
+        );
+      }
+
+      if (extracted.sex) {
+        updateTraveler(
+          travelerId,
+          "sex",
+          extracted.sex
+        );
+      }
+
+      if (extracted.dateOfBirth) {
+        updateTraveler(
+          travelerId,
+          "dateOfBirth",
+          extracted.dateOfBirth
+        );
+      }
+
+      if (extracted.placeOfBirth) {
+        updateTraveler(
+          travelerId,
+          "placeOfBirth",
+          extracted.placeOfBirth
+        );
+      }
+
+    } catch (error) {
+      console.error(
+        "Passport extraction failed:",
+        error
+      );
+
+      alert(
+        error?.response?.data?.message ||
+        "Unable to read passport. Please enter details manually."
+      );
+
+    } finally {
+      setReadingPassport((prev) => ({
+        ...prev,
+        [travelerId]: false,
+      }));
     }
+  };
 
-    setTravelers((prev) =>
-      prev.map((traveler) => {
-        if (traveler.id !== travelerId) return traveler;
 
-        return {
-          ...traveler,
+  /* =====================================================
+     PAN UPLOAD + AUTO FILL
+  ===================================================== */
 
-          // Keep names in their correct fields.
-          // Never put the full OCR line into either name field.
-          ...(validFirstName ? { firstName } : {}),
-          ...(validLastName ? { lastName } : {}),
+  const handlePanUpload = async (
+    travelerId,
+    file
+  ) => {
+    if (!file) return;
 
-          ...(validPassportNumber ? { passportNumber } : {}),
-          ...(nationality ? { nationality } : {}),
-          ...(validSex ? { sex } : {}),
-          ...(validDateOfBirth ? { dateOfBirth } : {}),
-          ...(placeOfBirth ? { placeOfBirth } : {}),
-        };
-      })
-    );
+    try {
+      setReadingPan((prev) => ({
+        ...prev,
+        [travelerId]: true,
+      }));
 
-    if (!validFirstName || !validLastName) {
-      alert(
-        "Passport scanned, but the name could not be confidently separated. Please check the name against your passport and enter any missing part manually."
+      // Immediately show uploaded file
+      updateFile(
+        travelerId,
+        "panCard",
+        file
       );
-    } else {
-      alert(
-        "Passport scan completed. Please verify the details against your passport."
+
+      // Send PAN to backend
+      const response =
+        await extractPanData(file);
+
+      console.log(
+        "PAN extraction response:",
+        response
       );
+
+      const extracted =
+        response?.data || {};
+
+      /* -----------------------------------------
+         AUTO FILL PAN NUMBER
+      ----------------------------------------- */
+
+      if (extracted.panNumber) {
+        updateTraveler(
+          travelerId,
+          "panNumber",
+          extracted.panNumber
+        );
+      }
+
+      /* -----------------------------------------
+         OTHER PAN DATA
+      ----------------------------------------- */
+
+      if (extracted.name) {
+        console.log(
+          "PAN Name:",
+          extracted.name
+        );
+      }
+
+      if (extracted.dateOfBirth) {
+        console.log(
+          "PAN DOB:",
+          extracted.dateOfBirth
+        );
+      }
+
+    } catch (error) {
+      console.error(
+        "PAN extraction failed:",
+        error
+      );
+
+      alert(
+        error?.response?.data?.message ||
+        "Unable to read PAN card. Please enter PAN number manually."
+      );
+
+    } finally {
+      setReadingPan((prev) => ({
+        ...prev,
+        [travelerId]: false,
+      }));
     }
-  } catch (error) {
-    console.error("Passport extraction failed:", error);
+  };
 
-    alert(
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      "Unable to read passport. Please upload a clear passport biodata page or enter details manually."
-    );
-  } finally {
-    setReadingPassport((prev) => ({
-      ...prev,
-      [travelerId]: false,
-    }));
-  }
-};/* =====================================================
-   PAN UPLOAD + AUTO FILL
-===================================================== */
-
-const handlePanUpload = async (travelerId, file) => {
-  if (!file) return;
-
-  setReadingPan((prev) => ({
-    ...prev,
-    [travelerId]: true,
-  }));
-
-  // Save uploaded file immediately
-  updateFile(travelerId, "panCard", file);
-
-  try {
-    const response = await extractPanData(file);
-
-    console.log("PAN OCR response:", response);
-
-    // Handles common Axios + sendSuccess response structures
-    const candidates = [
-      response?.data?.data?.data,
-      response?.data?.data,
-      response?.data,
-      response,
-    ];
-
-    const extracted =
-      candidates.find(
-        (item) =>
-          item &&
-          typeof item === "object" &&
-          (
-            item.panNumber ||
-            item.firstName ||
-            item.lastName ||
-            item.name ||
-            item.dateOfBirth
-          )
-      ) || {};
-
-    console.log("PAN extracted fields:", extracted);
-
-    const panNumber = String(extracted.panNumber || "")
-      .replace(/\s/g, "")
-      .toUpperCase()
-      .trim();
-
-    const firstName = String(extracted.firstName || "")
-      .replace(/[<>]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const lastName = String(extracted.lastName || "")
-      .replace(/[<>]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const dateOfBirth = String(extracted.dateOfBirth || "").trim();
-
-    const validPanNumber =
-      /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(panNumber);
-
-    const validDateOfBirth =
-      /^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth) &&
-      !Number.isNaN(Date.parse(`${dateOfBirth}T00:00:00`));
-
-    const validName = (value) =>
-      value.length >= 2 &&
-      /^[A-Z][A-Z\s'-]*$/i.test(value);
-
-    const validFirstName = validName(firstName);
-    const validLastName = validName(lastName);
-
-    if (!validPanNumber) {
-      alert(
-        "PAN number could not be verified. Please upload a clear PAN card image or enter the PAN number manually."
-      );
-      return;
-    }
-
-    setTravelers((prev) =>
-      prev.map((traveler) => {
-        if (traveler.id !== travelerId) return traveler;
-
-        return {
-          ...traveler,
-          panNumber,
-
-          // PAN name fills only if the name fields are currently empty.
-          // Passport name will not be overwritten by PAN OCR.
-          ...(validFirstName && !traveler.firstName
-            ? { firstName }
-            : {}),
-
-          ...(validLastName && !traveler.lastName
-            ? { lastName }
-            : {}),
-
-          ...(validDateOfBirth && !traveler.dateOfBirth
-            ? { dateOfBirth }
-            : {}),
-        };
-      })
-    );
-
-    alert(
-      "PAN scan completed. Please verify the PAN number and any details filled from the card."
-    );
-  } catch (error) {
-    console.error("PAN extraction failed:", error);
-
-    alert(
-      error?.response?.data?.message ||
-      error?.response?.data?.error ||
-      "Unable to read PAN card. Please upload a clear image or enter details manually."
-    );
-  } finally {
-    setReadingPan((prev) => ({
-      ...prev,
-      [travelerId]: false,
-    }));
-  }
-};
 
   /* =====================================================
      INSURANCE
@@ -1148,12 +1088,6 @@ const [paymentEmail, setPaymentEmail] = useState("");
       return;
     }
   
-    // Easebuzz sirf Online payment ke liye
-    if (paymentMethod !== "Online") {
-      alert("Please select Online payment.");
-      return;
-    }
-  
     if (!totalAmount || Number(totalAmount) <= 0) {
       alert("Invalid payment amount.");
       return;
@@ -1229,6 +1163,13 @@ const [paymentEmail, setPaymentEmail] = useState("");
 // ==========================================
 // SAVE VISA APPLICATION BEFORE EASEBUZZ
 // ==========================================
+
+if (paymentMethod === "Wallet") {
+  const wallet = await getMyWallet();
+  if (Number(wallet.currentBalance || 0) < Number(totalAmount)) {
+    throw new Error("Insufficient wallet balance. Please recharge your wallet first.");
+  }
+}
 
 const applicationFormData = new FormData();
 
@@ -1316,6 +1257,19 @@ console.log(
   "Visa application saved successfully:",
   savedApplication.application
 );
+
+      if (paymentMethod === "Wallet") {
+        const walletResult = await payFromWallet({
+          amount: Number(totalAmount),
+          service: "visa",
+          title: `Visa Application Payment - ${goingTo || "Visa"}`,
+          reference: `VISA-WALLET-${savedApplication.application?._id || Date.now()}`,
+        });
+        alert(walletResult?.message || "Visa payment completed successfully.");
+        navigate("/user-dashboard/visa-history");
+        return;
+      }
+
       const paymentData = {
         txnid: `VISA_${Date.now()}`,
   
@@ -1336,8 +1290,8 @@ console.log(
         email: String(email),
   
         udf1: visa?._id || "",
-  
         udf2: "",
+        service: "visa",
       };
   
       console.log(

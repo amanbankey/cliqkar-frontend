@@ -147,7 +147,7 @@ const AppliedVisas = () => {
 
     return `https://cliqkar-backend.onrender.com${url.startsWith("/") ? url : `/${url}`}`;
   };
-
+//https://cliqkar-backend.onrender.com/api
   return (
     <main className="flex-1 min-w-0 overflow-y-auto bg-gray-50 p-4 sm:p-6">
       {/* HEADER */}

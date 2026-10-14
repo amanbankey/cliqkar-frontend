@@ -52,7 +52,7 @@ const VisaRow = ({ item, index }) => {
       <div className="p-5 pl-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-base font-bold text-gray-900">{item.visaTitle}</p>
+            <p className="text-base font-bold text-gray-900">{item.visa?.about || item.visa?.description || "Visa Application"}</p>
 
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
               <button
@@ -75,7 +75,7 @@ const VisaRow = ({ item, index }) => {
               </span>
 
               <span className="text-xs font-semibold text-gray-700">
-                To: {item.countryName}
+                To: {item.visa?.going_to || item.destination || "—"}
               </span>
             </div>
           </div>
@@ -89,11 +89,11 @@ const VisaRow = ({ item, index }) => {
         <div className="mt-4 grid grid-cols-1 gap-x-4 gap-y-3 rounded-xl bg-slate-50 p-3.5 sm:grid-cols-3">
           <div>
             <p className="text-[11px] font-medium text-gray-400">Applicant Name</p>
-            <p className="mt-1 text-[13px] font-semibold text-gray-900">{item.applicantName || "—"}</p>
+            <p className="mt-1 text-[13px] font-semibold text-gray-900">{item.applicant.name || "—"}</p>
           </div>
           <div>
             <p className="text-[11px] font-medium text-gray-400">Passport No.</p>
-            <p className="mt-1 text-[13px] font-semibold text-gray-900">{item.passportNumber || "—"}</p>
+            <p className="mt-1 text-[13px] font-semibold text-gray-900">{item.travelers?.[0]?.passportNumber || "—"}</p>
           </div>
           <div>
             <p className="text-[11px] font-medium text-gray-400">Submitted On</p>
@@ -120,42 +120,64 @@ const AgentVisaHistory = () => {
   const [query, setQuery] = useState("");
 
   const fetchApplications = useCallback(async () => {
-    try {
-      setLoading(true);
-      setErrorMessage("");
+  try {
+    setLoading(true);
+    setErrorMessage("");
 
-      const data = await getMyAgentVisaApplications();
-      setApplications(Array.isArray(data?.data) ? data.data : []);
-    } catch (error) {
-      console.error("Failed to fetch agent visa applications:", error);
-      setErrorMessage(
-        error?.response?.data?.message || "Failed to load your visa applications."
-      );
-      setApplications([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    const data = await getMyAgentVisaApplications();
 
+    // Backend returns: { success: true, applications: [...] }
+    const records = Array.isArray(data?.applications)
+      ? data.applications
+      : [];
+
+    setApplications(records);
+  } catch (error) {
+    console.error("Failed to fetch agent visa applications:", error);
+
+    setErrorMessage(
+      error?.response?.data?.message ||
+        "Failed to load your visa applications."
+    );
+
+    setApplications([]);
+  } finally {
+    setLoading(false);
+  }
+}, []);
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return applications;
+ const filtered = useMemo(() => {
+  const records = Array.isArray(applications) ? applications : [];
+  const q = query.trim().toLowerCase();
 
-    return applications.filter((item) =>
-      [item.referenceNumber, item.visaTitle, item.countryName, item.applicantName, item.passportNumber]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(q)
-    );
-  }, [applications, query]);
+  if (!q) return records;
 
-  const approvedCount = applications.filter((a) => a.status === "Approved").length;
-  const holdCount = applications.filter((a) => a.status === "Hold").length;
+  return records.filter((item) =>
+  [
+    item.referenceNumber,
+    item.visa?.about,
+    item.visa?.description,
+    item.visa?.going_to,
+    item.applicant?.name,
+    item.travelers?.[0]?.passportNumber,
+    item.status,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .includes(q)
+);
+}, [applications, query]);
+  const approvedCount = (Array.isArray(applications) ? applications : [])
+  .filter((item) => item.status === "Approved").length;
+
+const holdCount = (Array.isArray(applications) ? applications : [])
+  .filter(
+    (item) => item.status === "Hold" || item.status === "On Hold"
+  ).length; 
 
   return (
     <div className="space-y-6 p-4 sm:p-6">

@@ -21,6 +21,7 @@ import ClientPartnerFeedback from "./pages/admin/ClientPartnerFeedback";
 import SupportHelpdeskQueue from "./pages/admin/Support";
 import OTBPricingTariffs from "./pages/admin/OTBpricing";
 import AirlineDirectory from "./pages/admin/Airline";
+import OfflineTicketManagement from "./pages/admin/OfflineTicketManagement";
 import CountriesDirectory from "./pages/admin/GlobalCountries";
 import AirportDirectory from "./pages/admin/AirportDirectory";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -272,6 +273,11 @@ function App() {
         <Route
           path="/admin/airline"
           element={<AirlineDirectory />}
+        />
+
+        <Route
+          path="/admin/offline-ticket"
+          element={<OfflineTicketManagement />}
         />
 
         <Route

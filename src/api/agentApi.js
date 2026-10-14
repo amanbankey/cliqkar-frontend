@@ -35,7 +35,7 @@ export const getMyAgentBookings = async () => {
 // ========================================
 
 export const getMyAgentWallet = async () => {
-  const response = await api.get("/agent/wallet/my-transactions");
+  const response = await api.get("/wallet/my-transactions");
 
   return response.data;
 };
@@ -45,7 +45,7 @@ export const getMyAgentWallet = async () => {
 // ========================================
 
 export const getMyAgentVisaApplications = async () => {
-  const response = await api.get("/agent/visa/my-applications");
+  const response = await api.get("/visa-applications/my-applications");
 
   return response.data;
 };

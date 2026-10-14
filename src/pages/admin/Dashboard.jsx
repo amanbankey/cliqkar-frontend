@@ -22,6 +22,7 @@ import { TransactionHistoryPage } from "./TransactionHistory";
 import { TicketOperationsPage } from "./TicketOperation";
 import AppliedOTB from "./AppliedOTB";
 import AppliedVisas from "./AppliedVisas";
+import OfflineTicketManagement from "./OfflineTicketManagement"
 
 const statCards = [
   { icon: FiUsers, iconBg: "bg-blue-50", iconColor: "text-blue-500", growth: "+12%", label: "TOTAL USERS", value: "23" },
@@ -423,6 +424,9 @@ const Dashboard = ({ setSidebarOpen, sidebarOpen }) => {
    {activeItem === "Applied OTB" && ( <AppliedOTB />)}  {/* */}
    {activeItem === "Applied Visas" && (
   <AppliedVisas />
+)}
+{activeItem === "Offline Tickets" && (
+  <OfflineTicketManagement />
 )}
      {/* <OTBApplicationDetailsModal /> */}
     {/* <TransactionHistoryPage /> */}

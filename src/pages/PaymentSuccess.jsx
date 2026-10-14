@@ -12,6 +12,8 @@ const PaymentSuccess = () => {
   const txnid = searchParams.get("txnid");
   const easepayid = searchParams.get("easepayid");
   const amount = searchParams.get("amount");
+  const status = searchParams.get("status") || "pending";
+  const succeeded = status === "success";
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] flex items-center justify-center px-4">
@@ -21,18 +23,21 @@ const PaymentSuccess = () => {
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#eaf8ef]">
           <FiCheckCircle
             size={46}
-            className="text-[#28a866]"
+            className={succeeded ? "text-[#28a866]" : "text-amber-500"}
           />
         </div>
 
         {/* TITLE */}
         <h1 className="text-[28px] font-semibold text-[#243142]">
-          Payment Successful
+          {succeeded ? "Payment Successful" : status === "failed" ? "Payment Failed" : "Payment Verification Pending"}
         </h1>
 
         <p className="mt-3 text-[14px] leading-6 text-[#7a8797]">
-          Your payment has been successfully processed.
-          Your visa application payment is confirmed.
+          {succeeded
+            ? "Your payment has been confirmed. Wallet recharge is credited only after verified gateway confirmation."
+            : status === "failed"
+              ? "Your payment was not completed. If money was deducted, please check the transaction history or contact support."
+              : "We could not verify this payment as successful. Please check your transaction history before trying again."}
         </p>
 
         {/* PAYMENT DETAILS */}

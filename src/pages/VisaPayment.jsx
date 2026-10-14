@@ -1,10 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, CreditCard } from "lucide-react";
+import { ArrowLeft, CreditCard, Wallet } from "lucide-react";
+import { payFromWallet } from "../api/walletApi";
+import { initiatePayment } from "../api/paymentApi";
 
 const VisaPayment = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [selectedMethod, setSelectedMethod] = React.useState("Online");
+  const [paying, setPaying] = React.useState(false);
+  const [paymentError, setPaymentError] = React.useState("");
 
   const applicationData =
     location.state || {};
@@ -190,17 +195,42 @@ const VisaPayment = () => {
             </p>
 
 
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => setSelectedMethod("Online")} className={`rounded-xl border px-3 py-3 text-sm font-semibold ${selectedMethod === "Online" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600"}`}><CreditCard className="mr-2 inline" size={16} />Online</button>
+              <button type="button" onClick={() => setSelectedMethod("Wallet")} className={`rounded-xl border px-3 py-3 text-sm font-semibold ${selectedMethod === "Wallet" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600"}`}><Wallet className="mr-2 inline" size={16} />Wallet</button>
+            </div>
+            {paymentError && <p className="mt-3 text-sm text-red-600">{paymentError}</p>}
             <button
               type="button"
-              className="mt-6 w-full rounded-xl bg-[#1f355e] px-5 py-3.5 text-[14px] font-medium text-white"
-              onClick={() => {
-                console.log(
-                  "Proceeding with payment:",
-                  applicationData
-                );
+              disabled={paying}
+              className="mt-4 w-full rounded-xl bg-[#1f355e] px-5 py-3.5 text-[14px] font-medium text-white disabled:opacity-60"
+              onClick={async () => {
+                try {
+                  setPaying(true); setPaymentError("");
+                  if (!localStorage.getItem("token")) throw new Error("Please sign in before making a payment.");
+                  const amount = Number(totalAmount);
+                  if (!Number.isFinite(amount) || amount <= 0) throw new Error("Invalid payment amount.");
+                  if (selectedMethod === "Wallet") {
+                    const result = await payFromWallet({ amount, service: "visa", title: `Visa Application Payment - ${goingTo || "Visa"}` });
+                    window.alert(result.message || "Wallet payment successful.");
+                    navigate("/user-dashboard/visa-history");
+                    return;
+                  }
+                  let user = {};
+                  try { user = JSON.parse(localStorage.getItem("user") || "{}"); } catch (_) {}
+                  const phone = String(user.phoneNumber || user.phone || user.mobile || "").replace(/\D/g, "");
+                  const email = user.email || user.emailAddress || "";
+                  if (!email || phone.length !== 10) throw new Error("Please add a valid email and 10-digit phone number to your profile.");
+                  const result = await initiatePayment({ txnid: `VISA_${Date.now()}`, amount: amount.toFixed(2), productinfo: `Visa Application - ${goingTo || "Visa"}`, firstname: user.fullName || user.name || "Customer", email, phone, service: "visa" });
+                  const accessKey = result?.accessKey || result?.data?.data;
+                  if (!result?.success || !accessKey) throw new Error(result?.message || "Unable to start online payment.");
+                  const url = result.paymentUrl || (import.meta.env.VITE_EASEBUZZ_ENV === "test" ? "https://testpay.easebuzz.in/v2/pay/" : "https://pay.easebuzz.in/v2/pay/");
+                  window.location.assign(`${url}${accessKey}`);
+                } catch (error) { setPaymentError(error?.response?.data?.message || error.message || "Payment failed."); }
+                finally { setPaying(false); }
               }}
             >
-              Proceed to Payment
+              {paying ? "Processing..." : "Proceed to Payment"}
             </button>
 
           </div>
